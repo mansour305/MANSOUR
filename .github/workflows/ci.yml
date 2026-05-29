@@ -29,12 +29,10 @@ jobs:
           pnpm --version
 
       - name: Install dependencies
-        run: |
-          export npm_config_user_agent="pnpm/$(pnpm --version)"
-          pnpm install --frozen-lockfile
+        run: corepack pnpm install --frozen-lockfile
 
       - name: Typecheck
-        run: pnpm run typecheck
+        run: corepack pnpm run typecheck
 
       - name: Build
-        run: pnpm run build
+        run: corepack pnpm run build
