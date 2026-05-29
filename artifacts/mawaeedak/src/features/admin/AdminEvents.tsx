@@ -139,7 +139,7 @@ export default function AdminEvents() {
         <div className="flex justify-center p-8"><Loader2 className="w-6 h-6 animate-spin text-primary" /></div>
       ) : events && events.length > 0 ? (
         <div className="space-y-3">
-          {events.map(ev => (
+          {(Array.isArray(events) ? events : []).map(ev => (
             <Card key={ev.id} className={`border-border shadow-sm ${!ev.is_active ? 'opacity-60' : ''}`}>
               <CardContent className="p-4">
                 <div className="flex justify-between items-start mb-2">

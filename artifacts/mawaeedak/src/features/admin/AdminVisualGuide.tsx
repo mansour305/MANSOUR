@@ -70,7 +70,7 @@ export default function AdminVisualGuide() {
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 gap-2">
-            {COLORS.map((c) => (
+            {(Array.isArray(COLORS) ? COLORS : []).map((c) => (
               <div
                 key={c.role}
                 className="flex items-center gap-3 p-2.5 rounded-xl"
@@ -108,7 +108,7 @@ export default function AdminVisualGuide() {
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
-          {TYPOGRAPHY.map((t, i) => (
+          {(Array.isArray(TYPOGRAPHY) ? TYPOGRAPHY : []).map((t, i) => (
             <div
               key={i}
               className="p-3 rounded-xl"
@@ -142,7 +142,7 @@ export default function AdminVisualGuide() {
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-2">
-            {SPACING.map((s) => (
+            {(Array.isArray(SPACING) ? SPACING : []).map((s) => (
               <div key={s.name} className="text-[11px] flex justify-between">
                 <span className="font-semibold text-foreground">{s.name}</span>
                 <span className="text-muted-foreground font-mono">{s.sample}</span>
@@ -159,7 +159,7 @@ export default function AdminVisualGuide() {
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-2">
-            {RADII.map((r) => (
+            {(Array.isArray(RADII) ? RADII : []).map((r) => (
               <div key={r.name} className="flex items-center gap-2">
                 <div
                   className={`w-8 h-8 bg-primary/15 border border-primary/30 shrink-0 ${r.class}`}
@@ -180,7 +180,7 @@ export default function AdminVisualGuide() {
           <CardTitle className="text-base">مستويات الظل</CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
-          {SHADOW_LEVELS.map((s, i) => (
+          {(Array.isArray(SHADOW_LEVELS) ? SHADOW_LEVELS : []).map((s, i) => (
             <div
               key={i}
               className="flex items-center justify-between p-3 rounded-xl bg-background"

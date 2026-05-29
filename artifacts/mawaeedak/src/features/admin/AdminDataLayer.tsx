@@ -233,7 +233,7 @@ export default function AdminDataLayer() {
               <span className="col-span-2 text-center">المرحلة</span>
               <span className="col-span-3">الملاحظة</span>
             </div>
-            {MUTATIONS_INVENTORY.map((m) => (
+            {(Array.isArray(MUTATIONS_INVENTORY) ? MUTATIONS_INVENTORY : []).map((m) => (
               <div key={m.scope} className="grid grid-cols-12 px-3 py-2 items-center gap-1">
                 <span className="col-span-5 text-foreground font-medium leading-tight">{m.scope}</span>
                 <span className="col-span-2 text-center">
@@ -297,7 +297,7 @@ export default function AdminDataLayer() {
                   <span className="text-center">API</span>
                   <span className="text-center">Supabase</span>
                 </div>
-                {result.results.map((row) => (
+                {(Array.isArray(result.results) ? result.results : []).map((row) => (
                   <div key={row.table} className="grid grid-cols-4 px-3 py-2 items-center">
                     <span className="col-span-2 text-foreground">{TABLE_LABELS[row.table] ?? row.table}</span>
                     <span className="text-center font-mono">{row.apiCount}</span>

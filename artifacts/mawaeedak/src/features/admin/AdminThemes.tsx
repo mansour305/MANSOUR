@@ -172,7 +172,7 @@ export default function AdminThemes() {
         <div className="flex justify-center p-8"><Loader2 className="w-6 h-6 animate-spin text-primary" /></div>
       ) : themes && themes.length > 0 ? (
         <div className="grid grid-cols-1 gap-3">
-          {themes.map(theme => {
+          {(Array.isArray(themes) ? themes : []).map(theme => {
             const [primary, bg] = getSwatchColors(theme.colors);
             const isCurrentDefault = globalDefault === theme.slug;
             return (

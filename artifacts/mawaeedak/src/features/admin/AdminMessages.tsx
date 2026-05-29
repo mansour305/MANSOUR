@@ -148,7 +148,7 @@ export default function AdminMessages() {
         <div className="flex justify-center p-8"><Loader2 className="w-6 h-6 animate-spin text-primary" /></div>
       ) : messages && messages.length > 0 ? (
         <div className="space-y-3">
-          {messages.map(msg => (
+          {(Array.isArray(messages) ? messages : []).map(msg => (
             <Card key={msg.id} className={`border-border shadow-sm ${!msg.is_active ? "opacity-60" : ""}`}>
               <CardContent className="p-4">
                 <p className="font-medium text-sm leading-relaxed mb-3">{msg.message}</p>

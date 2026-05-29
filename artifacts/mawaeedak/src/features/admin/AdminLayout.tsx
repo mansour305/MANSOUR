@@ -1112,7 +1112,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 )}
               </div>
               <div className="flex-1 overflow-y-auto py-2" style={{ background: "hsl(var(--card))" }}>
-                {menuItems.map((item) => {
+                {(Array.isArray(menuItems) ? menuItems : []).map((item) => {
                   const Icon = item.icon;
                   const isActive =
                     location === item.path ||

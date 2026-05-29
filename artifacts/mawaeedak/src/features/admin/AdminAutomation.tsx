@@ -181,7 +181,7 @@ export default function AdminAutomation() {
           ? Array.from({ length: 4 }).map((_, i) => (
               <Skeleton key={i} className="h-[96px] rounded-xl" />
             ))
-          : status.map((job) => {
+          : (Array.isArray(status) ? status : []).map((job) => {
               const Icon = JOB_ICONS[job.job_name] ?? Bell;
               const st = job.last_run
                 ? STATUS_CONFIG[job.last_run.status as keyof typeof STATUS_CONFIG] ?? STATUS_CONFIG.skipped
@@ -264,7 +264,7 @@ export default function AdminAutomation() {
             <p className="text-sm text-muted-foreground text-center py-6">لا توجد سجلات بعد</p>
           ) : (
             <div className="space-y-2">
-              {logs.map((log) => {
+              {(Array.isArray(logs) ? logs : []).map((log) => {
                 const st =
                   STATUS_CONFIG[log.status as keyof typeof STATUS_CONFIG] ?? STATUS_CONFIG.skipped;
                 const StIcon = st.Icon;

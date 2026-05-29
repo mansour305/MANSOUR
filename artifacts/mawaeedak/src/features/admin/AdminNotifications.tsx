@@ -137,7 +137,7 @@ export default function AdminNotifications() {
             <Select value={type} onValueChange={setType}>
               <SelectTrigger dir="rtl"><SelectValue /></SelectTrigger>
               <SelectContent className="rtl" dir="rtl">
-                {TYPES.map((t) => (
+                {(Array.isArray(TYPES) ? TYPES : []).map((t) => (
                   <SelectItem key={t.value} value={t.value}>{t.label}</SelectItem>
                 ))}
               </SelectContent>
@@ -166,7 +166,7 @@ export default function AdminNotifications() {
         <div className="space-y-3">
           <h3 className="text-base font-bold">الإشعارات الحالية ({notifications.length})</h3>
           <div className="space-y-2 max-h-72 overflow-y-auto">
-            {notifications.map((n) => (
+            {(Array.isArray(notifications) ? notifications : []).map((n) => (
               <div
                 key={n.id}
                 className="flex items-center justify-between gap-2 p-3 rounded-xl border border-border bg-card text-sm"

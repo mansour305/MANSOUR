@@ -153,14 +153,14 @@ export default function AdminComplaints() {
           <SelectTrigger className="md:w-44"><SelectValue placeholder="النوع" /></SelectTrigger>
           <SelectContent className="rtl">
             <SelectItem value="all">كل الأنواع</SelectItem>
-            {types.map(t => <SelectItem key={t} value={t}>{t}</SelectItem>)}
+            {(Array.isArray(types) ? types : []).map(t => <SelectItem key={t} value={t}>{t}</SelectItem>)}
           </SelectContent>
         </Select>
         <Select value={statusFilter} onValueChange={setStatusFilter}>
           <SelectTrigger className="md:w-44"><SelectValue placeholder="الحالة" /></SelectTrigger>
           <SelectContent className="rtl">
             <SelectItem value="all">كل الحالات</SelectItem>
-            {STATUS_OPTIONS.map(s => <SelectItem key={s.value} value={s.value}>{s.label}</SelectItem>)}
+            {(Array.isArray(STATUS_OPTIONS) ? STATUS_OPTIONS : []).map(s => <SelectItem key={s.value} value={s.value}>{s.label}</SelectItem>)}
           </SelectContent>
         </Select>
       </div>
@@ -174,7 +174,7 @@ export default function AdminComplaints() {
             <div className="p-10 text-center text-muted-foreground">لا توجد رسائل مطابقة</div>
           ) : (
             <div className="divide-y divide-border">
-              {filtered.map(c => {
+              {(Array.isArray(filtered) ? filtered : []).map(c => {
                 const sm = statusMeta(c.status);
                 return (
                   <div key={c.id} className="p-4 hover:bg-muted/30 transition-colors">
@@ -197,7 +197,7 @@ export default function AdminComplaints() {
                         <Select value={c.status} onValueChange={v => handleStatusInline(c, v)}>
                           <SelectTrigger className="h-8 w-32 text-xs"><SelectValue /></SelectTrigger>
                           <SelectContent className="rtl">
-                            {STATUS_OPTIONS.map(s => <SelectItem key={s.value} value={s.value}>{s.label}</SelectItem>)}
+                            {(Array.isArray(STATUS_OPTIONS) ? STATUS_OPTIONS : []).map(s => <SelectItem key={s.value} value={s.value}>{s.label}</SelectItem>)}
                           </SelectContent>
                         </Select>
                         <div className="flex gap-1">
@@ -243,7 +243,7 @@ export default function AdminComplaints() {
                 <Select value={replyStatus} onValueChange={setReplyStatus}>
                   <SelectTrigger><SelectValue /></SelectTrigger>
                   <SelectContent className="rtl">
-                    {STATUS_OPTIONS.map(s => <SelectItem key={s.value} value={s.value}>{s.label}</SelectItem>)}
+                    {(Array.isArray(STATUS_OPTIONS) ? STATUS_OPTIONS : []).map(s => <SelectItem key={s.value} value={s.value}>{s.label}</SelectItem>)}
                   </SelectContent>
                 </Select>
               </div>

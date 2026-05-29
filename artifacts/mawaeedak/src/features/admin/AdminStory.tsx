@@ -230,7 +230,7 @@ export default function AdminStory() {
         </div>
       ) : templates && templates.length > 0 ? (
         <div className="space-y-3">
-          {templates.map(tpl => (
+          {(Array.isArray(templates) ? templates : []).map(tpl => (
             <Card key={tpl.id} className={`border-border shadow-sm overflow-hidden ${!tpl.is_active ? "opacity-60" : ""}`}>
               <CardContent className="p-0">
                 <div className="h-2 w-full" style={{ backgroundColor: tpl.background_color ?? "#8B6914" }} />

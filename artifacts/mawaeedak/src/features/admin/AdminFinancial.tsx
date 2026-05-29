@@ -155,7 +155,7 @@ export default function AdminFinancial() {
         <div className="flex justify-center p-8"><Loader2 className="w-6 h-6 animate-spin text-primary" /></div>
       ) : events && events.length > 0 ? (
         <div className="space-y-3">
-          {events.map(ev => (
+          {(Array.isArray(events) ? events : []).map(ev => (
             <Card key={ev.id} className={`border-border shadow-sm overflow-hidden ${!ev.is_active ? 'opacity-60' : ''}`}>
               <div className="flex border-r-4" style={{ borderRightColor: ev.type === 'salary' ? 'hsl(var(--primary))' : ev.type === 'bill' ? 'hsl(var(--destructive))' : 'hsl(var(--accent))' }}>
                 <CardContent className="p-4 w-full">

@@ -50,7 +50,7 @@ export default function AdminReports() {
                     <td colSpan={4} className="p-8 text-center"><Loader2 className="w-6 h-6 animate-spin text-primary mx-auto" /></td>
                   </tr>
                 ) : filteredLogs && filteredLogs.length > 0 ? (
-                  filteredLogs.map(log => (
+                  (Array.isArray(filteredLogs) ? filteredLogs : []).map(log => (
                     <tr key={log.id} className="hover:bg-muted/30">
                       <td className="px-4 py-3 font-medium">
                         <span className={`px-2 py-0.5 rounded text-[10px] ${

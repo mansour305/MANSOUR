@@ -76,7 +76,7 @@ export default function AdminDashboard() {
 
       {/* Stat cards — 2×2 grid */}
       <div className="grid grid-cols-2 gap-3">
-        {STAT_CARDS.map(card => {
+        {(Array.isArray(STAT_CARDS) ? STAT_CARDS : []).map(card => {
           const Icon = card.icon;
           const value = stats?.[card.key] ?? 0;
           return (
@@ -211,7 +211,7 @@ export default function AdminDashboard() {
 
         {/* Log list */}
         <div className="divide-y" style={{ borderColor: "hsl(38 35% 82% / 0.6)" }}>
-          {logs?.map((log) => (
+          {(Array.isArray(logs) ? logs : []).map((log) => (
             <div
               key={log.id}
               className="px-4 py-3 flex justify-between items-start"

@@ -163,7 +163,7 @@ export default function AdminSocial() {
           <div className="text-sm font-bold">المفاتيح المطلوبة للنشر المباشر</div>
           <p className="text-xs text-muted-foreground">النشر الفعلي إلى X يتطلب إضافة هذه المفاتيح كأسرار في بيئة التشغيل. حتى ذلك الحين يعمل وضع المعاينة والاختبار فقط دون نشر فعلي.</p>
           <div className="flex flex-wrap gap-2">
-            {REQUIRED_SECRETS.map(s => (
+            {(Array.isArray(REQUIRED_SECRETS) ? REQUIRED_SECRETS : []).map(s => (
               <span key={s} className="text-[11px] px-2 py-1 rounded-lg bg-muted font-mono text-muted-foreground dir-ltr">{s}</span>
             ))}
           </div>
