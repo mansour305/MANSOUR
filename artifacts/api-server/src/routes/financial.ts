@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { requireAdmin } from "../middlewares/requireAdmin";
 import { db } from "@workspace/db";
 import { financialEventsTable, auditLogsTable } from "@workspace/db";
 import { eq, desc } from "drizzle-orm";
@@ -65,7 +66,7 @@ router.get("/financial-events/countdown", async (req, res) => {
   return res.json(countdown);
 });
 
-router.post("/financial-events", async (req, res) => {
+router.post("/financial-events", requireAdmin, async (req, res) => {
   const parsed = CreateFinancialEventBody.safeParse(req.body);
   if (!parsed.success) return res.status(400).json({ error: parsed.error });
   const insertData = { ...parsed.data, amount: parsed.data.amount != null ? String(parsed.data.amount) : undefined };
@@ -74,8 +75,8 @@ router.post("/financial-events", async (req, res) => {
   return res.status(201).json(row);
 });
 
-router.patch("/financial-events/:id", async (req, res) => {
-  const id = parseInt(req.params.id);
+router.patch("/financial-events/:id", requireAdmin, async (req, res) => {
+  const id = parseInt(req.params.id as string);
   const parsed = UpdateFinancialEventBody.safeParse(req.body);
   if (!parsed.success) return res.status(400).json({ error: parsed.error });
   const updateData = { ...parsed.data, amount: parsed.data.amount != null ? String(parsed.data.amount) : undefined };
@@ -85,8 +86,8 @@ router.patch("/financial-events/:id", async (req, res) => {
   return res.json(row);
 });
 
-router.delete("/financial-events/:id", async (req, res) => {
-  const id = parseInt(req.params.id);
+router.delete("/financial-events/:id", requireAdmin, async (req, res) => {
+  const id = parseInt(req.params.id as string);
   const [deleted] = await db.delete(financialEventsTable).where(eq(financialEventsTable.id, id)).returning();
   if (!deleted) return res.status(404).json({ error: "غير موجود" });
   await logAudit("delete", "financial_event", id, deleted.name, `حذف حدث مالي: ${deleted.name}`);

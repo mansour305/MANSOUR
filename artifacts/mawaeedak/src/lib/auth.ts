@@ -3,7 +3,7 @@
  *
  * يوفر واجهة موحدة للمصادقة:
  * - إذا Supabase متصل → يستخدم Supabase Auth
- * - إذا Supabase غير متصل → demo mode (localStorage)
+ * - إذا Supabase غير متصل → demo mode في بيئة التطوير فقط
  *
  * demo credentials: admin / mawaeedak@admin
  */
@@ -26,6 +26,7 @@ export type AuthSession = {
 const DEMO_ADMIN_USERNAME = "admin";
 const DEMO_ADMIN_PASSWORD = "mawaeedak@admin";
 const DEMO_SESSION_KEY = "mawaeedak_demo_session";
+const isDemoAuthAllowed = import.meta.env.DEV;
 
 // ── Supabase Auth ──────────────────────────────────────────────────────────
 
@@ -62,10 +63,9 @@ async function getSupabaseSession(): Promise<AuthSession | null> {
 
   const user = data.session.user;
 
-  // Check user_metadata first, then app_metadata as fallback.
-  // app_metadata is set server-side (Supabase Dashboard / SQL) and is more reliable.
+  // Trust roles only from app_metadata. user_metadata is user-editable and
+  // must not grant production admin access.
   const rawRole =
-    (user.user_metadata?.role as AuthUser["role"] | undefined) ??
     (user.app_metadata?.role as AuthUser["role"] | undefined) ??
     "user";
 
@@ -92,6 +92,10 @@ function signInDemo(
   username: string,
   password: string
 ): { success: boolean; error?: string } {
+  if (!isDemoAuthAllowed) {
+    return { success: false, error: "تسجيل دخول العرض غير متاح في بيئة الإنتاج" };
+  }
+
   if (username === DEMO_ADMIN_USERNAME && password === DEMO_ADMIN_PASSWORD) {
     sessionStorage.setItem(
       DEMO_SESSION_KEY,
@@ -116,6 +120,11 @@ function signOutDemo(): void {
  * getDemoSession — قراءة session demo
  */
 function getDemoSession(): AuthSession | null {
+  if (!isDemoAuthAllowed) {
+    sessionStorage.removeItem(DEMO_SESSION_KEY);
+    return null;
+  }
+
   try {
     const raw = sessionStorage.getItem(DEMO_SESSION_KEY);
     if (!raw) return null;
@@ -173,6 +182,7 @@ export async function getAuthSession(): Promise<AuthSession | null> {
  */
 export function isAdminUser(session: AuthSession | null): boolean {
   if (!session) return false;
+  if (session.isDemo && !isDemoAuthAllowed) return false;
   return session.user.role === "admin" || session.user.role === "super_admin";
 }
 

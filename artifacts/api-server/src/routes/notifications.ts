@@ -31,20 +31,20 @@ router.post("/notifications", requireAdmin, async (req, res) => {
   return res.status(201).json(row);
 });
 
-router.patch("/notifications/:id/read", async (req, res) => {
-  const id = parseInt(req.params.id);
+router.patch("/notifications/:id/read", requireAdmin, async (req, res) => {
+  const id = parseInt(req.params.id as string);
   const [row] = await db.update(notificationsTable).set({ is_read: true }).where(eq(notificationsTable.id, id)).returning();
   if (!row) return res.status(404).json({ error: "غير موجود" });
   return res.json(row);
 });
 
-router.patch("/notifications/read-all", async (req, res) => {
+router.patch("/notifications/read-all", requireAdmin, async (req, res) => {
   await db.update(notificationsTable).set({ is_read: true });
   return res.json({ success: true, message: "تم تحديد الكل كمقروء" });
 });
 
-router.delete("/notifications/:id", async (req, res) => {
-  const id = parseInt(req.params.id);
+router.delete("/notifications/:id", requireAdmin, async (req, res) => {
+  const id = parseInt(req.params.id as string);
   const [row] = await db.delete(notificationsTable).where(eq(notificationsTable.id, id)).returning();
   if (!row) return res.status(404).json({ error: "غير موجود" });
   await logAudit("delete", "notification", row.id, row.title, `حذف إشعار: ${row.title}`);

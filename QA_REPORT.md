@@ -85,3 +85,25 @@
 - **PWA readiness**: Production manifest and icons are served successfully
 - **Native packaging**: Waiting for platform credentials
 - **Production deployment**: SPA rewrite fixed and production smoke checks passing
+
+## Security API Lockdown Update — 2026-05-30
+
+- Protected appointment create/update/delete API routes with server-side `requireAdmin`.
+- Protected financial event create/update/delete API routes with server-side `requireAdmin`.
+- Protected notification read-state and delete mutation API routes with server-side `requireAdmin`.
+- Kept visual design unchanged; no UI styling or layout changes were made.
+- Prevented demo admin fallback from granting production admin access when Supabase is absent.
+- Changed frontend admin role reads to trust Supabase `app_metadata` rather than user-editable `user_metadata`.
+
+### Focused Verification
+
+| Check | Result |
+| --- | --- |
+| `pnpm --filter @workspace/api-server run typecheck` | ✅ Passed |
+| `pnpm --filter @workspace/api-server run build` | ✅ Passed |
+
+### Remaining Security Gaps
+
+- Production deployment smoke checks were not run in this task.
+- Supabase/RLS policy behavior still requires verification against a configured Supabase project.
+- Public read routes remain unchanged and should be reviewed separately for data classification.

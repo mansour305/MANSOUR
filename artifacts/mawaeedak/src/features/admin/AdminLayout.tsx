@@ -285,7 +285,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       sbUser: { id: string; email?: string; user_metadata?: Record<string, unknown>; app_metadata?: Record<string, unknown> }
     ): AuthSession => {
       const role = (
-        (sbUser.user_metadata?.role as string | undefined) ??
         (sbUser.app_metadata?.role as string | undefined) ??
         "user"
       ) as AuthSession["user"]["role"];
@@ -388,6 +387,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           return;
         }
         const s = await withTimeout(getAuthSession(), 5000, "getSession");
+        if (!s || !isAllowedAdminSession(s)) {
+          setLoginError("تسجيل دخول العرض غير متاح في بيئة الإنتاج");
+          return;
+        }
         setSession(s);
         setPhase("ready");
         return;
@@ -417,7 +420,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       }
 
       const roleVal =
-        (user.user_metadata?.role as string | undefined) ??
         (user.app_metadata?.role as string | undefined) ??
         "user";
 

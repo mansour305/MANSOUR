@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { requireAdmin } from "../middlewares/requireAdmin";
 import { db } from "@workspace/db";
 import { appointmentsTable } from "@workspace/db";
 import { eq, desc, gte, sql } from "drizzle-orm";
@@ -32,21 +33,21 @@ router.get("/appointments/upcoming", async (req, res) => {
 });
 
 router.get("/appointments/:id", async (req, res) => {
-  const id = parseInt(req.params.id);
+  const id = parseInt(req.params.id as string);
   const [row] = await db.select().from(appointmentsTable).where(eq(appointmentsTable.id, id));
   if (!row) return res.status(404).json({ error: "غير موجود" });
   return res.json(row);
 });
 
-router.post("/appointments", async (req, res) => {
+router.post("/appointments", requireAdmin, async (req, res) => {
   const parsed = CreateAppointmentBody.safeParse(req.body);
   if (!parsed.success) return res.status(400).json({ error: parsed.error });
   const [row] = await db.insert(appointmentsTable).values(parsed.data).returning();
   return res.status(201).json(row);
 });
 
-router.patch("/appointments/:id", async (req, res) => {
-  const id = parseInt(req.params.id);
+router.patch("/appointments/:id", requireAdmin, async (req, res) => {
+  const id = parseInt(req.params.id as string);
   const parsed = UpdateAppointmentBody.safeParse(req.body);
   if (!parsed.success) return res.status(400).json({ error: parsed.error });
   const [row] = await db.update(appointmentsTable).set(parsed.data).where(eq(appointmentsTable.id, id)).returning();
@@ -54,8 +55,8 @@ router.patch("/appointments/:id", async (req, res) => {
   return res.json(row);
 });
 
-router.delete("/appointments/:id", async (req, res) => {
-  const id = parseInt(req.params.id);
+router.delete("/appointments/:id", requireAdmin, async (req, res) => {
+  const id = parseInt(req.params.id as string);
   const [deleted] = await db.delete(appointmentsTable).where(eq(appointmentsTable.id, id)).returning();
   if (!deleted) return res.status(404).json({ error: "غير موجود" });
   return res.status(204).send();
