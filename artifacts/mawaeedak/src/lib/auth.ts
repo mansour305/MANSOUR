@@ -187,6 +187,19 @@ export function isAdminUser(session: AuthSession | null): boolean {
 }
 
 /**
+ * isAllowedAdminSession — guard for legacy admin login call sites.
+ */
+export function isAllowedAdminSession(session: AuthSession | null): boolean {
+  return isAdminUser(session);
+}
+
+declare global {
+  var isAllowedAdminSession: ((session: AuthSession | null) => boolean) | undefined;
+}
+
+globalThis.isAllowedAdminSession = isAllowedAdminSession;
+
+/**
  * getAuthMode — وضع المصادقة الحالي
  */
 export function getAuthMode(): "supabase" | "demo" {
