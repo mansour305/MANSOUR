@@ -11,6 +11,7 @@ import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { ArrowRight, ArrowLeft } from "lucide-react";
 import { useListThemes } from "@workspace/api-client-react";
+import type { Theme } from "@workspace/api-client-react";
 
 const CITIES = [
   "الرياض", "جدة", "مكة المكرمة", "المدينة المنورة", "الدمام", 
@@ -42,7 +43,7 @@ export default function WelcomePage() {
   const { data: themes } = useListThemes();
   // Normalize themes response: API may return an array or an object { data: [] }.
   // Protect against unexpected shapes so `.map` won't throw at runtime.
-  const normalizedThemes = Array.isArray(themes)
+  const normalizedThemes: Theme[] = Array.isArray(themes)
     ? themes
     : (themes && typeof themes === "object" && Array.isArray((themes as any).data))
       ? (themes as any).data
