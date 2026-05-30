@@ -1,7 +1,7 @@
 # تقرير QA النهائي — مواعيدك
 
-**التاريخ**: 29 مايو 2026  
-**الحالة**: Web/PWA build stabilization + launch prep
+**التاريخ**: 30 مايو 2026  
+**الحالة**: Security/API/Auth/Deployment/Data Gateway stabilization complete — production verification still requires live environment credentials.
 
 ## Project Snapshot
 
@@ -12,98 +12,96 @@
 - **API path**: `artifacts/api-server`
 - **Production URL**: `https://mawaeedak-api-server.vercel.app/`
 - **Deployment provider**: Vercel
-- **Vercel configuration**: added root-level `vercel.json` with SPA rewrite and static asset handling
-- **Build command**: `pnpm --filter @workspace/mawaeedak run build`
-- **Typecheck command**: `pnpm run typecheck`
+- **Frontend build command**: `pnpm --filter @workspace/mawaeedak run build`
+- **Root typecheck command**: `pnpm run typecheck`
 - **Deployment output directory**: `artifacts/mawaeedak/dist/public`
-- **Environment variable names only**: `VITE_DATA_SOURCE_MODE`, `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`, `PORT`, `BASE_PATH`
-- **Required environment variables**: `DATABASE_URL`, `SESSION_SECRET`, `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`, `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `VITE_DATA_SOURCE_MODE`
-- **Supabase status**: Optional production integration; frontend falls back safely when env vars are absent
-- **RLS status**: SQL and middleware patterns exist, production RLS verification remains pending until a Supabase project is connected for end-to-end checks
-- **API status**: Express API builds successfully; admin routes use server-side authorization middleware
-- **PWA status**: Production manifest, icons, standalone display, and install metadata are now served successfully
-- **Mobile packaging status**: Capacitor/native packaging not configured yet; native path documented as waiting for store credentials and signing assets
-- **Auth/admin status**: User routes are available; admin access is no longer enabled via browser-local bypass, and admin protections are enforced server-side when configured
-- **Launch blockers before work**: external deployment provider access, production Supabase credentials, Apple/Google native credentials
+- **API routing model**: frontend can use same-origin `/api/*` or external API through `VITE_API_BASE_URL`
+- **Supabase status**: schema/RLS readiness documented; production connection not proven until deployment variables and SQL policies are applied
+- **Auth/admin status**: browser-local admin bypass removed; production admin role source is Supabase `app_metadata.role`
+
+## Completed Since Audit
+
+| Area | Status | Evidence |
+|---|---:|---|
+| API write-route lockdown | ✅ Complete | PR #2 merged |
+| Post-merge verification fixes | ✅ Complete | PR #7 merged |
+| Admin/Auth production guard | ✅ Complete | PR #8 merged |
+| Deployment API routing | ✅ Complete | PR #9 merged |
+| Supabase/RLS readiness docs | ✅ Complete | PR #10 merged |
+| Data Gateway API transport cleanup | ✅ Complete | PR #14 merged |
+| Duplicate tracking issue cleanup | ✅ Complete | Issues #11/#12 closed as duplicates, #13 completed |
+
+## Security / Authorization
+
+- Appointment create/update/delete API routes are protected server-side.
+- Financial event create/update/delete API routes are protected server-side.
+- Notification mutation/read-state routes are protected server-side.
+- Demo admin fallback cannot grant production admin access.
+- Frontend admin role reads trust Supabase `app_metadata`, not user-editable `user_metadata`.
+- Hardcoded demo admin password was removed from frontend source; development demo auth requires an environment value.
+- No service-role key should be exposed in frontend assets.
+
+## Deployment / API Routing
+
+- Frontend API calls can now target a separately deployed Express API through `VITE_API_BASE_URL`.
+- `authedFetch` normalizes `VITE_API_BASE_URL`, appends relative `/api/*` paths, and attaches Bearer tokens when Supabase session exists.
+- `dataGateway.ts` uses the shared authenticated API transport, reducing inconsistent raw `fetch('/api/...')` behavior.
+
+## Supabase / RLS
+
+- `SUPABASE_SCHEMA.sql` documents the proposed Supabase tables and RLS enablement.
+- `RLS_POLICIES.sql` documents user-owned policies for sensitive tables and public-read policies for active/published content.
+- `docs/SUPABASE_RLS_READINESS.md` documents setup order, environment variables, SQL checks, and smoke checks.
+- Production Supabase verification is still pending until real Supabase project variables are configured and policies are executed.
 
 ## Verification Results
 
 | Check | Result |
 |---|---|
-| `pnpm install --frozen-lockfile` | ✅ Passed |
-| `pnpm run typecheck` | ✅ Passed |
-| `pnpm --filter @workspace/mawaeedak run build` | ✅ Passed after defaulting build env |
-| `pnpm --filter @workspace/api-server run build` | ✅ Passed |
-| `manifest.json` | ✅ Present with standalone display and icon entries |
-| Admin bypass via `localStorage` | ✅ Removed |
-| CI workflow | ✅ Added under `.github/workflows/ci.yml` |
+| API server typecheck/build after security lockdown | ✅ Passed in prior Codex report |
+| Frontend post-merge typecheck/build after issue #3 | ✅ Passed in prior Codex report |
+| Vercel preview for Supabase readiness doc PR | ✅ Ready |
+| Connector static review of PR #14 | ✅ Completed |
+| Full fresh runtime `pnpm install/typecheck/build` after PR #14 | ⚠️ Not run from this connector environment |
+| Authorized admin API smoke with real Supabase admin | ⚠️ Requires live credentials |
+| Supabase RLS live user-isolation smoke | ⚠️ Requires configured Supabase project |
 
-## Security / Authorization
+## Remaining Limitations
 
-- Demo admin session is stored in `sessionStorage` only and is not restored across reloads.
-- Admin-protected routes and API protections rely on server-side role verification when Supabase credentials are configured.
-- No service role key is exposed in frontend assets.
-
-## Production Verification (Phase 5)
-
-- **Production URL**: `https://mawaeedak-api-server.vercel.app/`
-- **Deployment provider**: Vercel
-- **Vercel configuration**: added root-level `vercel.json` with build command, output directory, SPA rewrite, and static asset exceptions.
-- **Build command**: `pnpm --filter @workspace/mawaeedak run build`
-- **Output directory**: `artifacts/mawaeedak/dist/public`
-- **Environment variables configured by name only**: `VITE_DATA_SOURCE_MODE`, `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`, `PORT`, `BASE_PATH`
-- **Mobile install instructions**:
-  - iPhone Safari: Share → Add to Home Screen → Install.
-  - Android Chrome: ⋮ menu → Install app / Add to Home screen.
-- **Production smoke results**:
-  - `/` → 200 OK, homepage HTML and asset bundle load.
-  - `/login` → 200 OK, SPA shell returned.
-  - `/register` → 200 OK, SPA shell returned.
-  - `/account` → 200 OK, SPA shell returned.
-  - `/finance` → 200 OK, SPA shell returned.
-  - `/story` → 200 OK, SPA shell returned.
-  - `/notifications` → 200 OK, SPA shell returned.
-  - `/admin` → 200 OK, SPA shell returned.
-- **PWA verification**:
-  - Rebuilt output contains `manifest.json`, `/icons/icon-192.svg`, and `/icons/icon-512.svg`.
-  - Manifest exposes icon entries for `/icons/icon-192.svg`, `/icons/icon-512.svg`, and `/favicon.svg`.
-  - `/icons/icon-192.svg` and `/icons/icon-512.svg` both return 200 from production.
-  - Mobile viewport metadata is present in the root HTML (`width=device-width, initial-scale=1.0`).
-- **Remaining limitations**:
-  - Production runtime now serves SPA shell correctly and PWA assets correctly.
-  - Admin protection remains runtime-managed through the client guard and route shell, with no exposed service-role secrets in production bundle.
-
-## Deployment / Mobile Notes
-
-- Production deployment is on Vercel and the root URL is reachable.
-- iPhone Safari / Android Chrome add-to-home instructions are documented in the production verification notes.
-- Native Android/iOS packaging is prepared as a documented next step, not claimed as completed without developer credentials.
+- Native iOS/Android packaging is not configured and still requires platform credentials/signing assets.
+- Production Supabase/RLS behavior is not proven until real environment variables and SQL execution are completed.
+- Full end-to-end visual validation against the owner’s reference screenshots has not been completed in this QA report.
+- This connector environment cannot run `pnpm` commands directly; runtime checks must be executed by Codex/Replit/GitHub Actions.
 
 ## Current Verdict
 
-- **Build gate**: Passed
-- **PWA readiness**: Production manifest and icons are served successfully
-- **Native packaging**: Waiting for platform credentials
-- **Production deployment**: SPA rewrite fixed and production smoke checks passing
+**Publishable Preview / Stabilized Web-PWA baseline.**
 
-## Security API Lockdown Update — 2026-05-30
+Not yet full Production Ready because live Supabase credentials, RLS execution, authorized smoke tests, native packaging, and final visual-reference validation remain external/runtime gates.
 
-- Protected appointment create/update/delete API routes with server-side `requireAdmin`.
-- Protected financial event create/update/delete API routes with server-side `requireAdmin`.
-- Protected notification read-state and delete mutation API routes with server-side `requireAdmin`.
-- Kept visual design unchanged; no UI styling or layout changes were made.
-- Prevented demo admin fallback from granting production admin access when Supabase is absent.
-- Changed frontend admin role reads to trust Supabase `app_metadata` rather than user-editable `user_metadata`.
+## Next Required Runtime Gate
 
-### Focused Verification
+Run from a clean checkout of `main`:
 
-| Check | Result |
-| --- | --- |
-| `pnpm --filter @workspace/api-server run typecheck` | ✅ Passed |
-| `pnpm --filter @workspace/api-server run build` | ✅ Passed |
+```bash
+pnpm install --frozen-lockfile
+pnpm run typecheck
+pnpm run build
+pnpm --filter @workspace/api-server run typecheck
+pnpm --filter @workspace/api-server run build
+pnpm --filter @workspace/mawaeedak run typecheck
+pnpm --filter @workspace/mawaeedak run build
+```
 
-### Remaining Security Gaps
+Then run smoke tests for:
 
-- Production deployment smoke checks were not run in this task.
-- Supabase/RLS policy behavior still requires verification against a configured Supabase project.
-- Public read routes remain unchanged and should be reviewed separately for data classification.
+- `/`
+- `/login`
+- `/register`
+- `/finance`
+- `/story`
+- `/notifications`
+- `/admin`
+- unauthenticated protected API mutations → must return 401/403
+- authorized admin API mutations → must succeed with real Supabase admin token
+- normal user RLS isolation → cannot access another user’s rows
