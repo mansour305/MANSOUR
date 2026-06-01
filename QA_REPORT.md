@@ -1,7 +1,7 @@
 # تقرير QA النهائي — مواعيدك
 
 **التاريخ**: 1 يونيو 2026  
-**الحالة**: Security/API/Auth/Deployment/Data Gateway stabilization complete — GitHub Actions Phase 4 gate installed; production verification still requires live environment credentials.
+**الحالة**: Security/API/Auth/Deployment/Data Gateway stabilization complete — GitHub Actions Phase 4 gate installed and verified through PR workflow; production verification still requires live environment credentials.
 
 ## Project Snapshot
 
@@ -30,7 +30,8 @@
 | Supabase/RLS readiness docs | ✅ Complete | PR #10 merged |
 | Data Gateway API transport cleanup | ✅ Complete | PR #14 merged |
 | Duplicate tracking issue cleanup | ✅ Complete | Issues #11/#12 closed as duplicates, #13 completed |
-| Phase 4 GitHub Actions Gate | ✅ Installed | `.github/workflows/phase-4-github-actions-gate.yml` on `main` |
+| Phase 4 GitHub Actions Gate | ✅ Installed and verified | PR #25 merged, PR #26 verification passed |
+| Legacy CI runtime alignment | ✅ Complete | Node 22 + pnpm/action-setup@v4 + pnpm 10 |
 
 ## Security / Authorization
 
@@ -70,9 +71,14 @@
   - static smoke against first discovered `dist/index.html` when present
   - deterministic committed credential value scan
 
-## Phase 4 Verification Trigger
+## Phase 4 Verification Evidence
 
-This branch intentionally changes only QA documentation to force a pull-request workflow run against the installed Phase 4 GitHub Actions gate from the current `main` baseline.
+| Run | Result | Evidence |
+|---|---:|---|
+| Phase 4 GitHub Actions Gate | ✅ Passed | PR #26, run `26764914099`, job `78888483074` |
+| Legacy CI | ✅ Passed | PR #26, run `26764914189`, job `78888482890` |
+| PR #25 install/fix gate | ✅ Merged | merge commit `221d9066e48a27de9029f8bcb88a1aca62d1416c` |
+| PR #26 main smoke verification | ✅ Merged | merge commit `70f51f40be5b2da97e860273af0d0f411a9a6acd` |
 
 ## Verification Results
 
@@ -83,7 +89,8 @@ This branch intentionally changes only QA documentation to force a pull-request 
 | Vercel preview for Supabase readiness doc PR | ✅ Ready |
 | Connector static review of PR #14 | ✅ Completed |
 | Phase 4 GitHub Actions Gate file present on main | ✅ Installed |
-| Full fresh runtime `pnpm install/typecheck/build` after PR #14 | ⚠️ Delegated to GitHub Actions / Codex runtime |
+| Phase 4 fresh runtime gate | ✅ Passed in GitHub Actions PR #26 |
+| Legacy CI fresh runtime gate | ✅ Passed in GitHub Actions PR #26 |
 | Authorized admin API smoke with real Supabase admin | ⚠️ Requires live credentials |
 | Supabase RLS live user-isolation smoke | ⚠️ Requires configured Supabase project |
 
@@ -92,10 +99,9 @@ This branch intentionally changes only QA documentation to force a pull-request 
 - Native iOS/Android packaging is not configured and still requires platform credentials/signing assets.
 - Production Supabase/RLS behavior is not proven until real environment variables and SQL execution are completed.
 - Full end-to-end visual validation against the owner’s reference screenshots has not been completed in this QA report.
-- This connector environment cannot run `pnpm` commands directly; runtime checks must be executed by Codex/Replit/GitHub Actions.
 
 ## Current Verdict
 
-**Publishable Preview / Stabilized Web-PWA baseline with Phase 4 GitHub Actions Gate installed.**
+**Publishable Preview / Stabilized Web-PWA baseline with Phase 4 GitHub Actions Gate installed and verified.**
 
 Not yet full Production Ready because live Supabase credentials, RLS execution, authorized smoke tests, native packaging, and final visual-reference validation remain external/runtime gates.
