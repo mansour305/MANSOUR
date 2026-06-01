@@ -1,7 +1,7 @@
 # تقرير QA النهائي — مواعيدك
 
 **التاريخ**: 1 يونيو 2026  
-**الحالة**: Security/API/Auth/Deployment/Data Gateway stabilization complete — GitHub Actions Phase 4 gate installed and verified through PR workflow; production verification still requires live environment credentials.
+**الحالة**: Security/API/Auth/Deployment/Data Gateway stabilization complete — GitHub Actions Phase 4 gate installed and verified through PR workflow; Production Readiness Final Gate added as the final manual live-production gate and still requires live environment secrets before passing.
 
 ## Project Snapshot
 
@@ -32,6 +32,7 @@
 | Duplicate tracking issue cleanup | ✅ Complete | Issues #11/#12 closed as duplicates, #13 completed |
 | Phase 4 GitHub Actions Gate | ✅ Installed and verified | PR #25 merged, PR #26 verification passed |
 | Legacy CI runtime alignment | ✅ Complete | Node 22 + pnpm/action-setup@v4 + pnpm 10 |
+| Production Readiness Final Gate | 🟡 Installed on branch, not passed | Requires GitHub Secrets and manual run after merge |
 
 ## Security / Authorization
 
@@ -71,6 +72,24 @@
   - static smoke against first discovered `dist/index.html` when present
   - deterministic committed credential value scan
 
+## Production Readiness Final Gate
+
+- Workflow file: `.github/workflows/production-readiness-final-gate.yml`.
+- Trigger: manual `workflow_dispatch` only.
+- Existing environment script: `pnpm --filter @workspace/scripts run production-readiness-gate`.
+- New live smoke script: `pnpm --filter @workspace/scripts run production-readiness-live-smoke`.
+- New script file: `scripts/src/production-readiness-live-smoke.ts`.
+- Documentation: `docs/PRODUCTION_READINESS_FINAL_GATE.md`.
+- Required live checks:
+  - production secrets preflight
+  - production app URL returns built HTML
+  - API health endpoint returns status ok
+  - Supabase Auth signs in two different test users
+  - Supabase Auth verifies access token
+  - RLS prevents User B from reading User A appointment
+  - temporary RLS probe row is cleaned up by the owning user
+  - protected admin endpoint accepts a real admin bearer token
+
 ## Phase 4 Verification Evidence
 
 | Run | Result | Evidence |
@@ -91,6 +110,7 @@
 | Phase 4 GitHub Actions Gate file present on main | ✅ Installed |
 | Phase 4 fresh runtime gate | ✅ Passed in GitHub Actions PR #26 |
 | Legacy CI fresh runtime gate | ✅ Passed in GitHub Actions PR #26 |
+| Production Readiness Final Gate files present | 🟡 Added in branch; pending PR verification and manual live run |
 | Authorized admin API smoke with real Supabase admin | ⚠️ Requires live credentials |
 | Supabase RLS live user-isolation smoke | ⚠️ Requires configured Supabase project |
 
@@ -99,9 +119,10 @@
 - Native iOS/Android packaging is not configured and still requires platform credentials/signing assets.
 - Production Supabase/RLS behavior is not proven until real environment variables and SQL execution are completed.
 - Full end-to-end visual validation against the owner’s reference screenshots has not been completed in this QA report.
+- Production Readiness Final Gate must be run manually after secrets are configured.
 
 ## Current Verdict
 
-**Publishable Preview / Stabilized Web-PWA baseline with Phase 4 GitHub Actions Gate installed and verified.**
+**Publishable Preview / Stabilized Web-PWA baseline with Phase 4 GitHub Actions Gate installed and verified, plus final live-production gate prepared.**
 
 Not yet full Production Ready because live Supabase credentials, RLS execution, authorized smoke tests, native packaging, and final visual-reference validation remain external/runtime gates.

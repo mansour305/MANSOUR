@@ -1,0 +1,71 @@
+name: Production Readiness Live Gate
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: production-readiness-live-gate-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  production-readiness-live-gate:
+    name: Live Supabase, API, Admin, Web Gate
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    env:
+      PRODUCTION_API_BASE_URL: ${{ secrets.PRODUCTION_API_BASE_URL }}
+      PRODUCTION_WEB_BASE_URL: ${{ secrets.PRODUCTION_WEB_BASE_URL }}
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+      VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+      VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+      LIVE_ADMIN_BEARER_TOKEN: ${{ secrets.LIVE_ADMIN_BEARER_TOKEN }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+          run_install: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Typecheck gate
+        run: pnpm run typecheck
+
+      - name: Build gate
+        run: pnpm run build
+
+      - name: Production readiness live gate
+        run: pnpm run production-readiness-gate
+
+      - name: Produce production readiness summary
+        if: always()
+        shell: bash
+        run: |
+          {
+            echo "# Production Readiness Live Gate"
+            echo
+            echo "- Commit: $GITHUB_SHA"
+            echo "- Ref: $GITHUB_REF_NAME"
+            echo "- Trigger: $GITHUB_EVENT_NAME"
+            echo "- Required secrets: PRODUCTION_API_BASE_URL, DATABASE_URL, SUPABASE_URL, SUPABASE_ANON_KEY, VITE_SUPABASE_URL, VITE_SUPABASE_ANON_KEY"
+            echo "- Optional smoke secrets: PRODUCTION_WEB_BASE_URL, LIVE_ADMIN_BEARER_TOKEN"
+            echo
+            echo "This gate must fail when required production secrets are missing or live API/Auth checks fail."
+          } >> "$GITHUB_STEP_SUMMARY"

@@ -1,0 +1,121 @@
+name: Production Readiness Final Gate
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: production-readiness-final-gate-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  production-readiness-final-gate:
+    name: Static, Build, Live Production Readiness Gate
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+
+    env:
+      PRODUCTION_APP_URL: ${{ secrets.PRODUCTION_APP_URL }}
+      PRODUCTION_WEB_BASE_URL: ${{ secrets.PRODUCTION_APP_URL }}
+      PRODUCTION_API_BASE_URL: ${{ secrets.PRODUCTION_API_BASE_URL }}
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+      VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+      VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      SUPABASE_TEST_USER_A_EMAIL: ${{ secrets.SUPABASE_TEST_USER_A_EMAIL }}
+      SUPABASE_TEST_USER_A_PASSWORD: ${{ secrets.SUPABASE_TEST_USER_A_PASSWORD }}
+      SUPABASE_TEST_USER_B_EMAIL: ${{ secrets.SUPABASE_TEST_USER_B_EMAIL }}
+      SUPABASE_TEST_USER_B_PASSWORD: ${{ secrets.SUPABASE_TEST_USER_B_PASSWORD }}
+      SUPABASE_ADMIN_ACCESS_TOKEN: ${{ secrets.SUPABASE_ADMIN_ACCESS_TOKEN }}
+      LIVE_ADMIN_BEARER_TOKEN: ${{ secrets.SUPABASE_ADMIN_ACCESS_TOKEN }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+          run_install: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Typecheck gate
+        run: pnpm run typecheck
+
+      - name: Build gate
+        run: pnpm run build
+
+      - name: Required production secret preflight
+        shell: bash
+        run: |
+          set -euo pipefail
+          required=(
+            PRODUCTION_APP_URL
+            PRODUCTION_API_BASE_URL
+            SUPABASE_URL
+            SUPABASE_ANON_KEY
+            VITE_SUPABASE_URL
+            VITE_SUPABASE_ANON_KEY
+            DATABASE_URL
+            SUPABASE_TEST_USER_A_EMAIL
+            SUPABASE_TEST_USER_A_PASSWORD
+            SUPABASE_TEST_USER_B_EMAIL
+            SUPABASE_TEST_USER_B_PASSWORD
+            SUPABASE_ADMIN_ACCESS_TOKEN
+          )
+
+          missing=()
+          for name in "${required[@]}"; do
+            if [ -z "${!name:-}" ]; then
+              missing+=("$name")
+            fi
+          done
+
+          if [ "${#missing[@]}" -gt 0 ]; then
+            echo "Missing required production secrets:"
+            printf ' - %s\n' "${missing[@]}"
+            echo "Production readiness cannot pass until these GitHub Actions secrets are configured."
+            exit 1
+          fi
+
+          echo "All required production secrets are present."
+
+      - name: Production environment readiness smoke
+        run: pnpm --filter @workspace/scripts run production-readiness-gate
+
+      - name: Production live Supabase, RLS, Admin API smoke
+        run: pnpm --filter @workspace/scripts run production-readiness-live-smoke
+
+      - name: Produce production readiness summary
+        if: always()
+        shell: bash
+        run: |
+          {
+            echo "# Production Readiness Final Gate"
+            echo
+            echo "- Commit: $GITHUB_SHA"
+            echo "- Ref: $GITHUB_REF_NAME"
+            echo "- Trigger: $GITHUB_EVENT_NAME"
+            echo "- Node: $(node -v 2>/dev/null || echo unavailable)"
+            echo "- pnpm: $(pnpm -v 2>/dev/null || echo unavailable)"
+            echo
+            echo "## Gates"
+            echo "- pnpm install --frozen-lockfile"
+            echo "- pnpm run typecheck"
+            echo "- pnpm run build"
+            echo "- required production secret preflight"
+            echo "- production-readiness-gate"
+            echo "- production-readiness-live-smoke"
+          } >> "$GITHUB_STEP_SUMMARY"

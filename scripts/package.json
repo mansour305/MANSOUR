@@ -8,6 +8,8 @@
     "seed": "tsx ./src/seed.ts",
     "e2e-admin-login": "tsx ./src/e2e-admin-login.ts",
     "e2e-browser": "playwright test --config=playwright.config.ts",
+    "production-readiness-gate": "tsx ./src/production-readiness-gate.ts",
+    "production-readiness-live-smoke": "tsx ./src/production-readiness-live-smoke.ts",
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
