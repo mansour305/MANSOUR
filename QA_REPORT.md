@@ -1,7 +1,7 @@
 # تقرير QA النهائي — مواعيدك
 
-**التاريخ**: 30 مايو 2026  
-**الحالة**: Security/API/Auth/Deployment/Data Gateway stabilization complete — production verification still requires live environment credentials.
+**التاريخ**: 1 يونيو 2026  
+**الحالة**: Security/API/Auth/Deployment/Data Gateway stabilization complete — GitHub Actions Phase 4 gate installed; production verification still requires live environment credentials.
 
 ## Project Snapshot
 
@@ -30,6 +30,7 @@
 | Supabase/RLS readiness docs | ✅ Complete | PR #10 merged |
 | Data Gateway API transport cleanup | ✅ Complete | PR #14 merged |
 | Duplicate tracking issue cleanup | ✅ Complete | Issues #11/#12 closed as duplicates, #13 completed |
+| Phase 4 GitHub Actions Gate | ✅ Installed | `.github/workflows/phase-4-github-actions-gate.yml` on `main` |
 
 ## Security / Authorization
 
@@ -40,6 +41,7 @@
 - Frontend admin role reads trust Supabase `app_metadata`, not user-editable `user_metadata`.
 - Hardcoded demo admin password was removed from frontend source; development demo auth requires an environment value.
 - No service-role key should be exposed in frontend assets.
+- Phase 4 GitHub Actions gate now includes a committed-secret hygiene scan for service-role keys, GitHub token patterns, and private keys.
 
 ## Deployment / API Routing
 
@@ -54,6 +56,20 @@
 - `docs/SUPABASE_RLS_READINESS.md` documents setup order, environment variables, SQL checks, and smoke checks.
 - Production Supabase verification is still pending until real Supabase project variables are configured and policies are executed.
 
+## GitHub Actions / Phase 4 Gate
+
+- Workflow file: `.github/workflows/phase-4-github-actions-gate.yml`.
+- Triggers: push to `main`, pull requests targeting `main`, and manual `workflow_dispatch`.
+- Required gates:
+  - `pnpm install --frozen-lockfile`
+  - root script verification for `typecheck` and `build`
+  - `pnpm run typecheck`
+  - `pnpm -r --if-present run lint`
+  - `pnpm run build`
+  - `pnpm -r --if-present run smoke`
+  - static smoke against first discovered `dist/index.html` when present
+  - committed-secret hygiene scan
+
 ## Verification Results
 
 | Check | Result |
@@ -62,7 +78,8 @@
 | Frontend post-merge typecheck/build after issue #3 | ✅ Passed in prior Codex report |
 | Vercel preview for Supabase readiness doc PR | ✅ Ready |
 | Connector static review of PR #14 | ✅ Completed |
-| Full fresh runtime `pnpm install/typecheck/build` after PR #14 | ⚠️ Not run from this connector environment |
+| Phase 4 GitHub Actions Gate file present on main | ✅ Installed |
+| Full fresh runtime `pnpm install/typecheck/build` after PR #14 | ⚠️ Delegated to GitHub Actions / Codex runtime |
 | Authorized admin API smoke with real Supabase admin | ⚠️ Requires live credentials |
 | Supabase RLS live user-isolation smoke | ⚠️ Requires configured Supabase project |
 
@@ -75,33 +92,6 @@
 
 ## Current Verdict
 
-**Publishable Preview / Stabilized Web-PWA baseline.**
+**Publishable Preview / Stabilized Web-PWA baseline with Phase 4 GitHub Actions Gate installed.**
 
 Not yet full Production Ready because live Supabase credentials, RLS execution, authorized smoke tests, native packaging, and final visual-reference validation remain external/runtime gates.
-
-## Next Required Runtime Gate
-
-Run from a clean checkout of `main`:
-
-```bash
-pnpm install --frozen-lockfile
-pnpm run typecheck
-pnpm run build
-pnpm --filter @workspace/api-server run typecheck
-pnpm --filter @workspace/api-server run build
-pnpm --filter @workspace/mawaeedak run typecheck
-pnpm --filter @workspace/mawaeedak run build
-```
-
-Then run smoke tests for:
-
-- `/`
-- `/login`
-- `/register`
-- `/finance`
-- `/story`
-- `/notifications`
-- `/admin`
-- unauthenticated protected API mutations → must return 401/403
-- authorized admin API mutations → must succeed with real Supabase admin token
-- normal user RLS isolation → cannot access another user’s rows
