@@ -12,6 +12,7 @@ interface UserData {
 interface StoreContextType {
   user: UserData;
   setUser: (user: Partial<UserData>) => void;
+  resetUser: () => void;
   hideAds: boolean;
   setHideAds: (hide: boolean) => void;
   isAdmin: boolean;
@@ -50,12 +51,18 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     });
   };
 
+  const resetUser = () => {
+    localStorage.removeItem('app-user');
+    setUserState(defaultUser);
+    setAdmin(false);
+  };
+
   useEffect(() => {
     localStorage.setItem('hide-ads', hideAds ? 'true' : 'false');
   }, [hideAds]);
 
   return (
-    <StoreContext.Provider value={{ user, setUser, hideAds, setHideAds, isAdmin, setAdmin }}>
+    <StoreContext.Provider value={{ user, setUser, resetUser, hideAds, setHideAds, isAdmin, setAdmin }}>
       {children}
     </StoreContext.Provider>
   );
