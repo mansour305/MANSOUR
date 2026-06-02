@@ -1,6 +1,6 @@
-import { type FormEvent, useState } from "react";
+import { type FormEvent, type ReactNode, useState } from "react";
 import { useLocation } from "wouter";
-import { ArrowRight, CheckCircle2, Eye, EyeOff, Loader2, Lock, Mail, User } from "lucide-react";
+import { CheckCircle2, Eye, EyeOff, Loader2, Lock, Mail, User } from "lucide-react";
 import desertHeroImg from "@assets/desert-hero.png";
 import { Input } from "@/components/ui/input";
 import { MawaeedakLogo } from "@/components/layout/TopBar";
@@ -10,18 +10,13 @@ import { useStore } from "@/hooks/useStore";
 export type AuthMode = "login" | "signup" | "forgot";
 
 const SUBMIT_TIMEOUT_MS = 8000;
-const GOLD = "#C9A063";
 const BROWN = "#8A6B3D";
-const CREAM = "#F3E8D6";
-const SOFT = "#FAF7F2";
 const INK = "#2F2B25";
 
 function withTimeout<T>(promise: Promise<T>, ms: number, label: string): Promise<T> {
   return Promise.race([
     promise,
-    new Promise<T>((_, reject) =>
-      setTimeout(() => reject(new Error(`TIMEOUT:${label}`)), ms),
-    ),
+    new Promise<T>((_, reject) => setTimeout(() => reject(new Error(`TIMEOUT:${label}`)), ms)),
   ]);
 }
 
@@ -43,7 +38,7 @@ function translateSignupError(err: unknown): string {
   return "تعذر إنشاء الحساب، حاول مرة أخرى";
 }
 
-function AuthFrame({ children }: { children: React.ReactNode }) {
+function AuthFrame({ children }: { children: ReactNode }) {
   return (
     <main
       dir="rtl"
@@ -54,16 +49,9 @@ function AuthFrame({ children }: { children: React.ReactNode }) {
           "radial-gradient(circle at 12% 7%, rgba(201,160,99,0.20), transparent 28%), linear-gradient(180deg, #FFFFFF 0%, #FAF7F2 42%, #F3E8D6 100%)",
       }}
     >
-      <img
-        src={desertHeroImg}
-        alt=""
-        className="pointer-events-none absolute left-0 top-0 h-[252px] w-full object-cover opacity-35"
-      />
+      <img src={desertHeroImg} alt="" className="pointer-events-none absolute left-0 top-0 h-[252px] w-full object-cover opacity-35" />
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-white/25 via-[#FAF7F2]/85 to-[#FAF7F2]" />
-      <div className="pointer-events-none absolute right-[-56px] bottom-[-24px] h-48 w-48 rounded-full border border-[#C9A063]/20" />
-      <section className="relative z-10 flex min-h-[calc(100dvh-4rem)] flex-col justify-center">
-        {children}
-      </section>
+      <section className="relative z-10 flex min-h-[calc(100dvh-4rem)] flex-col justify-center">{children}</section>
     </main>
   );
 }
@@ -74,12 +62,8 @@ function BrandHeader({ title, subtitle }: { title: string; subtitle: string }) {
       <div className="mb-4 flex justify-center">
         <MawaeedakLogo compact={false} />
       </div>
-      <h1 className="text-[28px] font-black leading-tight" style={{ color: INK }}>
-        {title}
-      </h1>
-      <p className="mt-2 text-sm font-semibold" style={{ color: "#6B6258" }}>
-        {subtitle}
-      </p>
+      <h1 className="text-[28px] font-black leading-tight" style={{ color: INK }}>{title}</h1>
+      <p className="mt-2 text-sm font-semibold" style={{ color: "#6B6258" }}>{subtitle}</p>
       <div className="mx-auto mt-5 flex w-32 items-center gap-3">
         <span className="h-px flex-1 bg-[#C9A063]/35" />
         <span className="h-2 w-2 rotate-45 bg-[#C9A063]" />
@@ -89,18 +73,10 @@ function BrandHeader({ title, subtitle }: { title: string; subtitle: string }) {
   );
 }
 
-function FieldShell({
-  icon,
-  children,
-}: {
-  icon: React.ReactNode;
-  children: React.ReactNode;
-}) {
+function FieldShell({ icon, children }: { icon: ReactNode; children: ReactNode }) {
   return (
     <div className="flex h-14 items-center gap-3 rounded-2xl border border-[#E4D4BB] bg-white/85 px-4 shadow-[0_12px_34px_rgba(138,107,61,0.08)]">
-      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#F3E8D6] text-[#8A6B3D]">
-        {icon}
-      </span>
+      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#F3E8D6] text-[#8A6B3D]">{icon}</span>
       <div className="min-w-0 flex-1">{children}</div>
     </div>
   );
@@ -109,13 +85,7 @@ function FieldShell({
 const inputClass =
   "h-10 border-0 bg-transparent p-0 text-right text-[13px] font-semibold text-[#2F2B25] placeholder:text-[#8A8177] focus-visible:ring-0 focus-visible:ring-offset-0";
 
-function PrimaryButton({
-  children,
-  loading,
-}: {
-  children: React.ReactNode;
-  loading?: boolean;
-}) {
+function PrimaryButton({ children, loading }: { children: ReactNode; loading?: boolean }) {
   return (
     <button
       type="submit"
@@ -129,7 +99,7 @@ function PrimaryButton({
   );
 }
 
-function SecondaryButton({ children, onClick }: { children: React.ReactNode; onClick: () => void }) {
+function SecondaryButton({ children, onClick }: { children: ReactNode; onClick: () => void }) {
   return (
     <button
       type="button"
@@ -207,7 +177,7 @@ export default function AuthPage({ mode }: { mode: AuthMode }) {
         "";
 
       setUser({ email: user.email ?? "", name: displayName });
-      setLocation("/account");
+      setLocation("/");
     } catch (err) {
       setLoginError(translateLoginError(err));
     } finally {
@@ -245,8 +215,7 @@ export default function AuthPage({ mode }: { mode: AuthMode }) {
         return;
       }
 
-      const emailRedirectTo =
-        typeof window !== "undefined" ? `${window.location.origin}/auth/callback` : "/auth/callback";
+      const emailRedirectTo = typeof window !== "undefined" ? `${window.location.origin}/auth/callback` : "/auth/callback";
       const { error } = await supabase.auth.signUp({
         email: signupEmail.trim(),
         password: signupPwd,
@@ -274,8 +243,7 @@ export default function AuthPage({ mode }: { mode: AuthMode }) {
     setForgotLoading(true);
     try {
       if (supabase) {
-        const redirectTo =
-          typeof window !== "undefined" ? `${window.location.origin}/reset-password` : "/reset-password";
+        const redirectTo = typeof window !== "undefined" ? `${window.location.origin}/reset-password` : "/reset-password";
         await supabase.auth.resetPasswordForEmail(forgotEmail.trim(), { redirectTo });
       }
       setForgotSent(true);
@@ -359,10 +327,7 @@ export default function AuthPage({ mode }: { mode: AuthMode }) {
   return (
     <AuthFrame>
       <BrandHeader title="مرحباً بك في مواعيدك" subtitle="سجل دخولك للمتابعة" />
-      <form
-        onSubmit={handleLoginSubmit}
-        className="rounded-[28px] border border-[#E4D4BB] bg-white/70 p-5 shadow-[0_24px_60px_rgba(138,107,61,0.14)] backdrop-blur"
-      >
+      <form onSubmit={handleLoginSubmit} className="rounded-[28px] border border-[#E4D4BB] bg-white/70 p-5 shadow-[0_24px_60px_rgba(138,107,61,0.14)] backdrop-blur">
         <div className="space-y-4">
           <FieldShell icon={<User className="h-5 w-5" />}>
             <Input

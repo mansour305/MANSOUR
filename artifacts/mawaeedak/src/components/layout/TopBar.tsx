@@ -1,4 +1,4 @@
-import { Bell, FileText, Headphones, Home, LogIn, LogOut, Mail, Menu, Share2, ShieldCheck, X } from "lucide-react";
+import { ArrowRight, Bell, FileText, Headphones, Home, LogIn, LogOut, Mail, Menu, Share2, ShieldCheck, X } from "lucide-react";
 import type { ElementType } from "react";
 import { Link, useLocation } from "wouter";
 import desertHeroImg from "@assets/desert-hero.png";
@@ -35,8 +35,8 @@ export function MawaeedakLogo({ compact = false }: { compact?: boolean }) {
             color: GOLD,
             fontSize: compact ? 31 : 43,
             lineHeight: 1,
-            fontWeight: 500,
-            fontFamily: "Georgia, serif",
+            fontWeight: 700,
+            fontFamily: "'Noto Kufi Arabic', Cairo, sans-serif",
           }}
         >
           م
@@ -134,7 +134,7 @@ export function TopBar({ title, showBack = false }: TopBarProps) {
       <div className="relative flex h-[92px] items-center justify-between px-5">
         {showBack ? (
           <Button variant="ghost" size="icon" aria-label="رجوع" className="h-11 w-11 rounded-full" onClick={() => window.history.back()}>
-            <span className="text-3xl leading-none" style={{ color: BROWN }}>‹</span>
+            <ArrowRight className="h-7 w-7" style={{ color: BROWN }} />
           </Button>
         ) : (
           <Sheet>

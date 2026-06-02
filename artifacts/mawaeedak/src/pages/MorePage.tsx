@@ -1,7 +1,7 @@
 import { useState } from "react";
 import type { ElementType } from "react";
 import { useLocation } from "wouter";
-import { ChevronLeft, FileText, LogIn, LogOut, Settings, Share2, ShieldCheck, User, Headphones, Lamp, Sparkles } from "lucide-react";
+import { ChevronLeft, FileText, Headphones, Lamp, LogIn, LogOut, Settings, Share2, ShieldCheck, Sparkles, User } from "lucide-react";
 import desertHeroImg from "@assets/desert-hero.png";
 import { AppShell } from "@/components/layout/AppShell";
 import { MawaeedakLogo } from "@/components/layout/TopBar";

@@ -1,8 +1,8 @@
-import { clsx, type ClassValue } from "clsx"
-import { twMerge } from "tailwind-merge"
+import { clsx, type ClassValue } from "clsx";
+import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
+  return twMerge(clsx(inputs));
 }
 
 export function generateInitials(name: string): string {
@@ -41,8 +41,8 @@ export function getDayName(date: Date = new Date()): string {
   return new Intl.DateTimeFormat("ar-SA", { timeZone: KSA_TZ, weekday: "long" }).format(date);
 }
 
-// لحظة منتصف ليل يوم معيّن (YYYY-MM-DD) بتوقيت الرياض (UTC+3، بلا توقيت صيفي).
-// تُستخدم كهدف ثابت للعدّاد الحي بحيث يصحّ لأي مستخدم مهما كانت منطقته.
+// لحظة منتصف ليل يوم معين (YYYY-MM-DD) بتوقيت الرياض (UTC+3، بلا توقيت صيفي).
+// تُستخدم كهدف ثابت للعدّاد الحي بحيث يصح لأي مستخدم مهما كانت منطقته.
 export function ksaMidnight(dateStr: string): Date {
   return new Date(String(dateStr).slice(0, 10) + "T00:00:00+03:00");
 }
@@ -72,24 +72,21 @@ export function formatCurrency(amount: number | string | null | undefined): stri
 }
 
 /**
- * formatAppTime — مركزية تنسيق الوقت (12h / 24h)
+ * formatAppTime - مركزية تنسيق الوقت (12h / 24h)
  *
  * @param value - وقت بصيغة "HH:mm" (مثل "03:45")، أو null/undefined
  * @param format - "12h" | "24h" (الافتراضي "12h")
- *
- * مثال 12h: "03:45 ص" / "07:08 م"
- * مثال 24h: "03:45"  / "19:08"
  */
 export function formatAppTime(
   value: string | null | undefined,
-  format: "12h" | "24h" = "12h"
+  format: "12h" | "24h" = "12h",
 ): string {
-  if (!value) return "—";
+  if (!value) return "-";
   try {
     const [hStr, mStr] = value.split(":");
     const h = parseInt(hStr, 10);
     const m = parseInt(mStr, 10);
-    if (isNaN(h) || isNaN(m)) return value;
+    if (Number.isNaN(h) || Number.isNaN(m)) return value;
     const mm = String(m).padStart(2, "0");
     if (format === "24h") {
       return `${String(h).padStart(2, "0")}:${mm}`;

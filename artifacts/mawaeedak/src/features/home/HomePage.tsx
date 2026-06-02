@@ -1,4 +1,4 @@
-import { CalendarDays, Clock3, Home, Landmark, Moon, Sun, Sunrise, Wallet, Users } from "lucide-react";
+import { CalendarDays, Clock3, Home, Landmark, Moon, Sun, Sunrise, Users, Wallet } from "lucide-react";
 import { Link } from "wouter";
 import desertHeroImg from "@assets/desert-hero.png";
 import { AppShell } from "@/components/layout/AppShell";
@@ -24,10 +24,10 @@ function PrayerIcon({ keyName }: { keyName: string }) {
 
 export default function HomePage() {
   const { user } = useStore();
-  const city = user.city && !user.city.includes("ط·") ? user.city : "الرياض";
+  const city = user.city && !user.city.includes("ط") ? user.city : "الرياض";
   const { data: prayerData } = useGetPrayerTimes({ city });
   const { data: financialItems } = useGatewayFinancialCountdown();
-  const name = user.name && !user.name.includes("ط·") ? user.name.split(" ")[0] : "أحمد";
+  const name = user.name && !user.name.includes("ط") ? user.name.split(" ")[0] : "أحمد";
 
   const prayers = [
     { key: "fajr", label: "الفجر", time: prayerData?.fajr ?? "04:03" },
@@ -114,7 +114,7 @@ export default function HomePage() {
           </div>
           <div className="mx-auto mt-3 flex w-fit items-center gap-2 rounded-full border bg-white px-4 py-2 text-sm font-bold" style={{ borderColor: "rgba(201,160,99,0.20)", color: INK }}>
             <Clock3 className="h-4 w-4" style={{ color: GOLD }} />
-            الصلاة القادمة: العصر · متبقي 01:29:45
+            الصلاة القادمة: العصر • متبقي 01:29:45
           </div>
         </section>
 
@@ -128,13 +128,14 @@ export default function HomePage() {
           </div>
           <div className="grid grid-cols-2 gap-3">
             {finance.map((item) => {
-              const isHousing = item.name.includes("سكن");
+              const itemName = String(item.name);
+              const isHousing = itemName.includes("سكن");
               const Icon = item.type === "salary" ? Wallet : isHousing ? Home : Users;
               return (
                 <Link key={item.id} href="/salaries">
                   <article className="min-h-[148px] rounded-[22px] border bg-[#FFFCF7] p-4 text-center" style={{ borderColor: "rgba(201,160,99,0.24)" }}>
                     <Icon className="mx-auto h-6 w-6" style={{ color: GOLD }} />
-                    <h4 className="mt-2 text-[15px] font-extrabold" style={{ color: INK }}>{item.name}</h4>
+                    <h4 className="mt-2 text-[15px] font-extrabold" style={{ color: INK }}>{itemName}</h4>
                     <p className="mt-1 text-xs font-semibold" style={{ color: "#6F6557" }}>{item.next_date}</p>
                     <p className="mt-2 text-[38px] font-extrabold leading-none" style={{ color: BROWN }}>{item.days_remaining}</p>
                     <p className="mt-1 text-sm font-bold" style={{ color: "#6F6557" }}>يوماً متبقياً</p>
