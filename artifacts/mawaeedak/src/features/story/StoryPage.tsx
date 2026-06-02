@@ -278,7 +278,7 @@ export default function StoryPage() {
                 </div>
               )}
 
-              {showDate && <div className="gold-divider" />}
+              {showDate && <div className="app-divider" />}
 
               {showMessage && customMessage.trim() && (
                 <div
@@ -362,7 +362,7 @@ export default function StoryPage() {
               )}
 
               <div className="mt-auto pt-1">
-                <div className="gold-divider mb-2" />
+                <div className="app-divider mb-2" />
                 <div
                   className="text-[9px] font-extrabold tracking-wider text-center leading-relaxed"
                   style={{ color: textColor, opacity: 0.8 }}

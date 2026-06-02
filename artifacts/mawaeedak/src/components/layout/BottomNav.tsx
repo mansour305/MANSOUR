@@ -15,7 +15,7 @@ export function BottomNav() {
 
   return (
     <nav
-      className="heritage-nav fixed bottom-0 left-0 right-0 z-50 max-w-[480px] mx-auto"
+      className="app-nav fixed bottom-0 left-0 right-0 z-50 max-w-[480px] mx-auto"
       style={{ height: "66px" }}
     >
       <div className="flex justify-around items-center h-full px-1">

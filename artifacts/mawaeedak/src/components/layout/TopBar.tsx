@@ -90,7 +90,7 @@ export function TopBar({ title = "الرئيسية" }: TopBarProps) {
   };
 
   return (
-    <header className="sticky top-0 z-40 w-full heritage-header" style={{ height: "72px" }}>
+    <header className="sticky top-0 z-40 w-full app-header" style={{ height: "72px" }}>
       <div className="relative flex items-center justify-between h-full px-2">
 
         {/* Right side: hamburger menu (RTL = physical right) */}
@@ -119,7 +119,7 @@ export function TopBar({ title = "الرئيسية" }: TopBarProps) {
                 </Label>
                 <Switch id="hide-ads" checked={hideAds} onCheckedChange={setHideAds} />
               </div>
-              <div className="gold-divider my-2" />
+              <div className="app-divider my-2" />
               {[
                 { href: "/privacy",    label: "سياسة الخصوصية" },
                 { href: "/terms",      label: "شروط الاستخدام" },

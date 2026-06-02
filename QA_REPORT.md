@@ -25,6 +25,7 @@
 - Local preview route smoke for `/`, `/splash`, `/login`, `/finance`, `/centers`, `/calendar`, `/more`, `/notifications`, `/admin` ✅ passed
 - Mandatory reference image assets available and readable: `attached_assets/5d_1779714976789.png`, `attached_assets/5d_1779717395428.png` ✅
 - Visual evidence doc created: `VISUAL_MATCH_REPORT.md` ✅
+- Legacy brown/heritage visual references are deprecated; latest owner-provided screenshots are the active visual source of truth ✅
 - Admin visibility note: `/admin` route available, but guest/user navigation does not expose admin links except gated `isAdmin` content in `MorePage` and `TopBar`
 - Mobile/RTL evidence: `direction: rtl` in `src/index.css`, `rtl` page wrappers present, bottom nav and top bar built for RTL layout ✅
 

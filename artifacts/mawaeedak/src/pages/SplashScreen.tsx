@@ -20,7 +20,7 @@ export default function SplashScreen() {
 
   return (
     <div
-      className="fixed inset-0 flex flex-col items-center justify-center max-w-[480px] mx-auto app-frame mw-paper-bg"
+      className="fixed inset-0 flex flex-col items-center justify-center max-w-[480px] mx-auto app-frame app-paper-bg"
       style={{ backgroundColor: "hsl(var(--background))" }}
     >
       {/* Subtle radial glow */}
@@ -48,8 +48,8 @@ export default function SplashScreen() {
           مواعيدك
         </h1>
 
-        {/* Gold divider */}
-        <div className="gold-divider my-3 w-40 mx-auto" />
+        {/* Divider */}
+        <div className="app-divider my-3 w-40 mx-auto" />
 
         <p
           className="text-base font-medium tracking-wide"

@@ -1,5 +1,7 @@
 # Smoke Checklist — مواعيدك
 
+> Latest owner-provided screenshots are the active visual source of truth; legacy brown/heritage design references are deprecated.
+
 قائمة الاختبار الدخاني الإلزامي قبل أي نشر أو إصدار.
 
 ---

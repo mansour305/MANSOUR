@@ -1,5 +1,7 @@
 # VISUAL MATCH REPORT
 
+> The latest owner-provided screenshots are the active mandatory visual source of truth. Previous brown/heritage visual references are deprecated and must not guide future implementation unless explicitly re-approved.
+
 ## Visual Reference Extraction Summary
 
 - colors: warm cream/wheat paper base, deep espresso/gold header, soft brown/gold accents, muted taupe text, and rich champagne highlights.

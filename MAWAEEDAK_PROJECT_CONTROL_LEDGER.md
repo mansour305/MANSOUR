@@ -6,8 +6,8 @@
 - المستودع: https://github.com/DANGERMANS/mawaeedak
 - البيئة الحالية: Local Codespace Ubuntu 24.04.4 LTS
 - الفرع الحالي: main
-- آخر مرحلة: Phase 2 Visual Identity System
-- الحكم الحالي: NEEDS FIXES
+- آخر مرحلة: Clean Slate Visual Reset Gate
+- الحكم الحالي: PASSED
 - هل التطبيق جاهز للإطلاق؟ NO
 - هل يمكن الانتقال للمرحلة التالية؟ YES
 - السبب المختصر: تم اجتياز Phase 1 بنجاح مع تثبيت dependencies، typecheck، build، وroute smoke.
@@ -18,7 +18,7 @@
 |---|---|---|---|---|---|
 | 0 Repository Audit | ✅ مكتمل ومثبت | تم إنشاء السجل الأولي وتعريف قواعد العمل | `MAWAEEDAK_PROJECT_CONTROL_LEDGER.md` | - | مرحلة أساس للمشروع
 | 1 Build & Runtime Stability | ✅ مكتمل ومثبت | dependencies مثبتة، typecheck ناجح، build ناجح، route smoke ناجح | `MAWAEEDAK_PROJECT_CONTROL_LEDGER.md` | `pnpm install`, `pnpm run typecheck`, `pnpm run build`, route smoke | Phase 1 مكتملة؛ يمكن الانتقال للمرحلة التالية
-| 2 Visual Identity System | ✅ | Visual evidence documented, route smoke passed, reference assets confirmed | `VISUAL_MATCH_REPORT.md`, `MAWAEEDAK_PROJECT_CONTROL_LEDGER.md` | build, preview, route smoke | Phase 2 blocker fix evidence complete for documentation gate |
+| 2 Clean Slate Visual Reset | ✅ | Deprecated brown/heritage visual references, latest owner screenshots documented, route smoke passed | `VISUAL_MATCH_REPORT.md`, `MAWAEEDAK_PROJECT_CONTROL_LEDGER.md` | build, preview, route smoke | Old brown/heritage visual references deprecated and cleared for future design phase |
 | 3 Home Page + Riyadh Day Engine | ❌ | لم يتم التحقق بعد | - | - | -
 | 4 Finance Dates Source of Truth | ❌ | لم يتم التحقق بعد | - | - | -
 | 5 Prayer Times Accuracy | ❌ | لم يتم التحقق بعد | - | - | -
@@ -37,7 +37,7 @@
 - توثيق القواعد الأساسية للمشروع من طلب المستخدم.
 - تأكيد أن الملف `MAWAEEDAK_PROJECT_CONTROL_LEDGER.md` غير موجود سابقاً وتمت إضافته.
 - إكمال Phase 1 Build & Runtime Stability مع تثبيت dependencies ناجح، typecheck ناجح، build ناجح، وroute smoke ناجح.
-- إكمال Phase 2 Visual Identity Gate بالدليل الوثائقي، بما في ذلك `VISUAL_MATCH_REPORT.md` ورصد routes المطلوبة.
+- إكمال Clean Slate Visual Reset Gate بتنظيف مراجع التصميم البني القديمة وتوثيق أن آخر لقطات المالك هي المصدر النشط الوحيد للحقيقة البصرية.
 
 ## 4. Open Blockers
 

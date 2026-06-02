@@ -3,6 +3,10 @@
  * Phase 15 — Central Design Token System
  * Single source of truth for all visual tokens and utility classes
  * Based strictly on the master reference image (5d_1779714976789.png)
+ *
+ * NOTE: This stylesheet is a transitional legacy theme support file.
+ * The latest owner-provided screenshots are the active mandatory visual source of truth.
+ * Previous brown/heritage visual references are deprecated unless explicitly re-approved.
  */
 
 /* ═══════════════════════════════════════════════════════════
@@ -63,9 +67,9 @@
 }
 
 /* ═══════════════════════════════════════════════════════════
-   PAPER BACKGROUND — مع نسيج النقاط والخطوط
-   ═══════════════════════════════════════════════════════════ */
-.mw-paper-bg {
+   APP PAPER BACKGROUND — مع نسيج النقاط والخطوط
+   ═══════════════════════════════════════════════════════════════════ */
+.app-paper-bg {
   background:
     linear-gradient(180deg, hsl(34 30% 92%) 0%, hsl(33 28% 88%) 100%),
     radial-gradient(hsl(34 30% 72% / 0.22) 1.1px, transparent 1.1px),

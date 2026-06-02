@@ -1,7 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap');
 @import "tailwindcss";
 @import "tw-animate-css";
-@import "./styles/mawaeedak-reference.css";
 @plugin "@tailwindcss/typography";
 
 @custom-variant dark (&:is(.dark *));
@@ -317,8 +316,8 @@
   .no-scrollbar::-webkit-scrollbar { display: none; }
   .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-  /* Dark heritage header/nav */
-  .heritage-header {
+  /* Dark app header/nav */
+  .app-header {
     background: linear-gradient(180deg, hsl(20 70% 15%) 0%, hsl(18 74% 10%) 60%, hsl(16 76% 8%) 100%);
     background-image:
       linear-gradient(180deg, hsl(20 70% 15%) 0%, hsl(18 74% 10%) 60%, hsl(16 76% 8%) 100%),
@@ -337,7 +336,7 @@
     letter-spacing: 0.03em;
     text-shadow: 0 1px 10px rgba(0,0,0,0.65), 0 0 30px hsla(38, 90%, 60%, 0.25);
   }
-  .heritage-nav {
+  .app-nav {
     background-color: hsl(var(--nav-bg));
     border-top: 1px solid hsl(var(--nav-border));
     box-shadow: 0 -2px 14px -4px rgba(20,8,2,0.55);
@@ -351,22 +350,8 @@
     );
   }
 
-  /* Heritage card — warm cream with depth */
-  .card-heritage {
-    background: linear-gradient(
-      145deg,
-      hsl(var(--card)) 0%,
-      hsl(36 28% 91%) 100%
-    );
-    border: 1px solid hsl(var(--card-border));
-    box-shadow:
-      0 2px 10px -2px rgba(80, 40, 10, 0.14),
-      0 1px 0 rgba(255, 225, 170, 0.18) inset;
-    border-radius: var(--radius);
-  }
-
   /* Golden separator line */
-  .gold-divider {
+  .app-divider {
     height: 1px;
     background: linear-gradient(
       to left,
@@ -485,16 +470,6 @@
     overflow: hidden;
   }
 
-  /* Heritage card — enhanced Phase 13E */
-  .card-heritage {
-    background: linear-gradient(145deg, hsl(36 32% 93%) 0%, hsl(36 28% 89%) 100%);
-    border: 1px solid hsl(34 35% 70% / 0.7);
-    box-shadow:
-      0 2px 10px -2px rgba(80, 40, 10, 0.14),
-      0 1px 0 rgba(255, 225, 170, 0.18) inset;
-    border-radius: var(--radius);
-  }
-
   /* Corner lines — direction aware */
   .corner-lines-tl {
     border-top: 2px solid rgba(200,160,60,0.4);
@@ -505,13 +480,6 @@
     border-bottom: 2px solid rgba(200,160,60,0.4);
     border-left: 2px solid rgba(200,160,60,0.4);
     border-radius: 0 0 4px 0;
-  }
-
-  /* Heritage input/form element */
-  .input-heritage {
-    background: hsl(var(--card));
-    border: 1px solid hsl(var(--card-border));
-    border-radius: var(--radius);
   }
 
   /* Nav active pill */
