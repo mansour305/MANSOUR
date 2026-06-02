@@ -1,5 +1,5 @@
 import { Link, useLocation } from "wouter";
-import { Home, Calendar, Wallet, FileText, MoreHorizontal } from "lucide-react";
+import { Home, Calendar, Wallet, Grid3X3, MoreHorizontal } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export function BottomNav() {
@@ -8,7 +8,7 @@ export function BottomNav() {
   const navItems = [
     { icon: Home,          label: "الرئيسية", path: "/" },
     { icon: Wallet,        label: "الرواتب",  path: "/finance" },
-    { icon: FileText,      label: "المواطن",  path: "/centers" },
+    { icon: Grid3X3,       label: "الخدمات",  path: "/centers" },
     { icon: Calendar,      label: "التقويم",  path: "/calendar" },
     { icon: MoreHorizontal,label: "المزيد",   path: "/more" },
   ];
@@ -16,9 +16,9 @@ export function BottomNav() {
   return (
     <nav
       className="app-nav fixed bottom-0 left-0 right-0 z-50 max-w-[480px] mx-auto"
-      style={{ height: "66px" }}
+      style={{ height: "68px" }}
     >
-      <div className="flex justify-around items-center h-full px-1">
+      <div className="flex justify-around items-center h-full px-1.5">
         {navItems.map((item) => {
           const isActive =
             location === item.path ||
@@ -31,32 +31,7 @@ export function BottomNav() {
               href={item.path}
               className="flex flex-col items-center justify-center flex-1 h-full gap-[3px] transition-all duration-200 relative"
             >
-              {/* Active capsule background */}
-              {isActive && (
-                <span
-                  className="absolute"
-                  style={{
-                    inset: "5px 3px",
-                    borderRadius: "12px",
-                    background: "rgba(255,255,255,0.065)",
-                    border: "1px solid rgba(200,160,60,0.18)",
-                  }}
-                />
-              )}
-
-              {/* Active top gold bar */}
-              {isActive && (
-                <span
-                  className="absolute top-0 left-1/2 -translate-x-1/2"
-                  style={{
-                    width: "36px",
-                    height: "3px",
-                    borderRadius: "0 0 4px 4px",
-                    background: "hsl(var(--nav-active))",
-                    boxShadow: "0 0 10px hsl(var(--nav-active)/0.7)",
-                  }}
-                />
-              )}
+              {isActive && <span className="nav-active-pill" />}
 
               <Icon
                 className={cn(
@@ -68,7 +43,7 @@ export function BottomNav() {
                 strokeWidth={isActive ? 2.5 : 1.75}
                 style={
                   isActive
-                    ? { filter: "drop-shadow(0 0 5px hsl(var(--nav-active)/0.55))" }
+                    ? { filter: "drop-shadow(0 3px 8px hsl(var(--nav-active)/0.28))" }
                     : {}
                 }
               />
