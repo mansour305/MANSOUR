@@ -20,8 +20,8 @@ export default function SplashScreen() {
 
   return (
     <div
-      className="fixed inset-0 flex flex-col items-center justify-center max-w-[480px] mx-auto app-frame"
-      style={{ backgroundColor: "hsl(var(--header-bg))" }}
+      className="fixed inset-0 flex flex-col items-center justify-center max-w-[480px] mx-auto app-frame mw-paper-bg"
+      style={{ backgroundColor: "hsl(var(--background))" }}
     >
       {/* Subtle radial glow */}
       <div

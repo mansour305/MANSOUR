@@ -19,6 +19,15 @@
 - **Supabase status**: schema/RLS readiness documented; production connection not proven until deployment variables and SQL policies are applied
 - **Auth/admin status**: browser-local admin bypass removed; production admin role source is Supabase `app_metadata.role`
 
+## Phase 2 Visual Identity Gate
+
+- `pnpm --filter ./artifacts/mawaeedak run build` ✅ passed
+- Local preview route smoke for `/`, `/splash`, `/login`, `/finance`, `/centers`, `/calendar`, `/more`, `/notifications`, `/admin` ✅ passed
+- Mandatory reference image assets available and readable: `attached_assets/5d_1779714976789.png`, `attached_assets/5d_1779717395428.png` ✅
+- Visual evidence doc created: `VISUAL_MATCH_REPORT.md` ✅
+- Admin visibility note: `/admin` route available, but guest/user navigation does not expose admin links except gated `isAdmin` content in `MorePage` and `TopBar`
+- Mobile/RTL evidence: `direction: rtl` in `src/index.css`, `rtl` page wrappers present, bottom nav and top bar built for RTL layout ✅
+
 ## Completed Since Audit
 
 | Area | Status | Evidence |

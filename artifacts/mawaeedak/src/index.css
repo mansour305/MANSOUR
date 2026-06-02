@@ -1,6 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap');
 @import "tailwindcss";
 @import "tw-animate-css";
+@import "./styles/mawaeedak-reference.css";
 @plugin "@tailwindcss/typography";
 
 @custom-variant dark (&:is(.dark *));
@@ -318,10 +319,23 @@
 
   /* Dark heritage header/nav */
   .heritage-header {
-    background-color: hsl(var(--header-bg));
+    background: linear-gradient(180deg, hsl(20 70% 15%) 0%, hsl(18 74% 10%) 60%, hsl(16 76% 8%) 100%);
+    background-image:
+      linear-gradient(180deg, hsl(20 70% 15%) 0%, hsl(18 74% 10%) 60%, hsl(16 76% 8%) 100%),
+      repeating-linear-gradient(45deg, rgba(210,162,60,0.085) 0px, rgba(210,162,60,0.085) 1px, transparent 1px, transparent 11px),
+      repeating-linear-gradient(-45deg, rgba(210,162,60,0.085) 0px, rgba(210,162,60,0.085) 1px, transparent 1px, transparent 11px);
     color: hsl(var(--header-fg));
-    border-bottom: 1px solid hsl(var(--header-border));
-    box-shadow: 0 2px 12px -2px rgba(20,8,2,0.45);
+    border-bottom: 2.5px solid hsl(38 70% 44% / 0.95);
+    box-shadow: 0 2px 0 hsl(38 80% 58% / 0.40), 0 6px 28px rgba(8,3,0,0.62), inset 0 1.5px 0 rgba(255,228,150,0.16);
+  }
+
+  .topbar-title {
+    font-size: 22px;
+    font-weight: 900;
+    font-family: var(--app-font-sans);
+    color: hsl(var(--header-fg));
+    letter-spacing: 0.03em;
+    text-shadow: 0 1px 10px rgba(0,0,0,0.65), 0 0 30px hsla(38, 90%, 60%, 0.25);
   }
   .heritage-nav {
     background-color: hsl(var(--nav-bg));

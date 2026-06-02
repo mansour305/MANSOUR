@@ -152,6 +152,19 @@
 - [ ] Bottom navigation لا يغطي المحتوى
 - [ ] Touch targets مناسبة
 
+## 16. Phase 2 Visual Identity Gate
+
+- [ ] `pnpm --filter ./artifacts/mawaeedak run build` → ناجح
+- [ ] فتح `/splash` → يعمل
+- [ ] فتح `/login` → يعمل
+- [ ] فتح `/finance` → يعمل
+- [ ] فتح `/centers` → يعمل
+- [ ] فتح `/calendar` → يعمل
+- [ ] فتح `/more` → يعمل
+- [ ] فتح `/notifications` → يعمل
+- [ ] فتح `/admin` → متاح ك route فقط (security not approved)
+- [ ] `VISUAL_MATCH_REPORT.md` موجود ويوثق المطابقة اليدوية
+
 ---
 
 ## الحكم

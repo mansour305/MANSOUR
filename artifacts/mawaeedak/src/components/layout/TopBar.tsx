@@ -90,24 +90,7 @@ export function TopBar({ title = "الرئيسية" }: TopBarProps) {
   };
 
   return (
-    <header
-      className="sticky top-0 z-40 w-full"
-      style={{
-        height: "72px",
-        background:
-          "linear-gradient(180deg, hsl(20 70% 15%) 0%, hsl(18 74% 10%) 60%, hsl(16 76% 8%) 100%)",
-        backgroundImage: [
-          "linear-gradient(180deg, hsl(20 70% 15%) 0%, hsl(18 74% 10%) 60%, hsl(16 76% 8%) 100%)",
-          "repeating-linear-gradient(45deg,  rgba(210,162,60,0.085) 0px, rgba(210,162,60,0.085) 1px, transparent 1px, transparent 11px)",
-          "repeating-linear-gradient(-45deg, rgba(210,162,60,0.085) 0px, rgba(210,162,60,0.085) 1px, transparent 1px, transparent 11px)",
-        ].join(", "),
-        borderBottom: "2.5px solid hsl(38 70% 44%)",
-        boxShadow:
-          "0 2px 0 hsl(38 80% 58% / 0.40), " +
-          "0 6px 28px rgba(8,3,0,0.62), " +
-          "inset 0 1.5px 0 rgba(255,228,150,0.16)",
-      }}
-    >
+    <header className="sticky top-0 z-40 w-full heritage-header" style={{ height: "72px" }}>
       <div className="relative flex items-center justify-between h-full px-2">
 
         {/* Right side: hamburger menu (RTL = physical right) */}
@@ -158,20 +141,7 @@ export function TopBar({ title = "الرئيسية" }: TopBarProps) {
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
           <div className="flex items-center gap-2">
             <CamelPalmEmblem />
-            <span
-              style={{
-                fontSize: "22px",
-                fontWeight: 900,
-                fontFamily: "'Tajawal', sans-serif",
-                color: "hsl(38 86% 90%)",
-                letterSpacing: "0.03em",
-                textShadow:
-                  "0 1px 10px rgba(0,0,0,0.65), " +
-                  "0 0 30px hsl(38 90% 60% / 0.25)",
-              }}
-            >
-              مواعيدك
-            </span>
+            <span className="topbar-title text-white">مواعيدك</span>
           </div>
         </div>
 
