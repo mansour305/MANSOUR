@@ -26,15 +26,18 @@ export default function AdminOfficialFinancial() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   // Query all official financial dates regardless of confirmation status
-  const { data: events, isLoading } = useQuery([
-    "admin-official-financial",
-  ], async () => {
-    const { data, error } = await supabase
-      .from("official_financial_dates")
-      .select("*")
-      .order("occurrence_date_gregorian", { ascending: true });
-    if (error) throw error;
-    return data;
+  const { data: events, isLoading } = useQuery({
+    queryKey: ["admin-official-financial"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("official_financial_dates")
+        .select("*")
+        .order("occurrence_date_gregorian", { ascending: true });
+      if (error) throw error;
+      return data;
+    },
+    retry: 1,
+    staleTime: 60_000,
   });
 
   const createEvent = useCreateOfficialFinancialDate();
@@ -102,7 +105,7 @@ export default function AdminOfficialFinancial() {
         onSuccess: () => {
           toast({ title: "تم التعديل" });
           setIsOpen(false);
-          queryClient.invalidateQueries(["admin-official-financial"]);
+          queryClient.invalidateQueries({ queryKey: ["admin-official-financial"] });
         },
         onError: (error: any) => {
           toast({ title: "فشل التعديل", description: error.message || "خطأ غير معروف", variant: "destructive" });
@@ -113,7 +116,7 @@ export default function AdminOfficialFinancial() {
         onSuccess: () => {
           toast({ title: "تمت الإضافة" });
           setIsOpen(false);
-          queryClient.invalidateQueries(["admin-official-financial"]);
+          queryClient.invalidateQueries({ queryKey: ["admin-official-financial"] });
         },
         onError: (error: any) => {
           toast({ title: "فشل الإضافة", description: error.message || "خطأ غير معروف", variant: "destructive" });
@@ -128,7 +131,7 @@ export default function AdminOfficialFinancial() {
       onSuccess: () => {
         toast({ title: "تم الحذف" });
         setIsDeleteOpen(false);
-        queryClient.invalidateQueries(["admin-official-financial"]);
+        queryClient.invalidateQueries({ queryKey: ["admin-official-financial"] });
       },
       onError: (error: any) => {
         toast({ title: "فشل الحذف", description: error.message || "خطأ غير معروف", variant: "destructive" });

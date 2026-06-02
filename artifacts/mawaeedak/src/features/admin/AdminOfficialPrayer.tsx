@@ -26,16 +26,19 @@ export default function AdminOfficialPrayer() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   // Fetch all prayer times
-  const { data: events, isLoading } = useQuery([
-    "admin-official-prayer",
-  ], async () => {
-    const { data, error } = await supabase
-      .from("official_prayer_times")
-      .select("*")
-      .order("date_gregorian", { ascending: true })
-      .order("city_key", { ascending: true });
-    if (error) throw error;
-    return data;
+  const { data: events, isLoading } = useQuery({
+    queryKey: ["admin-official-prayer"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("official_prayer_times")
+        .select("*")
+        .order("date_gregorian", { ascending: true })
+        .order("city_key", { ascending: true });
+      if (error) throw error;
+      return data;
+    },
+    retry: 1,
+    staleTime: 60_000,
   });
 
   const createEvent = useCreateOfficialPrayerTime(["admin-official-prayer"]);

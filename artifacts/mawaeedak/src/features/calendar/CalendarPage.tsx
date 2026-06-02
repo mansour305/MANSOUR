@@ -197,7 +197,7 @@ export default function CalendarPage() {
       setIsAddOpen(false);
       resetForm();
       invalidateAppointments();
-      queryClient.invalidateQueries(["official-appointments"]);
+      queryClient.invalidateQueries({ queryKey: ["official-appointments"] });
     } catch (error: any) {
       toast({ title: "فشل الإضافة", description: error.message ?? "خطأ غير معروف", variant: "destructive" });
     } finally {
@@ -250,7 +250,7 @@ export default function CalendarPage() {
       }
       setIsEditOpen(false);
       invalidateAppointments();
-      queryClient.invalidateQueries(["official-appointments"]);
+      queryClient.invalidateQueries({ queryKey: ["official-appointments"] });
     } catch (error: any) {
       toast({ title: "فشل التعديل", description: error.message ?? "خطأ غير معروف", variant: "destructive" });
     } finally {
@@ -277,7 +277,7 @@ export default function CalendarPage() {
       setIsEditOpen(false);
       setIsDeleteOpen(false);
       invalidateAppointments();
-      queryClient.invalidateQueries(["official-appointments"]);
+      queryClient.invalidateQueries({ queryKey: ["official-appointments"] });
     } catch (error: any) {
       toast({ title: "فشل الحذف", description: error.message ?? "خطأ غير معروف", variant: "destructive" });
       setIsDeleteOpen(false);
