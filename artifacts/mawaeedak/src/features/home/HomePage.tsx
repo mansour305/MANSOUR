@@ -26,7 +26,7 @@ export default function HomePage() {
   const { user } = useStore();
   const city = user.city && !user.city.includes("ط") ? user.city : "الرياض";
   const { data: prayerData } = useGetPrayerTimes({ city });
-  const { data: financialItems } = useGatewayFinancialCountdown();
+  const { data: financialItems, isLoading: isFinancialLoading } = useGatewayFinancialCountdown();
   const name = user.name && !user.name.includes("ط") ? user.name.split(" ")[0] : "أحمد";
 
   const prayers = [
@@ -38,14 +38,7 @@ export default function HomePage() {
     { key: "isha", label: "العشاء", time: prayerData?.isha ?? "08:19" },
   ];
 
-  const finance = financialItems?.length
-    ? financialItems.slice(0, 4)
-    : [
-        { id: 1, name: "الراتب", days_remaining: 21, next_date: "2025-06-10", type: "salary" },
-        { id: 2, name: "حساب المواطن", days_remaining: 21, next_date: "2025-06-10", type: "support" },
-        { id: 3, name: "الدعم السكني", days_remaining: 35, next_date: "2025-06-24", type: "housing" },
-        { id: 4, name: "ضمان اجتماعي", days_remaining: 42, next_date: "2025-07-01", type: "support" },
-      ];
+  const finance = financialItems?.slice(0, 4) ?? [];
 
   return (
     <AppShell>
@@ -126,24 +119,39 @@ export default function HomePage() {
             </h3>
             <Link href="/salaries" className="text-sm font-bold" style={{ color: BROWN }}>عرض الكل</Link>
           </div>
-          <div className="grid grid-cols-2 gap-3">
-            {finance.map((item) => {
-              const itemName = String(item.name);
-              const isHousing = itemName.includes("سكن");
-              const Icon = item.type === "salary" ? Wallet : isHousing ? Home : Users;
-              return (
-                <Link key={item.id} href="/salaries">
-                  <article className="min-h-[148px] rounded-[22px] border bg-[#FFFCF7] p-4 text-center" style={{ borderColor: "rgba(201,160,99,0.24)" }}>
-                    <Icon className="mx-auto h-6 w-6" style={{ color: GOLD }} />
-                    <h4 className="mt-2 text-[15px] font-extrabold" style={{ color: INK }}>{itemName}</h4>
-                    <p className="mt-1 text-xs font-semibold" style={{ color: "#6F6557" }}>{item.next_date}</p>
-                    <p className="mt-2 text-[38px] font-extrabold leading-none" style={{ color: BROWN }}>{item.days_remaining}</p>
-                    <p className="mt-1 text-sm font-bold" style={{ color: "#6F6557" }}>يوماً متبقياً</p>
-                  </article>
-                </Link>
-              );
-            })}
-          </div>
+
+          {isFinancialLoading ? (
+            <div className="rounded-[22px] border bg-[#FFFCF7] p-5 text-center text-sm font-bold" style={{ borderColor: "rgba(201,160,99,0.24)", color: BROWN }}>
+              جاري تحميل المواعيد المالية...
+            </div>
+          ) : finance.length === 0 ? (
+            <div className="rounded-[22px] border bg-[#FFFCF7] p-5 text-center" style={{ borderColor: "rgba(201,160,99,0.24)" }}>
+              <Wallet className="mx-auto h-7 w-7" style={{ color: GOLD }} />
+              <h4 className="mt-3 text-[16px] font-extrabold" style={{ color: INK }}>لا توجد مواعيد مالية مؤكدة</h4>
+              <p className="mt-2 text-sm font-semibold leading-7" style={{ color: "#6F6557" }}>
+                اربط قاعدة البيانات أو أضف المواعيد من لوحة المالك لعرضها هنا.
+              </p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-2 gap-3">
+              {finance.map((item) => {
+                const itemName = String(item.name);
+                const isHousing = itemName.includes("سكن");
+                const Icon = item.type === "salary" ? Wallet : isHousing ? Home : Users;
+                return (
+                  <Link key={item.id} href="/salaries">
+                    <article className="min-h-[148px] rounded-[22px] border bg-[#FFFCF7] p-4 text-center" style={{ borderColor: "rgba(201,160,99,0.24)" }}>
+                      <Icon className="mx-auto h-6 w-6" style={{ color: GOLD }} />
+                      <h4 className="mt-2 text-[15px] font-extrabold" style={{ color: INK }}>{itemName}</h4>
+                      <p className="mt-1 text-xs font-semibold" style={{ color: "#6F6557" }}>{item.next_date}</p>
+                      <p className="mt-2 text-[38px] font-extrabold leading-none" style={{ color: BROWN }}>{item.days_remaining}</p>
+                      <p className="mt-1 text-sm font-bold" style={{ color: "#6F6557" }}>يوماً متبقياً</p>
+                    </article>
+                  </Link>
+                );
+              })}
+            </div>
+          )}
         </section>
       </section>
     </AppShell>
