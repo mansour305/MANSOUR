@@ -110,12 +110,10 @@ const jsonHeaders = { "Content-Type": "application/json" };
 async function gateway<T>(apiPath: string, supabaseReader: () => Promise<T[] | null>): Promise<T[] | null> {
   if (DATA_SOURCE_MODE === "supabase") {
     try {
-      const sbData = await supabaseReader();
-      if (sbData !== null) return sbData;
+      return await supabaseReader();
     } catch {
-      // fallback below
+      return null;
     }
-    return fetchApi<T>(apiPath);
   }
   return fetchApi<T>(apiPath);
 }
