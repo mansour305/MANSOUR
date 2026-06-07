@@ -1,10 +1,4 @@
-/**
- * AdminSupport — إدارة طلبات الدعم والمساعدة
- * 
- * Contains: Support tickets, replies, status changes, categories.
- */
-
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -15,6 +9,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { useToast } from "@/hooks/use-toast";
 import { Search, Loader2, Headphones, Reply, Check, Clock, MessageSquare } from "lucide-react";
 import { format } from "date-fns";
+import { supabase, isSupabaseEnabled } from "@/lib/supabase";
 
 interface SupportTicket {
   id: number;
@@ -24,8 +19,8 @@ interface SupportTicket {
   category: string;
   message: string;
   status: "new" | "in_progress" | "resolved" | "closed";
-  adminReply?: string;
-  createdAt: string;
+  admin_reply?: string;
+  created_at: string;
 }
 
 const CATEGORIES = [
@@ -49,17 +44,54 @@ export default function AdminSupport() {
   const [search, setSearch] = useState("");
   const [catFilter, setCatFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
-
-  // Mock data - replace with real API
-  const [tickets, setTickets] = useState<SupportTicket[]>([
-    { id: 1, name: "أحمد", email: "ahmed@example.com", category: "technical", message: "لا أستطيع تسجيل الدخول", status: "new", createdAt: "2024-03-15T10:30:00" },
-    { id: 2, name: "سارة", email: "sara@example.com", category: "suggestion", message: "اقتراح إضافة ميزة البحث", status: "in_progress", createdAt: "2024-03-14T09:00:00" },
-    { id: 3, name: "محمد", phone: "0501234567", category: "inquiry", message: "كيف أغير المدينة؟", status: "resolved", adminReply: "يمكنك التغيير من الإعدادات", createdAt: "2024-03-13T14:00:00" },
-  ]);
-
+  const [tickets, setTickets] = useState<SupportTicket[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [detail, setDetail] = useState<SupportTicket | null>(null);
   const [reply, setReply] = useState("");
   const [replyStatus, setReplyStatus] = useState<SupportTicket["status"]>("new");
+  const [saving, setSaving] = useState(false);
+
+  // Load support tickets from Supabase (complaints table with support category)
+  useEffect(() => {
+    if (!isSupabaseEnabled) {
+      setIsLoading(false);
+      return;
+    }
+
+    const loadTickets = async () => {
+      setIsLoading(true);
+      try {
+        const { data, error } = await supabase!
+          .from("complaints")
+          .select("*")
+          .order("created_at", { ascending: false })
+          .limit(100);
+
+        if (error) throw error;
+
+        const mappedTickets: SupportTicket[] = (data || []).map(c => ({
+          id: c.id,
+          name: c.name || c.contact || "مستخدم",
+          email: c.contact,
+          category: c.type || "inquiry",
+          message: c.message,
+          status: c.status === "pending" ? "new" as const : 
+                  c.status === "in_progress" ? "in_progress" as const :
+                  c.status === "resolved" ? "resolved" as const : "closed" as const,
+          admin_reply: c.admin_response,
+          created_at: c.created_at,
+        }));
+
+        setTickets(mappedTickets);
+      } catch (err) {
+        console.error("[AdminSupport] Error loading tickets:", err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadTickets();
+  }, []);
 
   const filtered = useMemo(() => {
     return tickets.filter(t => {
@@ -82,20 +114,75 @@ export default function AdminSupport() {
 
   const openDetail = (t: SupportTicket) => {
     setDetail(t);
-    setReply(t.adminReply ?? "");
+    setReply(t.admin_reply ?? "");
     setReplyStatus(t.status);
   };
 
-  const handleSaveReply = () => {
+  const handleSaveReply = async () => {
     if (!detail) return;
-    setTickets(prev => prev.map(t => t.id === detail.id ? { ...t, adminReply: reply, status: replyStatus } : t));
-    toast({ title: "تم حفظ الرد" });
-    setDetail(null);
+    setSaving(true);
+
+    try {
+      if (!isSupabaseEnabled) {
+        toast({ title: "خطأ", description: "Supabase غير مفعّل", variant: "destructive" });
+        setSaving(false);
+        return;
+      }
+
+      // Map status back to complaint status
+      const statusMap: Record<string, string> = {
+        "new": "pending",
+        "in_progress": "in_progress",
+        "resolved": "resolved",
+        "closed": "closed",
+      };
+
+      const { error } = await supabase!
+        .from("complaints")
+        .update({
+          admin_response: reply,
+          status: statusMap[replyStatus] || replyStatus,
+        })
+        .eq("id", detail.id);
+
+      if (error) throw error;
+
+      setTickets(prev => prev.map(t => t.id === detail.id ? { ...t, admin_reply: reply, status: replyStatus } : t));
+      toast({ title: "تم حفظ الرد" });
+      setDetail(null);
+    } catch (err: any) {
+      toast({ title: "خطأ", description: err.message || "فشل الحفظ", variant: "destructive" });
+    } finally {
+      setSaving(false);
+    }
   };
 
-  const handleStatusChange = (id: number, status: SupportTicket["status"]) => {
-    setTickets(prev => prev.map(t => t.id === id ? { ...t, status } : t));
-    toast({ title: "تم تحديث الحالة" });
+  const handleStatusChange = async (ticket: SupportTicket, newStatus: SupportTicket["status"]) => {
+    try {
+      if (!isSupabaseEnabled) {
+        toast({ title: "خطأ", description: "Supabase غير مفعّل", variant: "destructive" });
+        return;
+      }
+
+      const statusMap: Record<string, string> = {
+        "new": "pending",
+        "in_progress": "in_progress",
+        "resolved": "resolved",
+        "closed": "closed",
+      };
+
+      const { error } = await supabase!
+        .from("complaints")
+        .update({ status: statusMap[newStatus] || newStatus })
+        .eq("id", ticket.id);
+
+      if (error) throw error;
+
+      setTickets(prev => prev.map(t => t.id === ticket.id ? { ...t, status: newStatus } : t));
+      toast({ title: "تم تحديث الحالة" });
+    } catch (err: any) {
+      toast({ title: "خطأ", description: err.message || "فشل التحديث", variant: "destructive" });
+    }
   };
 
   const statusMeta = (status: string) => STATUS_OPTIONS.find(s => s.value === status) ?? STATUS_OPTIONS[0];
@@ -151,7 +238,11 @@ export default function AdminSupport() {
 
       {/* List */}
       <div className="space-y-3">
-        {filtered.length === 0 ? (
+        {isLoading ? (
+          <Card className="border-border shadow-sm">
+            <CardContent className="p-10 text-center"><Loader2 className="w-6 h-6 animate-spin text-primary mx-auto" /></CardContent>
+          </Card>
+        ) : filtered.length === 0 ? (
           <Card className="border-border shadow-sm">
             <CardContent className="p-10 text-center text-muted-foreground">لا توجد طلبات</CardContent>
           </Card>
@@ -171,13 +262,12 @@ export default function AdminSupport() {
                     <div className="font-bold text-sm">{ticket.name}</div>
                     <div className="text-sm text-muted-foreground line-clamp-2 mt-1">{ticket.message}</div>
                     <div className="text-[10px] text-muted-foreground mt-2 flex items-center gap-2">
-                      <span dir="ltr">{format(new Date(ticket.createdAt), "yyyy-MM-dd HH:mm")}</span>
+                      <span dir="ltr">{format(new Date(ticket.created_at), "yyyy-MM-dd HH:mm")}</span>
                       {ticket.email && <span dir="ltr">{ticket.email}</span>}
-                      {ticket.phone && <span dir="ltr">{ticket.phone}</span>}
                     </div>
                   </div>
                   <div className="flex flex-col gap-2 shrink-0">
-                    <Select value={ticket.status} onValueChange={(v) => handleStatusChange(ticket.id, v as SupportTicket["status"])}>
+                    <Select value={ticket.status} onValueChange={(v) => handleStatusChange(ticket, v as SupportTicket["status"])}>
                       <SelectTrigger className="h-8 w-36 text-xs"><SelectValue /></SelectTrigger>
                       <SelectContent className="rtl">
                         {STATUS_OPTIONS.map(s => <SelectItem key={s.value} value={s.value}>{s.label}</SelectItem>)}
@@ -188,9 +278,9 @@ export default function AdminSupport() {
                     </Button>
                   </div>
                 </div>
-                {ticket.adminReply && (
+                {ticket.admin_reply && (
                   <div className="mt-3 p-3 rounded-lg bg-primary/5 border border-primary/15 text-sm">
-                    <span className="font-bold text-primary">الرد: </span>{ticket.adminReply}
+                    <span className="font-bold text-primary">الرد: </span>{ticket.admin_reply}
                   </div>
                 )}
               </CardContent>
@@ -198,7 +288,7 @@ export default function AdminSupport() {
           );
         })}
       </div>
-
+    
       {/* Detail Dialog */}
       <Dialog open={!!detail} onOpenChange={open => { if (!open) setDetail(null); }}>
         <DialogContent className="rtl max-w-lg">
@@ -231,7 +321,9 @@ export default function AdminSupport() {
               </div>
               <div className="flex gap-2 justify-end">
                 <Button variant="outline" onClick={() => setDetail(null)}>إلغاء</Button>
-                <Button onClick={handleSaveReply}>حفظ الرد</Button>
+                <Button onClick={handleSaveReply} disabled={saving}>
+                  {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : "حفظ الرد"}
+                </Button>
               </div>
             </div>
           )}

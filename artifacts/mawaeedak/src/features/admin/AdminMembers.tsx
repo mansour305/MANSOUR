@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -8,6 +8,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { useToast } from "@/hooks/use-toast";
 import { Search, Loader2, Users as UsersIcon, Ban, CheckCircle, MoreHorizontal } from "lucide-react";
 import { useStore } from "@/hooks/useStore";
+import { supabase, isSupabaseEnabled } from "@/lib/supabase";
 
 interface User {
   id: string;
@@ -23,6 +24,7 @@ const ROLES = [
   { value: "user", label: "مستخدم" },
   { value: "admin", label: "مدير" },
   { value: "super_admin", label: "مدير نظام" },
+  { value: "owner", label: "مالك" },
 ];
 
 const STATUS_OPTIONS = [
@@ -38,17 +40,62 @@ export default function AdminMembers() {
   const [search, setSearch] = useState("");
   const [roleFilter, setRoleFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
+  const [users, setUsers] = useState<User[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [detail, setDetail] = useState<User | null>(null);
   const [editRole, setEditRole] = useState("user");
   const [editStatus, setEditStatus] = useState("active");
+  const [saving, setSaving] = useState(false);
 
-  // Mock users data - replace with real API when available
-  const [users, setUsers] = useState<User[]>([
-    { id: "1", name: "أحمد محمد", email: "ahmed@example.com", city: "الرياض", role: "user", status: "active", created_at: "2024-01-15" },
-    { id: "2", name: "سارة خالد", email: "sara@example.com", city: "جدة", role: "user", status: "active", created_at: "2024-02-20" },
-    { id: "3", name: "عبدالله سعد", email: "abdullah@example.com", city: "الدمام", role: "admin", status: "active", created_at: "2024-03-05" },
-  ]);
-  const [isLoading] = useState(false);
+  // Load users from Supabase
+  useEffect(() => {
+    if (!isSupabaseEnabled) {
+      setIsLoading(false);
+      return;
+    }
+
+    const loadUsers = async () => {
+      setIsLoading(true);
+      try {
+        const { data: profiles, error: profileError } = await supabase!
+          .from("user_profiles")
+          .select(`
+            id,
+            full_name,
+            city_name_ar,
+            role,
+            created_at,
+            user:user_id (
+              id,
+              email,
+              banned
+            )
+          `)
+          .order("created_at", { ascending: false })
+          .limit(100);
+
+        if (profileError) throw profileError;
+
+        const mappedUsers: User[] = (profiles || []).map((p: any) => ({
+          id: p.id,
+          name: p.full_name || "بدون اسم",
+          email: p.user?.email || "",
+          city: p.city_name_ar || "غير محدد",
+          role: p.role || "user",
+          status: p.user?.banned ? "banned" as const : "active" as const,
+          created_at: p.created_at ? new Date(p.created_at).toISOString().split("T")[0] : "",
+        }));
+
+        setUsers(mappedUsers);
+      } catch (err) {
+        console.error("[AdminMembers] Error loading users:", err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadUsers();
+  }, []);
 
   const filtered = useMemo(() => {
     return users.filter(u => {
@@ -66,7 +113,7 @@ export default function AdminMembers() {
     total: users.length,
     active: users.filter(u => u.status === "active").length,
     banned: users.filter(u => u.status === "banned").length,
-    admins: users.filter(u => u.role === "admin" || u.role === "super_admin").length,
+    admins: users.filter(u => u.role === "admin" || u.role === "super_admin" || u.role === "owner").length,
   }), [users]);
 
   const openDetail = (u: User) => {
@@ -75,17 +122,69 @@ export default function AdminMembers() {
     setEditStatus(u.status);
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!detail) return;
-    setUsers(prev => prev.map(u => u.id === detail.id ? { ...u, role: editRole, status: editStatus as User["status"] } : u));
-    toast({ title: "تم تحديث بيانات المستخدم" });
-    setDetail(null);
+    setSaving(true);
+
+    try {
+      if (!isSupabaseEnabled) {
+        toast({ title: "خطأ", description: "Supabase غير مفعّل", variant: "destructive" });
+        setSaving(false);
+        return;
+      }
+
+      // Update profile role
+      const { error: roleError } = await supabase!
+        .from("user_profiles")
+        .update({ role: editRole, updated_at: new Date().toISOString() })
+        .eq("id", detail.id);
+
+      if (roleError) throw roleError;
+
+      // Update auth metadata for role - skip if fails, it's not critical
+      try {
+        await supabase!.auth.updateUser({
+          data: { role: editRole }
+        });
+      } catch (e) {
+        console.warn("[AdminMembers] Could not update auth metadata:", e);
+      }
+
+      toast({ title: "تم تحديث بيانات المستخدم" });
+      setUsers(prev => prev.map(u => u.id === detail.id ? { ...u, role: editRole, status: editStatus as User["status"] } : u));
+      setDetail(null);
+    } catch (err: any) {
+      toast({ title: "خطأ", description: err.message || "فشل تحديث البيانات", variant: "destructive" });
+    } finally {
+      setSaving(false);
+    }
   };
 
-  const handleToggleBan = (u: User) => {
+  const handleToggleBan = async (u: User) => {
     const newStatus = u.status === "banned" ? "active" : "banned";
-    setUsers(prev => prev.map(x => x.id === u.id ? { ...x, status: newStatus } : x));
-    toast({ title: newStatus === "banned" ? "تم حظر المستخدم" : "تم فك حظر المستخدم" });
+
+    try {
+      if (!isSupabaseEnabled) {
+        toast({ title: "خطأ", description: "Supabase غير مفعّل", variant: "destructive" });
+        return;
+      }
+
+      // Update banned status in user_profiles
+      const { error } = await supabase!
+        .from("user_profiles")
+        .update({ 
+          banned: newStatus === "banned",
+          updated_at: new Date().toISOString(),
+        })
+        .eq("id", u.id);
+
+      if (error) throw error;
+
+      setUsers(prev => prev.map(x => x.id === u.id ? { ...x, status: newStatus } : x));
+      toast({ title: newStatus === "banned" ? "تم حظر المستخدم" : "تم فك حظر المستخدم" });
+    } catch (err: any) {
+      toast({ title: "خطأ", description: err.message || "فشل تحديث الحالة", variant: "destructive" });
+    }
   };
 
   const statusMeta = (status: string) => STATUS_OPTIONS.find(s => s.value === status) ?? STATUS_OPTIONS[0];
@@ -227,7 +326,9 @@ export default function AdminMembers() {
                   </SelectContent>
                 </Select>
               </div>
-              <Button className="w-full" onClick={handleSave}>حفظ التعديلات</Button>
+              <Button className="w-full" onClick={handleSave} disabled={saving}>
+                {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : "حفظ التعديلات"}
+              </Button>
             </div>
           )}
         </DialogContent>
