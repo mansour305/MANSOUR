@@ -6,35 +6,45 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useCreateComplaint } from "@workspace/api-client-react";
+import { createComplaint, type ComplaintType } from "@/lib/complaintService";
 import { useToast } from "@/hooks/use-toast";
+import { useStore } from "@/hooks/useStore";
 import { MessageSquare, Loader2, CheckCircle2 } from "lucide-react";
 
 export default function CentersComplaintsPage() {
   const { toast } = useToast();
-  const createComplaint = useCreateComplaint();
-  const [type, setType] = useState("اقتراح");
+  const { user } = useStore();
+  const [type, setType] = useState<"complaint" | "suggestion" | "inquiry">("suggestion");
   const [title, setTitle] = useState("");
   const [message, setMessage] = useState("");
   const [contact, setContact] = useState("");
   const [isSuccess, setIsSuccess] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = () => {
-    if (!message) { toast({ title: "خطأ", description: "الرسالة مطلوبة", variant: "destructive" }); return; }
+  const handleSubmit = async () => {
+    if (!message || message.length < 10) { 
+      toast({ title: "خطأ", description: "الرسالة يجب أن تكون 10 أحرف على الأقل", variant: "destructive" }); 
+      return; 
+    }
 
-    createComplaint.mutate({
-      data: {
+    setIsSubmitting(true);
+    try {
+      const result = await createComplaint({
         type,
         category: type,
-        title: title || undefined,
-        message,
-        contact: contact || undefined,
-      }
-    }, {
-      onSuccess: () => {
+        message: message + (contact ? `\n\nالتواصل: ${contact}` : ""),
+      }, user.id || undefined);
+      
+      if (result.success) {
         setIsSuccess(true);
+      } else {
+        toast({ title: "خطأ", description: result.error || "فشل إرسال الرسالة", variant: "destructive" });
       }
-    });
+    } catch (err) {
+      toast({ title: "خطأ", description: "حدث خطأ غير متوقع", variant: "destructive" });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -68,21 +78,16 @@ export default function CentersComplaintsPage() {
             <CardContent className="p-5 space-y-4">
               <div className="space-y-2">
                 <Label>نوع الرسالة</Label>
-                <Select value={type} onValueChange={setType}>
+                <Select value={type} onValueChange={(v: "complaint" | "suggestion" | "inquiry") => setType(v)}>
                   <SelectTrigger className="h-12 bg-background"><SelectValue /></SelectTrigger>
                   <SelectContent className="rtl">
-                    <SelectItem value="اقتراح">اقتراح تطوير</SelectItem>
-                    <SelectItem value="شكوى">شكوى / مشكلة فنية</SelectItem>
-                    <SelectItem value="استفسار">استفسار عام</SelectItem>
+                    <SelectItem value="suggestion">اقتراح تطوير</SelectItem>
+                    <SelectItem value="complaint">شكوى / مشكلة فنية</SelectItem>
+                    <SelectItem value="inquiry">استفسار عام</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
               
-              <div className="space-y-2">
-                <Label>العنوان (اختياري)</Label>
-                <Input value={title} onChange={e => setTitle(e.target.value)} placeholder="عنوان مختصر للرسالة" className="h-12 bg-background" />
-              </div>
-
               <div className="space-y-2">
                 <Label>الرسالة</Label>
                 <Textarea value={message} onChange={e => setMessage(e.target.value)} rows={5} placeholder="اكتب تفاصيل رسالتك هنا..." className="bg-background resize-none" />
@@ -93,8 +98,8 @@ export default function CentersComplaintsPage() {
                 <Input value={contact} onChange={e => setContact(e.target.value)} placeholder="للتواصل معك إن لزم الأمر" className="h-12 bg-background" dir="ltr" />
               </div>
 
-              <Button className="w-full h-12 font-bold text-base mt-2" onClick={handleSubmit} disabled={createComplaint.isPending}>
-                {createComplaint.isPending ? <Loader2 className="w-5 h-5 animate-spin" /> : "إرسال"}
+              <Button className="w-full h-12 font-bold text-base mt-2" onClick={handleSubmit} disabled={isSubmitting}>
+                {isSubmitting ? <Loader2 className="w-5 h-5 animate-spin" /> : "إرسال"}
               </Button>
             </CardContent>
           </Card>

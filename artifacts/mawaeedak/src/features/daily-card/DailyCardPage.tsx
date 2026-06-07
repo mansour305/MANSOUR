@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import DailyCardPreview from "./DailyCardPreview";
@@ -46,6 +46,7 @@ function getTodayMessage(): string {
 export default function DailyCardPage() {
   const { toast } = useToast();
   const { user } = useStore();
+  const cardRef = useRef<HTMLDivElement>(null);
 
   const message = useMemo(() => getTodayMessage(), []);
 
@@ -100,11 +101,27 @@ export default function DailyCardPage() {
     }
   };
 
-  const handleSaveImage = () => {
-    toast({ 
-      title: "حفظ الصورة", 
-      description: "تحتاج تفعيل مكتبة التصدير - استخدم نسخ النص للمشاركة حالياً"
-    });
+  const handleSaveImage = async () => {
+    if (!cardRef.current) return;
+    
+    try {
+      const { default: html2canvas } = await import("html2canvas");
+      const canvas = await html2canvas(cardRef.current, {
+        scale: 2,
+        backgroundColor: "#FDF9F3",
+        useCORS: true,
+      });
+      
+      const link = document.createElement("a");
+      link.download = `mawaeedak-card-${new Date().toISOString().split("T")[0]}.png`;
+      link.href = canvas.toDataURL("image/png");
+      link.click();
+      
+      toast({ title: "تم حفظ الصورة بنجاح" });
+    } catch (err) {
+      console.error("[DailyCard] Save image error:", err);
+      toast({ title: "فشل حفظ الصورة", variant: "destructive" });
+    }
   };
 
   return (
@@ -112,8 +129,10 @@ export default function DailyCardPage() {
       className="min-h-screen flex flex-col items-center justify-start pt-6 pb-8 px-4"
       style={{ background: "linear-gradient(180deg, #FDF9F3 0%, #F3E8D6 100%)" }}
     >
-      {/* Card preview only - no header, no bottom nav */}
-      <DailyCardPreview message={message} />
+      {/* Card preview - ref for html2canvas */}
+      <div ref={cardRef}>
+        <DailyCardPreview message={message} />
+      </div>
       
       {/* Action buttons only */}
       <div className="flex gap-3 mt-6 w-full max-w-[360px]">
