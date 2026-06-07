@@ -17,6 +17,8 @@ import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { useQuery } from "@tanstack/react-query";
 import { supabase, isSupabaseEnabled } from "@/lib/supabase";
+import { adminStorage } from "@/lib/admin-storage";
+import { sendNotification, addFinancialEvent, addTheme } from "@/lib/admin-actions";
 
 // Heritage Design System Colors
 const GOLD = "hsl(38 62% 52%)";
@@ -189,11 +191,24 @@ export default function AdminDashboard() {
       return;
     }
     setSending(true);
-    await new Promise(r => setTimeout(r, 1500));
-    setSending(false);
-    setNotificationTitle("");
-    setNotificationBody("");
-    toast({ title: "تم إرسال الإشعار بنجاح", variant: "default" });
+    try {
+      const result = await sendNotification({
+        title: notificationTitle,
+        body: notificationBody,
+        target: "all",
+      });
+      if (result.success) {
+        setNotificationTitle("");
+        setNotificationBody("");
+        toast({ title: "تم إرسال الإشعار بنجاح" });
+      } else {
+        toast({ title: result.error || "فشل إرسال الإشعار", variant: "destructive" });
+      }
+    } catch {
+      toast({ title: "حدث خطأ غير متوقع", variant: "destructive" });
+    } finally {
+      setSending(false);
+    }
   };
 
   const handleAddSchedule = async () => {
@@ -202,9 +217,23 @@ export default function AdminDashboard() {
       return;
     }
     setAddingSchedule(false);
-    setScheduleAmount("");
-    setScheduleDate("");
-    toast({ title: "تم إضافة الموعد المالي", variant: "default" });
+    try {
+      const result = await addFinancialEvent({
+        title: "موعد مالي جديد",
+        amount: scheduleAmount,
+        date: scheduleDate,
+        type: "salary",
+      });
+      if (result.success) {
+        setScheduleAmount("");
+        setScheduleDate("");
+        toast({ title: "تم إضافة الموعد المالي بنجاح" });
+      } else {
+        toast({ title: result.error || "فشل إضافة الموعد", variant: "destructive" });
+      }
+    } catch {
+      toast({ title: "حدث خطأ غير متوقع", variant: "destructive" });
+    }
   };
 
   const handleAddTheme = async () => {
@@ -213,8 +242,21 @@ export default function AdminDashboard() {
       return;
     }
     setAddingTheme(false);
-    setThemeName("");
-    toast({ title: "تم إضافة الثيم", variant: "default" });
+    try {
+      const result = await addTheme({
+        name: themeName,
+        colors: { primary: "#C9A063", secondary: "#8A6B3D", accent: "#2F2B25", background: "#FAF7F2" },
+        is_active: false,
+      });
+      if (result.success) {
+        setThemeName("");
+        toast({ title: "تم إضافة الثيم بنجاح" });
+      } else {
+        toast({ title: result.error || "فشل إضافة الثيم", variant: "destructive" });
+      }
+    } catch {
+      toast({ title: "حدث خطأ غير متوقع", variant: "destructive" });
+    }
   };
 
   return (
