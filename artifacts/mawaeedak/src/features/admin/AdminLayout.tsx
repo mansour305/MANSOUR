@@ -216,40 +216,73 @@ const navItems: NavItem[] = [
 function AdminSidebar({ currentPath, onNavigate }: { currentPath: string; onNavigate?: () => void }) {
   return (
     <aside 
-      className="h-full flex flex-col" 
+      className="h-full flex flex-col relative overflow-hidden"
       style={{ 
         background: "linear-gradient(180deg, #FFFFFF 0%, #FAF5EE 50%, #F5EDDE 100%)",
         borderRight: "1px solid rgba(201,160,99,0.3)",
       }}
     >
+      {/* Background decorative pattern */}
+      <div 
+        className="absolute bottom-0 left-0 right-0 h-48 opacity-[0.04] pointer-events-none"
+        style={{
+          backgroundImage: `url(${desertHeroImg})`,
+          backgroundSize: "cover",
+          backgroundPosition: "bottom left",
+        }}
+      />
+      
+      {/* Golden lantern decorations */}
+      <div className="absolute top-20 left-4 text-xl opacity-20" style={{ color: "#C9A063" }}>✦</div>
+      <div className="absolute top-40 right-4 text-lg opacity-15" style={{ color: "#C9A063" }}>✦</div>
+      
       {/* Logo Header */}
       <div 
-        className="p-5 border-b"
+        className="p-5 border-b relative z-10"
         style={{ 
           background: "linear-gradient(135deg, hsl(22 62% 18%) 0%, hsl(18 68% 14%) 100%)",
           borderColor: "hsl(38 60% 40% / 0.4)",
         }}
       >
+        {/* Decorative top accent */}
+        <div className="absolute top-0 left-0 right-0 h-1" style={{
+          background: "linear-gradient(90deg, hsl(38 62% 52%), hsl(32 55% 42%), hsl(38 62% 52%))",
+        }} />
+        
         <div className="flex items-center gap-3">
           <div 
-            className="w-12 h-12 rounded-xl flex items-center justify-center font-extrabold text-xl"
+            className="w-12 h-12 rounded-xl flex items-center justify-center font-extrabold text-xl relative"
             style={{ 
               background: "linear-gradient(145deg, hsl(38 62% 52%), hsl(32 55% 42%))",
               color: "#fff",
-              boxShadow: "0 4px 12px rgba(138,107,61,0.35)",
+              boxShadow: "0 4px 12px rgba(138,107,61,0.35), inset 0 1px 0 rgba(255,255,255,0.2)",
             }}
           >
-            م
+            <span style={{ textShadow: "0 1px 2px rgba(0,0,0,0.2)" }}>م</span>
+            {/* Inner glow */}
+            <div className="absolute inset-0 rounded-xl" style={{
+              boxShadow: "inset 0 0 12px rgba(255,255,255,0.15)",
+            }} />
           </div>
           <div>
-            <div className="font-extrabold text-lg" style={{ color: "#F5EDDE" }}>مواعيدك</div>
-            <div className="text-xs" style={{ color: "hsl(38 55% 60%)" }}>لوحة المالك</div>
+            <div className="font-extrabold text-lg tracking-wide" style={{ color: "#F5EDDE" }}>مواعيدك</div>
+            <div className="text-xs font-medium" style={{ color: "hsl(38 55% 60%)" }}>لوحة المالك</div>
+          </div>
+        </div>
+        
+        {/* Date display */}
+        <div className="mt-3 pt-3 border-t border-white/10">
+          <div className="text-[10px]" style={{ color: "hsl(38 55% 55%)" }}>
+            {new Date().toLocaleDateString('ar-SA', { weekday: 'long' })}
+          </div>
+          <div className="text-xs font-bold mt-0.5" style={{ color: "hsl(38 75% 70%)" }}>
+            {new Date().toLocaleDateString('ar-SA', { year: 'numeric', month: 'long', day: 'numeric' })}
           </div>
         </div>
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 overflow-y-auto py-4 px-3">
+      <nav className="flex-1 overflow-y-auto py-4 px-3 relative z-10">
         {navItems.map((item) => {
           const Icon = item.icon;
           const isSubItem = item.label.startsWith("   ");
@@ -259,7 +292,7 @@ function AdminSidebar({ currentPath, onNavigate }: { currentPath: string; onNavi
           return (
             <Link key={item.href} href={item.href} onClick={() => onNavigate?.()}>
               <div
-                className={`flex items-center gap-3 rounded-xl px-3 py-2.5 mb-1 text-sm font-bold transition-all cursor-pointer ${isSubItem ? "mr-4 text-xs" : ""}`}
+                className={`flex items-center gap-3 rounded-xl px-3 py-2.5 mb-1 text-sm font-bold transition-all duration-200 cursor-pointer ${isSubItem ? "mr-4 text-xs" : ""}`}
                 style={{
                   background: active 
                     ? "linear-gradient(135deg, hsl(38 62% 52%), hsl(32 55% 42%))" 
@@ -280,6 +313,9 @@ function AdminSidebar({ currentPath, onNavigate }: { currentPath: string; onNavi
               >
                 <Icon className={isSubItem ? "h-3.5 w-3.5" : "h-4 w-4"} />
                 <span>{label}</span>
+                {active && (
+                  <div className="mr-auto w-1.5 h-1.5 rounded-full bg-white/80" />
+                )}
               </div>
             </Link>
           );
@@ -288,14 +324,20 @@ function AdminSidebar({ currentPath, onNavigate }: { currentPath: string; onNavi
 
       {/* Footer */}
       <div 
-        className="p-4 border-t text-center"
+        className="p-4 border-t relative z-10"
         style={{ 
           background: "rgba(201,160,99,0.08)",
           borderColor: "rgba(201,160,99,0.2)",
         }}
       >
-        <p className="text-[10px]" style={{ color: "hsl(32 18% 42%)" }}>
-          © 2025 مواعيدك
+        <div className="h-[1px] w-12 mx-auto mb-3" style={{
+          background: "linear-gradient(90deg, transparent, hsl(38 60% 50%), transparent)",
+        }} />
+        <p className="text-[10px] font-medium" style={{ color: "hsl(32 18% 42%)" }}>
+          © 2025 مواعيدك — لوحة المالك
+        </p>
+        <p className="text-[9px] mt-1" style={{ color: "hsl(32 18% 52%)" }}>
+          جميع الحقوق محفوظة
         </p>
       </div>
     </aside>
