@@ -152,7 +152,19 @@ export default function AuthPage({ mode }: { mode: AuthMode }) {
         return;
       }
 
-      // Auth succeeded — useStore auth listener will update user state
+      // Auth succeeded — update useStore immediately
+      setUser({
+        id: "demo-admin",
+        name: "مدير النظام",
+        email: "demo@mawaeedak.local",
+        city: "الرياض",
+        cityKey: "riyadh",
+        timezone: "Asia/Riyadh",
+        role: "admin",
+        onboardingComplete: true,
+        interests: [],
+      });
+      
       setLocation("/");
     } catch (err) {
       setLoginError(translateLoginError(err));

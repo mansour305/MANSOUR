@@ -35,7 +35,7 @@ function MoreRow({
 
 export default function MorePage() {
   const [, setLocation] = useLocation();
-  const { user, isAdmin } = useStore();
+  const { user, isAdmin, setUser } = useStore();
   const [isLogoutOpen, setIsLogoutOpen] = useState(false);
   const isLoggedIn = Boolean(user?.email);
   // Get user's display name or show "زائر مواعيدك" - no hardcoded names
@@ -67,6 +67,18 @@ export default function MorePage() {
     localStorage.removeItem("app-user");
     localStorage.removeItem("mawaeedak_onboarded");
     sessionStorage.removeItem("mawaeedak_demo_session");
+    // Reset useStore to default user
+    setUser({
+      id: "",
+      name: "",
+      email: "",
+      city: "",
+      cityKey: "",
+      timezone: "Asia/Riyadh",
+      role: "user",
+      onboardingComplete: false,
+      interests: [],
+    });
     showTopNotification("تم تسجيل الخروج", "success");
     setLocation("/");
   };
