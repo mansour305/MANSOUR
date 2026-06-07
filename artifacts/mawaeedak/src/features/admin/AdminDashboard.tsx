@@ -46,7 +46,7 @@ export default function AdminDashboard() {
 
   if (statsLoading || logsLoading) {
     return (
-      <div className="flex justify-center p-12">
+      <div className="flex flex-col items-center justify-center p-12 space-y-4">
         <div
           className="w-14 h-14 rounded-2xl flex items-center justify-center"
           style={{
@@ -57,6 +57,7 @@ export default function AdminDashboard() {
         >
           <Loader2 className="w-6 h-6 animate-spin" style={{ color: "hsl(38 82% 68%)" }} />
         </div>
+        <p className="text-sm" style={{ color: "hsl(38 30% 45%)" }}>جاري تحميل لوحة المالك...</p>
       </div>
     );
   }
@@ -166,7 +167,7 @@ export default function AdminDashboard() {
                 border: "1.5px solid hsl(10 65% 52% / 0.4)",
               }}
             >
-              <AlertTriangle className="w-4.5 h-4.5" style={{ color: "hsl(10 75% 65%)" }} />
+              <AlertTriangle className="w-4 h-4" style={{ color: "hsl(10 75% 65%)" }} />
             </div>
             <div>
               <div className="font-extrabold text-[13px]" style={{ color: "hsl(10 75% 72%)" }}>
@@ -243,6 +244,22 @@ export default function AdminDashboard() {
             </div>
           )}
         </div>
+      </div>
+
+      {/* Demo mode hint */}
+      <div
+        className="rounded-2xl p-4 text-center"
+        style={{
+          background: "linear-gradient(145deg, rgba(139,195,74,0.1), rgba(139,195,74,0.05))",
+          border: "1px solid rgba(139,195,74,0.25)",
+        }}
+      >
+        <p className="text-sm font-medium" style={{ color: "hsl(88 45% 38%)" }}>
+          وضع التطوير: لوحة المالك تعمل بنمط تجريبي
+        </p>
+        <p className="text-xs mt-1" style={{ color: "hsl(38 30% 55%)" }}>
+          البيانات الإحصائية ستظهر عند تفعيل Supabase في الإنتاج
+        </p>
       </div>
     </div>
   );

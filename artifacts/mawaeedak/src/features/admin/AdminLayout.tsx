@@ -229,7 +229,7 @@ function AdminSidebar({ currentPath, onNavigate }: { currentPath: string; onNavi
           const Icon = item.icon;
           const active = currentPath === item.href || (item.href !== "/admin" && currentPath.startsWith(item.href));
           return (
-            <Link key={item.href} href={item.href} onClick={onNavigate}>
+            <Link key={item.href} href={item.href} onClick={() => onNavigate?.()}>
               <div
                 className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-bold transition-colors cursor-pointer"
                 style={{
@@ -256,6 +256,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
   const [password, setPassword] = useState("");
   const [loginError, setLoginError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const mountedRef = useRef(true);
   const [location] = useLocation();
 
@@ -415,6 +416,8 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
     setSession(null);
     setPassword("");
     setPhase("login");
+    // Redirect to home page after logout
+    window.location.href = "/";
   }
 
   if (phase === "checking") {
@@ -597,7 +600,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
               </Button>
             </SheetTrigger>
             <SheetContent side="right" className="p-0 w-72">
-              <AdminSidebar currentPath={location} />
+              <AdminSidebar currentPath={location} onNavigate={() => setMenuOpen(false)} />
             </SheetContent>
           </Sheet>
         </div>
