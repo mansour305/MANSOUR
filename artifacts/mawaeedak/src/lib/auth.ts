@@ -2,16 +2,16 @@
  * Auth Service — مواعيدك
  *
  * يوفر واجهة موحدة للمصادقة:
- * - إذا Supabase متصل → يستخدم Supabase Auth
- * - إذا Supabase غير متصل → demo mode في بيئة التطوير فقط
+ * - Supabase Auth عند توفر المفاتيح
+ * - ممنوع Demo mode في الإنتاج
  */
 
-import { supabase, isSupabaseEnabled } from "./supabase";
+import { supabase, isSupabaseEnabled, isProduction } from "./supabase";
 
 export type AuthUser = {
   id: string;
   email?: string;
-  role?: "user" | "admin" | "super_admin" | "content_manager" | "finance_manager";
+  role?: "user" | "admin" | "super_admin" | "owner";
   displayName?: string;
 };
 
@@ -24,7 +24,13 @@ export type AuthSession = {
 const DEMO_ADMIN_USERNAME = "admin";
 const DEMO_ADMIN_PASSWORD = import.meta.env.VITE_DEMO_ADMIN_PASSWORD;
 const DEMO_SESSION_KEY = "mawaeedak_demo_session";
-const isDemoAuthAllowed = import.meta.env.DEV && typeof DEMO_ADMIN_PASSWORD === "string" && DEMO_ADMIN_PASSWORD.length > 0;
+// Demo mode only allowed in development
+const isDemoAuthAllowed = import.meta.env.DEV && 
+  typeof DEMO_ADMIN_PASSWORD === "string" && 
+  DEMO_ADMIN_PASSWORD.length > 0 &&
+  !isProduction;
+
+// ── Admin roles ────────────────────────────────────────────────────────────
 const ADMIN_ROLES = ["admin", "super_admin", "owner"] as const;
 
 // ── Supabase Auth ──────────────────────────────────────────────────────────
@@ -143,16 +149,28 @@ function getDemoSession(): AuthSession | null {
 
 /**
  * authSignIn — تسجيل دخول موحد
- * Supabase عند توفر المفاتيح، وإلا demo mode
+ * Supabase Auth فقط في الإنتاج
+ * Demo mode ممنوع في الإنتاج
  */
 export async function authSignIn(
   usernameOrEmail: string,
   password: string
 ): Promise<{ success: boolean; error?: string }> {
+  // Production requires Supabase
+  if (isProduction && !isSupabaseEnabled) {
+    return { success: false, error: "التطبيق يتطلب إعداد Supabase للاتصال" };
+  }
+  
   if (isSupabaseEnabled) {
     return signInWithSupabase(usernameOrEmail, password);
   }
-  return signInDemo(usernameOrEmail, password);
+  
+  // Demo mode only in development
+  if (isDemoAuthAllowed) {
+    return signInDemo(usernameOrEmail, password);
+  }
+  
+  return { success: false, error: "تسجيل الدخول يتطلب إعداد Supabase" };
 }
 
 /**
