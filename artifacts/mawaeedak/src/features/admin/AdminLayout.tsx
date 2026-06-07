@@ -266,12 +266,24 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
   useEffect(() => {
     mountedRef.current = true;
 
+    // Demo mode in development: check for existing demo session
     if (!isSupabaseEnabled || !supabase) {
+      if (import.meta.env.DEV) {
+        try {
+          const demoSession = sessionStorage.getItem("mawaeedak_demo_session");
+          if (demoSession) {
+            const parsed = JSON.parse(demoSession);
+            if (parsed?.user && hasAdminAccess(parsed)) {
+              setSession(parsed);
+              setPhase("ready");
+              return () => { mountedRef.current = false; };
+            }
+          }
+        } catch {}
+      }
       setSession(null);
       setPhase("login");
-      return () => {
-        mountedRef.current = false;
-      };
+      return () => { mountedRef.current = false; };
     }
 
     const timeoutId = window.setTimeout(() => {
@@ -333,7 +345,30 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
     setLoginError(null);
 
     try {
+      // Demo mode in development: admin/admin123
       if (!isSupabaseEnabled || !supabase) {
+        // Only allow demo login in development
+        if (import.meta.env.DEV) {
+          const DEMO_ADMIN_USERNAME = "admin";
+          const DEMO_ADMIN_PASSWORD = import.meta.env.VITE_DEMO_ADMIN_PASSWORD || "admin123";
+          
+          if (identifier.trim() === DEMO_ADMIN_USERNAME && password === DEMO_ADMIN_PASSWORD) {
+            // Demo login success
+            const demoSession: AuthSession = {
+              user: { id: "demo-admin", role: "owner", displayName: "مدير النظام" },
+              isDemo: true,
+            };
+            sessionStorage.setItem("mawaeedak_demo_session", JSON.stringify(demoSession));
+            setSession(demoSession);
+            setPhase("ready");
+            setPassword("");
+            return;
+          } else {
+            setLoginError("اسم المستخدم أو كلمة المرور غير صحيحة");
+            return;
+          }
+        }
+        
         setLoginError("لوحة المالك تتطلب تفعيل Supabase Auth في بيئة الإنتاج");
         return;
       }
@@ -375,6 +410,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
   }
 
   async function handleLogout() {
+    sessionStorage.removeItem("mawaeedak_demo_session");
     if (supabase) await supabase.auth.signOut({ scope: "local" });
     setSession(null);
     setPassword("");
@@ -420,7 +456,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
             </p>
           </div>
 
-          {!isSupabaseEnabled && (
+          {!isSupabaseEnabled && import.meta.env.PROD && (
             <div 
               className="px-4 py-3 rounded-xl text-xs font-semibold text-center"
               style={{
@@ -430,6 +466,19 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
               }}
             >
               لوحة المالك تتطلب تفعيل Supabase Auth في بيئة الإنتاج
+            </div>
+          )}
+
+          {!isSupabaseEnabled && import.meta.env.DEV && (
+            <div 
+              className="px-4 py-3 rounded-xl text-xs font-semibold text-center"
+              style={{
+                background: "rgba(139,195,74,0.15)",
+                border: "1px solid rgba(139,195,74,0.3)",
+                color: "#558B2F",
+              }}
+            >
+              وضع التطوير: استخدم admin / admin123 للدخول
             </div>
           )}
 
