@@ -13,7 +13,7 @@ const services = [
   { title: "الوظائف", subtitle: "فرص وظيفية جديدة", icon: Briefcase, path: "/centers/jobs" },
   { title: "ذكرني", subtitle: "تذكيرات ومواعيد", icon: Bell, path: "/centers/work" },
   { title: "الأذكار", subtitle: "أذكار الصباح والمساء", icon: BookOpen, path: "/centers/work" },
-  { title: "بطاقة اليوم", subtitle: "شارك يومك مع الآخرين", icon: Gift, path: "/story" },
+  { title: "بطاقة يومية", subtitle: "شارك يومك مع الآخرين", icon: Gift, path: "/daily-card" },
   { title: "رحلاتي القادمة", subtitle: "استعرض رحلاتك القادمة", icon: Plane, path: "/centers/travel" },
   { title: "قدم تهنئة", subtitle: "أرسل تهانيك بسهولة", icon: Gift, path: "/centers/greetings" },
   { title: "اتصل بنا", subtitle: "تواصل معنا", icon: Headphones, path: "/support" },

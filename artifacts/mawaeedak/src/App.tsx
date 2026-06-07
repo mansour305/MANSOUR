@@ -27,6 +27,7 @@ import FinancePage from "@/features/finance/FinancePage";
 import CentersPage from "@/features/centers/CentersPage";
 import AccountPage from "@/features/account/AccountPage";
 import StoryPage from "@/features/story/StoryPage";
+import DailyCardPage from "@/features/daily-card/DailyCardPage";
 import NotificationsPage from "@/features/notifications/NotificationsPage";
 
 import CentersWorkPage from "@/features/centers/CentersWorkPage";
@@ -86,6 +87,7 @@ function MainApp() {
       <Route path="/services" component={CentersPage} />
       <Route path="/account" component={AccountPage} />
       <Route path="/story" component={StoryPage} />
+      <Route path="/daily-card" component={DailyCardPage} />
       <Route path="/notifications" component={NotificationsPage} />
       
       <Route path="/centers/work" component={CentersWorkPage} />
