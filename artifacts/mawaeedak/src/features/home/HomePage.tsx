@@ -147,7 +147,8 @@ export default function HomePage() {
     return () => clearInterval(id);
   }, [prayers]);
 
-  const name = user.name && !user.name.includes("ط") ? user.name.split(" ")[0] : "أحمد";
+  // Get user's display name or empty if not logged in - no hardcoded names
+  const displayName = (user?.name && user.name.length > 0) ? user.name.split(" ")[0] : null;
 
   return (
     <AppShell>
@@ -173,7 +174,7 @@ export default function HomePage() {
           <div className="absolute inset-0 bg-gradient-to-l from-[#FAF7F2]/95 via-[#FAF7F2]/72 to-transparent" />
           <div className="absolute inset-y-0 right-0 flex w-[62%] flex-col justify-center px-5 text-right">
             <h3 className="text-[30px] font-extrabold leading-tight" style={{ color: INK }}>
-              {currentGreeting()} يا {name}
+              {currentGreeting()}{displayName ? ` يا ${displayName}` : ""}
             </h3>
             <p className="mt-4 text-[16px] font-semibold leading-8" style={{ color: "#5D554A" }}>
               ابدأ يومك بنية طيبة، وتوكل على الله في كل خطوة.

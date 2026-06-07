@@ -8,7 +8,9 @@ export default function SplashScreen() {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      if (user?.onboardingComplete) {
+      // Check if user has completed onboarding
+      const hasOnboarded = localStorage.getItem("mawaeedak_onboarded");
+      if (hasOnboarded || user?.onboardingComplete) {
         setLocation("/");
       } else {
         setLocation("/welcome");
@@ -21,42 +23,62 @@ export default function SplashScreen() {
   return (
     <div
       className="fixed inset-0 flex flex-col items-center justify-center max-w-[480px] mx-auto app-frame"
-      style={{ backgroundColor: "hsl(var(--header-bg))" }}
+      style={{ background: "linear-gradient(180deg, hsl(36 45% 92%) 0%, hsl(36 35% 88%) 100%)" }}
     >
       {/* Subtle radial glow */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
           background:
-            "radial-gradient(ellipse 60% 50% at 50% 50%, hsl(var(--gold)/0.12) 0%, transparent 70%)",
+            "radial-gradient(ellipse 60% 50% at 50% 40%, hsl(38 55% 60% / 0.15) 0%, transparent 70%)",
         }}
       />
 
+      {/* Decorative pattern */}
+      <div className="absolute inset-0 pointer-events-none opacity-[0.04]" style={{
+        backgroundImage: `repeating-linear-gradient(45deg, transparent, transparent 20px, hsl(38 45% 50%) 20px, hsl(38 45% 50%) 21px)`,
+      }} />
+
       <div className="text-center animate-in fade-in zoom-in duration-700 relative z-10">
         {/* Geometric ornament */}
-        <div
-          className="text-5xl mb-5 leading-none"
-          style={{ color: "hsl(var(--nav-active))" }}
-        >
-          ✦
+        <div className="mb-6">
+          <div className="text-6xl" style={{ color: "#C9A063" }}>✦</div>
         </div>
 
         <h1
-          className="text-5xl font-extrabold tracking-tight mb-2 drop-shadow-lg"
-          style={{ color: "hsl(var(--header-fg))" }}
+          className="text-5xl font-extrabold tracking-tight mb-2 drop-shadow-md"
+          style={{ color: "#2F2B25" }}
         >
           مواعيدك
         </h1>
 
         {/* Gold divider */}
-        <div className="gold-divider my-3 w-40 mx-auto" />
+        <div className="h-[2px] w-32 mx-auto my-4" style={{
+          background: "linear-gradient(90deg, transparent, #C9A063, transparent)",
+        }} />
 
         <p
-          className="text-base font-medium tracking-wide"
-          style={{ color: "hsl(var(--header-fg-muted))" }}
+          className="text-lg font-medium tracking-wide"
+          style={{ color: "#6F6557" }}
         >
-          كل موعد له وقته
+          كل يوم منظم.. لحياة أفضل
         </p>
+      </div>
+
+      {/* Loading indicator */}
+      <div className="absolute bottom-16 left-1/2 -translate-x-1/2">
+        <div className="flex gap-1.5">
+          {[0, 1, 2].map(i => (
+            <div
+              key={i}
+              className="w-2 h-2 rounded-full animate-bounce"
+              style={{
+                background: "#C9A063",
+                animationDelay: `${i * 0.15}s`,
+              }}
+            />
+          ))}
+        </div>
       </div>
     </div>
   );

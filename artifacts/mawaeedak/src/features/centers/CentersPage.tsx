@@ -1,15 +1,23 @@
-import { Briefcase, CalendarDays, Gift, Headphones, MessageSquare, Newspaper, Plane } from "lucide-react";
 import { Link } from "wouter";
 import { AppShell } from "@/components/layout/AppShell";
+import {
+  Calculator, Bell, BookOpen, Briefcase, CalendarDays,
+  Gift, Headphones, MessageSquare, Newspaper, Plane, Target
+} from "lucide-react";
 
 const services = [
   { title: "نظم مواعيدك", subtitle: "أضف وأدر مواعيدك بسهولة", icon: CalendarDays, path: "/calendar" },
-  { title: "رحلاتي القادمة", subtitle: "استعرض تفاصيل رحلاتك القادمة", icon: Plane, path: "/centers/travel" },
-  { title: "الشكاوى والاقتراحات", subtitle: "نستمع لك لتطوير تجربتك", icon: MessageSquare, path: "/centers/complaints" },
-  { title: "قدم تهنئة لمن تريد", subtitle: "أرسل تهانيك بسهولة وجمال", icon: Gift, path: "/centers/greetings" },
-  { title: "اتصل بنا", subtitle: "تواصل معنا في أي وقت", icon: Headphones, path: "/support" },
-  { title: "الأخبار", subtitle: "تصفح آخر الأخبار والتحديثات", icon: Newspaper, path: "/centers/news" },
-  { title: "وظائف", subtitle: "اكتشف الفرص الوظيفية المناسبة لك", icon: Briefcase, path: "/centers/jobs", wide: true },
+  { title: "احسب هدفك", subtitle: "حدد هدفك وخطة التوفير", icon: Target, path: "/centers/work" },
+  { title: "تكاليف هدفك", subtitle: "قائمة البنود والمصروفات", icon: Calculator, path: "/centers/work" },
+  { title: "صوتك مسموع", subtitle: "شكاوى واقتراحات", icon: MessageSquare, path: "/centers/complaints" },
+  { title: "الوظائف", subtitle: "فرص وظيفية جديدة", icon: Briefcase, path: "/centers/jobs" },
+  { title: "ذكرني", subtitle: "تذكيرات ومواعيد", icon: Bell, path: "/centers/work" },
+  { title: "الأذكار", subtitle: "أذكار الصباح والمساء", icon: BookOpen, path: "/centers/work" },
+  { title: "بطاقة اليوم", subtitle: "شارك يومك مع الآخرين", icon: Gift, path: "/story" },
+  { title: "رحلاتي القادمة", subtitle: "استعرض رحلاتك القادمة", icon: Plane, path: "/centers/travel" },
+  { title: "قدم تهنئة", subtitle: "أرسل تهانيك بسهولة", icon: Gift, path: "/centers/greetings" },
+  { title: "اتصل بنا", subtitle: "تواصل معنا", icon: Headphones, path: "/support" },
+  { title: "الأخبار", subtitle: "آخر الأخبار والتحديثات", icon: Newspaper, path: "/centers/news" },
 ];
 
 export default function CentersPage() {
@@ -19,7 +27,7 @@ export default function CentersPage() {
         {services.map((service) => {
           const Icon = service.icon;
           return (
-            <Link key={service.title} href={service.path} className={service.wide ? "col-span-2" : undefined}>
+            <Link key={service.title} href={service.path}>
               <article
                 className="flex min-h-[174px] flex-col items-center justify-center rounded-[24px] border bg-white/82 p-5 text-center transition active:scale-[0.98]"
                 style={{

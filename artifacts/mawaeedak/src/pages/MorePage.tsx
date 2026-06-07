@@ -1,7 +1,7 @@
 import { useState } from "react";
 import type { ElementType } from "react";
 import { useLocation } from "wouter";
-import { ChevronLeft, FileText, Headphones, Lamp, LogIn, LogOut, Settings, Share2, ShieldCheck, Sparkles, User } from "lucide-react";
+import { ChevronLeft, FileText, Headphones, Lamp, LogIn, LogOut, Settings, Share2, Shield, ShieldCheck, Sparkles, User } from "lucide-react";
 import desertHeroImg from "@assets/desert-hero.png";
 import { AppShell } from "@/components/layout/AppShell";
 import { MawaeedakLogo } from "@/components/layout/TopBar";
@@ -35,10 +35,11 @@ function MoreRow({
 
 export default function MorePage() {
   const [, setLocation] = useLocation();
-  const { user } = useStore();
+  const { user, isAdmin } = useStore();
   const [isLogoutOpen, setIsLogoutOpen] = useState(false);
-  const isLoggedIn = Boolean(user.email);
-  const name = user.name && !user.name.includes("ط") ? user.name : "أحمد بن محمد";
+  const isLoggedIn = Boolean(user?.email);
+  // Get user's display name or show "زائر مواعيدك" - no hardcoded names
+  const displayName = (user?.name && user.name.length > 0) ? user.name : null;
 
   const shareApp = async () => {
     const url = window.location.origin;
@@ -54,8 +55,9 @@ export default function MorePage() {
     const { authSignOut } = await import("@/lib/auth");
     await authSignOut().catch(() => {});
     localStorage.removeItem("app-user");
+    localStorage.removeItem("mawaeedak_onboarded");
     toast({ title: "تم تسجيل الخروج", duration: 2500 });
-    setLocation("/login");
+    setLocation("/");
   };
 
   return (
@@ -67,7 +69,9 @@ export default function MorePage() {
           <div className="relative z-10 flex min-h-[160px] items-center justify-between gap-4">
             <div className="text-right">
               <p className="text-[25px] font-extrabold" style={{ color: "#2F2B25" }}>مرحباً بك</p>
-              <p className="mt-2 text-[26px] font-extrabold leading-tight" style={{ color: "#2F2B25" }}>{isLoggedIn ? name : "زائر مواعيدك"}</p>
+              <p className="mt-2 text-[26px] font-extrabold leading-tight" style={{ color: "#2F2B25" }}>
+                {displayName ? `يا ${displayName}` : "زائر مواعيدك"}
+              </p>
               <p className="mt-4 flex items-center gap-2 text-[15px] font-bold" style={{ color: "#8A6B3D" }}>
                 نسعد بخدمتك كل يوم <Sparkles className="h-4 w-4" />
               </p>
@@ -77,17 +81,21 @@ export default function MorePage() {
         </section>
 
         <section className="overflow-hidden rounded-[24px] border bg-white/82" style={{ borderColor: "rgba(201,160,99,0.22)", boxShadow: "0 14px 34px rgba(138,107,61,0.10)" }}>
-          <MoreRow icon={User} label="الملف الشخصي" onClick={() => setLocation(isLoggedIn ? "/account" : "/login")} />
-          <MoreRow icon={Settings} label="الإعدادات" onClick={() => setLocation("/account#settings")} />
+          {isLoggedIn && <MoreRow icon={User} label="الملف الشخصي" onClick={() => setLocation("/account")} />}
+          {isLoggedIn && <MoreRow icon={Settings} label="الإعدادات" onClick={() => setLocation("/account#settings")} />}
           <MoreRow icon={Share2} label="مشاركة التطبيق" onClick={shareApp} />
-          <MoreRow icon={Lamp} label="قصة اليوم" onClick={() => setLocation("/story")} />
+          <MoreRow icon={Lamp} label="ستوري اليوم" onClick={() => setLocation("/story")} />
+          <MoreRow icon={Lamp} label="بطاقة يومية" onClick={() => setLocation("/story")} />
           <MoreRow icon={ShieldCheck} label="سياسة الخصوصية" onClick={() => setLocation("/privacy")} />
           <MoreRow icon={FileText} label="الشروط والأحكام" onClick={() => setLocation("/terms")} />
           <MoreRow icon={Headphones} label="المساعدة والدعم" onClick={() => setLocation("/support")} />
+          {isAdmin && (
+            <MoreRow icon={Shield} label="لوحة المالك" onClick={() => setLocation("/admin")} />
+          )}
           {isLoggedIn ? (
             <MoreRow icon={LogOut} label="تسجيل الخروج" danger onClick={() => setIsLogoutOpen(true)} />
           ) : (
-            <MoreRow icon={LogIn} label="تسجيل الدخول" onClick={() => setLocation("/login")} />
+            <MoreRow icon={LogIn} label="تسجيل الدخول / إنشاء حساب" onClick={() => setLocation("/login")} />
           )}
         </section>
 
