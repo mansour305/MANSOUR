@@ -1,253 +1,517 @@
-import { useGetAdminStats, useListAuditLogs } from "@workspace/api-client-react";
+/**
+ * AdminDashboard - لوحة المالك الرئيسية
+ * نظرة شاملة على النظام مع إحصائيات وإجراءات سريعة
+ */
+import { useState } from "react";
+import { useLocation } from "wouter";
 import {
-  Calendar, Bell, Newspaper, Briefcase,
-  AlertTriangle, Loader2, TrendingUp, Clock
+  Users, Calendar, Bell, MessageSquare, Wallet, 
+  TrendingUp, Clock, AlertTriangle, Plus, Settings,
+  Send, BarChart3, FileText, Shield, Zap,
+  CheckCircle, XCircle, Eye, Edit, Trash2,
+  ChevronLeft, Image as ImageIcon, Paintbrush,
+  Newspaper, Briefcase, Loader2, LayoutDashboard
 } from "lucide-react";
-import { format } from "date-fns";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { useToast } from "@/hooks/use-toast";
 
-const STAT_CARDS = [
-  {
-    key: "total_appointments" as const,
-    label: "المواعيد الكلية",
-    icon: Calendar,
-    gradient: "linear-gradient(145deg, hsl(22 72% 18%), hsl(18 72% 14%))",
-    accent: "hsl(38 72% 58%)",
-    glow: "rgba(80,40,10,0.28)",
-  },
-  {
-    key: "total_notifications" as const,
-    label: "الإشعارات",
-    icon: Bell,
-    gradient: "linear-gradient(145deg, hsl(38 65% 18%), hsl(32 65% 14%))",
-    accent: "hsl(38 82% 68%)",
-    glow: "rgba(80,40,10,0.22)",
-  },
-  {
-    key: "total_news" as const,
-    label: "الأخبار",
-    icon: Newspaper,
-    gradient: "linear-gradient(145deg, hsl(210 60% 22%), hsl(210 60% 16%))",
-    accent: "hsl(210 70% 70%)",
-    glow: "rgba(30,60,100,0.22)",
-  },
-  {
-    key: "total_jobs" as const,
-    label: "الوظائف",
-    icon: Briefcase,
-    gradient: "linear-gradient(145deg, hsl(140 45% 20%), hsl(140 45% 15%))",
-    accent: "hsl(140 60% 62%)",
-    glow: "rgba(20,80,40,0.20)",
-  },
-];
+// Heritage Design System Colors
+const GOLD = "hsl(38 62% 52%)";
+const GOLD_LIGHT = "hsl(38 82% 68%)";
+const DARK_BROWN = "hsl(22 62% 18%)";
+const MEDIUM_BROWN = "hsl(22 62% 22%)";
+const CREAM = "hsl(36 42% 94%)";
+const BG = "hsl(38 52% 96%)";
+
+interface StatCardProps {
+  label: string;
+  value: number | string;
+  icon: typeof Users;
+  trend?: string;
+  color: string;
+}
+
+function StatCard({ label, value, icon: Icon, trend, color }: StatCardProps) {
+  return (
+    <div
+      className="rounded-2xl p-4 flex flex-col"
+      style={{
+        background: "linear-gradient(145deg, #FFFBF4 0%, hsl(36 28% 93%) 100%)",
+        border: "1.5px solid rgba(201,160,99,0.3)",
+        boxShadow: "0 4px 16px -4px rgba(80,40,10,0.12)",
+      }}
+    >
+      <div className="flex items-start justify-between mb-3">
+        <div
+          className="w-10 h-10 rounded-xl flex items-center justify-center"
+          style={{ background: `${color}20`, border: `1.5px solid ${color}35` }}
+        >
+          <Icon className="w-5 h-5" style={{ color }} />
+        </div>
+        {trend && (
+          <span className="text-[10px] font-bold px-2 py-1 rounded-full" style={{ 
+            background: "rgba(139,195,74,0.15)", 
+            color: "hsl(88 45% 38%)" 
+          }}>
+            {trend}
+          </span>
+        )}
+      </div>
+      <div className="text-2xl font-extrabold mb-1" style={{ color }}>
+        {value}
+      </div>
+      <div className="text-xs font-medium" style={{ color: "hsl(32 18% 42%)" }}>
+        {label}
+      </div>
+    </div>
+  );
+}
+
+function SectionHeader({ title, icon: Icon }: { title: string; icon: typeof LayoutDashboard }) {
+  return (
+    <div className="flex items-center gap-2 mb-4">
+      <div
+        className="w-1 h-5 rounded-full"
+        style={{ background: `linear-gradient(180deg, ${GOLD}, ${GOLD_LIGHT})` }}
+      />
+      <Icon className="w-4 h-4" style={{ color: GOLD }} />
+      <h2 className="text-base font-extrabold" style={{ color: MEDIUM_BROWN }}>{title}</h2>
+    </div>
+  );
+}
+
+function HeritageCard({ children, className = "" }: { children: React.ReactNode; className?: string }) {
+  return (
+    <div
+      className={`rounded-2xl p-4 ${className}`}
+      style={{
+        background: "linear-gradient(145deg, #FFFBF4 0%, hsl(36 28% 93%) 100%)",
+        border: "1.5px solid rgba(201,160,99,0.3)",
+        boxShadow: "0 4px 16px -4px rgba(80,40,10,0.10)",
+      }}
+    >
+      {children}
+    </div>
+  );
+}
 
 export default function AdminDashboard() {
-  const { data: stats, isLoading: statsLoading } = useGetAdminStats();
-  const { data: logs, isLoading: logsLoading } = useListAuditLogs({ limit: 5 });
+  const [, setLocation] = useLocation();
+  const { toast } = useToast();
+  const [notificationTitle, setNotificationTitle] = useState("");
+  const [notificationBody, setNotificationBody] = useState("");
+  const [sending, setSending] = useState(false);
+  const [addingSchedule, setAddingSchedule] = useState(false);
+  const [scheduleAmount, setScheduleAmount] = useState("");
+  const [scheduleDate, setScheduleDate] = useState("");
+  const [addingTheme, setAddingTheme] = useState(false);
+  const [themeName, setThemeName] = useState("");
 
-  if (statsLoading || logsLoading) {
-    return (
-      <div className="flex flex-col items-center justify-center p-12 space-y-4">
-        <div
-          className="w-14 h-14 rounded-2xl flex items-center justify-center"
-          style={{
-            background: "linear-gradient(145deg, hsl(22 62% 22%), hsl(18 68% 18%))",
-            boxShadow: "0 4px 16px rgba(80,40,10,0.22)",
-            border: "1.5px solid hsl(38 55% 40% / 0.4)",
-          }}
-        >
-          <Loader2 className="w-6 h-6 animate-spin" style={{ color: "hsl(38 82% 68%)" }} />
-        </div>
-        <p className="text-sm" style={{ color: "hsl(38 30% 45%)" }}>جاري تحميل لوحة المالك...</p>
-      </div>
-    );
-  }
+  // Demo stats
+  const stats = {
+    totalUsers: 247,
+    activeUsers: 183,
+    pendingComplaints: 12,
+    upcomingSchedules: 8,
+    sentNotifications: 45,
+    activeThemes: 3,
+  };
+
+  // Demo recent activity
+  const recentActivity = [
+    { id: 1, action: "إضافة", entity: "موعد مالي جديد", user: "مدير النظام", time: "منذ 5 دقائق" },
+    { id: 2, action: "إرسال", entity: "إشعار عام", user: "مدير النظام", time: "منذ ساعة" },
+    { id: 3, action: "تعديل", entity: "ثيم العيد", user: "مدير النظام", time: "منذ 3 ساعات" },
+    { id: 4, action: "إنشاء", entity: "خبر جديد", user: "مدير النظام", time: "منذ يوم" },
+  ];
+
+  // Demo complaints
+  const recentComplaints = [
+    { id: 1, user: "أحمد محمد", type: "شكوى", message: "لم يصلني إشعار الموعد", status: "قيد الانتظار" },
+    { id: 2, user: "فاطمة علي", type: "اقتراح", message: "إضافة مدينة جديدة", status: "تم الحل" },
+    { id: 3, user: "خالد سعود", type: "شكوى", message: "خطأ في الموعد", status: "قيد الانتظار" },
+  ];
+
+  // Demo schedules
+  const upcomingSchedules = [
+    { id: 1, title: "رواتب شهر محرم", date: "2025-07-15", amount: "5,000" },
+    { id: 2, title: "دعم الإيجار", date: "2025-07-20", amount: "2,000" },
+    { id: 3, title: "مكافأة الأداء", date: "2025-07-25", amount: "1,500" },
+  ];
+
+  const handleSendNotification = async () => {
+    if (!notificationTitle.trim() || !notificationBody.trim()) {
+      toast({ title: "يرجى ملء جميع الحقول", variant: "destructive" });
+      return;
+    }
+    setSending(true);
+    await new Promise(r => setTimeout(r, 1500));
+    setSending(false);
+    setNotificationTitle("");
+    setNotificationBody("");
+    toast({ title: "تم إرسال الإشعار بنجاح", variant: "default" });
+  };
+
+  const handleAddSchedule = async () => {
+    if (!scheduleAmount.trim() || !scheduleDate.trim()) {
+      toast({ title: "يرجى ملء جميع الحقول", variant: "destructive" });
+      return;
+    }
+    setAddingSchedule(false);
+    setScheduleAmount("");
+    setScheduleDate("");
+    toast({ title: "تم إضافة الموعد المالي", variant: "default" });
+  };
+
+  const handleAddTheme = async () => {
+    if (!themeName.trim()) {
+      toast({ title: "يرجى إدخال اسم الثيم", variant: "destructive" });
+      return;
+    }
+    setAddingTheme(false);
+    setThemeName("");
+    toast({ title: "تم إضافة الثيم", variant: "default" });
+  };
 
   return (
-    <div className="space-y-5">
-      {/* Section title */}
-      <div className="flex items-center gap-2">
-        <div
-          className="w-1 h-5 rounded-full"
-          style={{ background: "linear-gradient(180deg, hsl(38 82% 62%), hsl(38 60% 42%))" }}
-        />
-        <h2 className="text-[16px] font-extrabold" style={{ color: "hsl(22 62% 22%)" }}>
-          نظرة عامة
-        </h2>
+    <div className="space-y-6">
+      {/* Stats Cards */}
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+        <StatCard label="إجمالي المستخدمين" value={stats.totalUsers} icon={Users} trend="+12%" color={GOLD} />
+        <StatCard label="النشطون اليوم" value={stats.activeUsers} icon={TrendingUp} color="hsl(210 60% 52%)" />
+        <StatCard label="الشكاوى المعلقة" value={stats.pendingComplaints} icon={AlertTriangle} color="hsl(10 65% 52%)" />
+        <StatCard label="المواعيد القادمة" value={stats.upcomingSchedules} icon={Calendar} color="hsl(140 50% 42%)" />
+        <StatCard label="الإشعارات المرسلة" value={stats.sentNotifications} icon={Bell} color="hsl(32 60% 48%)" />
+        <StatCard label="الثيمات النشطة" value={stats.activeThemes} icon={Paintbrush} color="hsl(280 50% 52%)" />
       </div>
 
-      {/* Stat cards — 2×2 grid */}
-      <div className="grid grid-cols-2 gap-3">
-        {(Array.isArray(STAT_CARDS) ? STAT_CARDS : []).map(card => {
-          const Icon = card.icon;
-          const value = stats?.[card.key] ?? 0;
-          return (
-            <div
-              key={card.key}
-              className="rounded-2xl p-4 flex flex-col items-center text-center"
-              style={{
-                background: card.gradient,
-                boxShadow: `0 4px 16px -4px ${card.glow}, 0 1px 0 rgba(255,220,120,0.10) inset`,
-                border: "1px solid rgba(255,220,120,0.15)",
-              }}
-            >
-              <div
-                className="w-10 h-10 rounded-xl flex items-center justify-center mb-2"
-                style={{
-                  background: `${card.accent}20`,
-                  border: `1.5px solid ${card.accent}35`,
-                }}
-              >
-                <Icon className="w-5 h-5" style={{ color: card.accent }} />
-              </div>
-              <div
-                className="text-2xl font-extrabold leading-none mb-1"
-                style={{ color: card.accent }}
-              >
-                {value}
-              </div>
-              <div className="text-[10px] font-semibold" style={{ color: "rgba(255,255,255,0.55)" }}>
-                {card.label}
-              </div>
-            </div>
-          );
-        })}
-      </div>
-
-      {/* Complaints & suggestions overview */}
-      <div className="flex items-center gap-2 pt-1">
-        <div
-          className="w-1 h-5 rounded-full"
-          style={{ background: "linear-gradient(180deg, hsl(38 82% 62%), hsl(38 60% 42%))" }}
-        />
-        <h2 className="text-[16px] font-extrabold" style={{ color: "hsl(22 62% 22%)" }}>
-          الشكاوى والاقتراحات
-        </h2>
-      </div>
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        {[
-          { label: "الإجمالي", value: stats?.total_complaints ?? 0, accent: "hsl(38 72% 50%)" },
-          { label: "الاقتراحات", value: stats?.total_suggestions ?? 0, accent: "hsl(210 60% 52%)" },
-          { label: "بانتظار رد", value: stats?.awaiting_reply ?? 0, accent: "hsl(10 65% 55%)" },
-          { label: "تم حلها", value: stats?.resolved_complaints ?? 0, accent: "hsl(140 50% 45%)" },
-        ].map(s => (
-          <div
-            key={s.label}
-            className="rounded-2xl p-3 text-center"
-            style={{
-              background: "linear-gradient(145deg, #FFFBF4 0%, hsl(36 28% 93%) 100%)",
-              border: "1px solid hsl(38 55% 75% / 0.5)",
-              boxShadow: "0 2px 10px -3px rgba(80,40,10,0.12)",
-            }}
+      {/* Quick Actions */}
+      <HeritageCard>
+        <SectionHeader title="إجراءات سريعة" icon={Zap} />
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-2">
+          <Button 
+            onClick={() => setLocation("/admin/notifications")}
+            className="h-auto py-3 flex flex-col items-center gap-1 rounded-xl"
+            style={{ background: "linear-gradient(145deg, hsl(38 62% 52%), hsl(32 55% 42%))", color: "#fff" }}
           >
-            <div className="text-2xl font-extrabold leading-none mb-1" style={{ color: s.accent }}>
-              {s.value}
-            </div>
-            <div className="text-[10px] font-semibold" style={{ color: "hsl(38 30% 45%)" }}>
-              {s.label}
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {/* Pending complaints banner */}
-      {(stats?.pending_complaints ?? 0) > 0 && (
-        <div
-          className="rounded-2xl p-4 flex items-center justify-between"
-          style={{
-            background: "linear-gradient(145deg, hsl(10 60% 16%), hsl(10 55% 12%))",
-            border: "1px solid hsl(10 55% 38% / 0.4)",
-            boxShadow: "0 3px 12px -3px rgba(150,30,10,0.25)",
-          }}
-        >
-          <div className="flex items-center gap-3">
-            <div
-              className="w-9 h-9 rounded-xl flex items-center justify-center"
-              style={{
-                background: "hsl(10 65% 52% / 0.2)",
-                border: "1.5px solid hsl(10 65% 52% / 0.4)",
-              }}
-            >
-              <AlertTriangle className="w-4 h-4" style={{ color: "hsl(10 75% 65%)" }} />
-            </div>
-            <div>
-              <div className="font-extrabold text-[13px]" style={{ color: "hsl(10 75% 72%)" }}>
-                شكاوى معلقة
-              </div>
-              <div className="text-[11px]" style={{ color: "hsl(10 55% 58%)" }}>
-                تحتاج إلى مراجعة
-              </div>
-            </div>
-          </div>
-          <div
-            className="text-2xl font-extrabold"
-            style={{ color: "hsl(10 75% 68%)" }}
+            <Bell className="w-5 h-5" />
+            <span className="text-[10px] font-bold">إرسال إشعار</span>
+          </Button>
+          <Button 
+            onClick={() => setLocation("/admin/financial")}
+            className="h-auto py-3 flex flex-col items-center gap-1 rounded-xl"
+            style={{ background: "linear-gradient(145deg, hsl(140 50% 42%), hsl(140 45% 35%))", color: "#fff" }}
           >
-            {stats?.pending_complaints}
-          </div>
+            <Plus className="w-5 h-5" />
+            <span className="text-[10px] font-bold">إضافة موعد</span>
+          </Button>
+          <Button 
+            onClick={() => setLocation("/admin/themes")}
+            className="h-auto py-3 flex flex-col items-center gap-1 rounded-xl"
+            style={{ background: "linear-gradient(145deg, hsl(280 50% 52%), hsl(280 45% 45%))", color: "#fff" }}
+          >
+            <Paintbrush className="w-5 h-5" />
+            <span className="text-[10px] font-bold">إضافة ثيم</span>
+          </Button>
+          <Button 
+            onClick={() => setLocation("/admin/members")}
+            className="h-auto py-3 flex flex-col items-center gap-1 rounded-xl"
+            style={{ background: "linear-gradient(145deg, hsl(210 60% 52%), hsl(210 55% 45%))", color: "#fff" }}
+          >
+            <Users className="w-5 h-5" />
+            <span className="text-[10px] font-bold">مستخدم جديد</span>
+          </Button>
+          <Button 
+            onClick={() => setLocation("/admin/reports")}
+            className="h-auto py-3 flex flex-col items-center gap-1 rounded-xl"
+            style={{ background: "linear-gradient(145deg, hsl(32 60% 48%), hsl(32 55% 40%))", color: "#fff" }}
+          >
+            <BarChart3 className="w-5 h-5" />
+            <span className="text-[10px] font-bold">التقارير</span>
+          </Button>
+          <Button 
+            onClick={() => setLocation("/admin/settings")}
+            className="h-auto py-3 flex flex-col items-center gap-1 rounded-xl"
+            style={{ background: "linear-gradient(145deg, hsl(22 62% 48%), hsl(22 55% 40%))", color: "#fff" }}
+          >
+            <Settings className="w-5 h-5" />
+            <span className="text-[10px] font-bold">الإعدادات</span>
+          </Button>
+          <Button 
+            onClick={() => setLocation("/admin/permissions")}
+            className="h-auto py-3 flex flex-col items-center gap-1 rounded-xl"
+            style={{ background: "linear-gradient(145deg, hsl(10 65% 52%), hsl(10 60% 45%))", color: "#fff" }}
+          >
+            <Shield className="w-5 h-5" />
+            <span className="text-[10px] font-bold">الصلاحيات</span>
+          </Button>
+          <Button 
+            onClick={() => setLocation("/admin/social")}
+            className="h-auto py-3 flex flex-col items-center gap-1 rounded-xl"
+            style={{ background: "linear-gradient(145deg, hsl(180 50% 42%), hsl(180 45% 35%))", color: "#fff" }}
+          >
+            <Zap className="w-5 h-5" />
+            <span className="text-[10px] font-bold">الأتمتة</span>
+          </Button>
         </div>
-      )}
+      </HeritageCard>
 
-      {/* Recent activity */}
-      <div
-        className="rounded-2xl overflow-hidden"
-        style={{
-          background: "linear-gradient(145deg, #FFFBF4 0%, hsl(36 28% 93%) 100%)",
-          border: "1px solid hsl(38 55% 72% / 0.5)",
-          boxShadow: "0 3px 12px -3px rgba(80,40,10,0.12)",
-        }}
-      >
-        {/* Card header */}
-        <div
-          className="px-4 py-3 flex items-center gap-2 border-b"
-          style={{
-            background: "linear-gradient(135deg, hsl(22 62% 20%), hsl(18 68% 16%))",
-            borderColor: "hsl(38 55% 38% / 0.4)",
-          }}
-        >
-          <TrendingUp className="w-4 h-4" style={{ color: "hsl(38 72% 62%)" }} />
-          <h3 className="font-extrabold text-[13px]" style={{ color: "hsl(38 82% 80%)" }}>
-            الأنشطة الأخيرة
-          </h3>
-        </div>
-
-        {/* Log list */}
-        <div className="divide-y" style={{ borderColor: "hsl(38 35% 82% / 0.6)" }}>
-          {(Array.isArray(logs) ? logs : []).map((log) => (
-            <div
-              key={log.id}
-              className="px-4 py-3 flex justify-between items-start"
-            >
-              <div>
-                <div className="font-bold text-[13px]" style={{ color: "hsl(22 45% 25%)" }}>
-                  {log.action === "CREATE" ? "إضافة " : log.action === "UPDATE" ? "تعديل " : "حذف "}
-                  {log.entity_name || log.entity_type}
+      {/* Main Content Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Activity & Complaints */}
+        <div className="lg:col-span-2 space-y-6">
+          {/* Recent Activity */}
+          <HeritageCard>
+            <SectionHeader title="النشاطات الأخيرة" icon={Clock} />
+            <div className="space-y-3">
+              {recentActivity.map((item) => (
+                <div key={item.id} className="flex items-center justify-between py-2 border-b border-dashed" style={{ borderColor: "rgba(201,160,99,0.2)" }}>
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: `${GOLD}15` }}>
+                      <CheckCircle className="w-4 h-4" style={{ color: GOLD }} />
+                    </div>
+                    <div>
+                      <div className="text-sm font-bold" style={{ color: MEDIUM_BROWN }}>
+                        {item.action} {item.entity}
+                      </div>
+                      <div className="text-[11px]" style={{ color: "hsl(32 18% 48%)" }}>
+                        بواسطة: {item.user}
+                      </div>
+                    </div>
+                  </div>
+                  <span className="text-[10px]" style={{ color: "hsl(32 18% 52%)" }}>{item.time}</span>
                 </div>
-                <div className="text-[11px] mt-0.5" style={{ color: "hsl(38 30% 52%)" }}>
-                  بواسطة: {log.performed_by}
+              ))}
+            </div>
+          </HeritageCard>
+
+          {/* Upcoming Schedules */}
+          <HeritageCard>
+            <SectionHeader title="المواعيد المالية القادمة" icon={Wallet} />
+            <div className="space-y-3">
+              {upcomingSchedules.map((schedule) => (
+                <div key={schedule.id} className="flex items-center justify-between py-2 border-b border-dashed" style={{ borderColor: "rgba(201,160,99,0.2)" }}>
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: "hsl(140 50% 42% / 0.15)" }}>
+                      <Calendar className="w-4 h-4" style={{ color: "hsl(140 50% 42%)" }} />
+                    </div>
+                    <div>
+                      <div className="text-sm font-bold" style={{ color: MEDIUM_BROWN }}>{schedule.title}</div>
+                      <div className="text-[11px]" style={{ color: "hsl(32 18% 48%)" }}>{schedule.date}</div>
+                    </div>
+                  </div>
+                  <span className="text-sm font-extrabold" style={{ color: "hsl(140 50% 42%)" }}>
+                    {schedule.amount} ر.س
+                  </span>
+                </div>
+              ))}
+            </div>
+            <Button 
+              onClick={() => setAddingSchedule(true)}
+              variant="outline" 
+              className="w-full mt-3 rounded-xl"
+              style={{ borderColor: "rgba(201,160,99,0.3)" }}
+            >
+              <Plus className="w-4 h-4 ml-2" />
+              إضافة موعد مالي
+            </Button>
+            {addingSchedule && (
+              <div className="mt-3 p-3 rounded-xl space-y-3" style={{ background: "rgba(201,160,99,0.08)" }}>
+                <Input 
+                  placeholder="المبلغ (ر.س)"
+                  value={scheduleAmount}
+                  onChange={(e) => setScheduleAmount(e.target.value)}
+                  className="rounded-xl"
+                />
+                <Input 
+                  type="date"
+                  value={scheduleDate}
+                  onChange={(e) => setScheduleDate(e.target.value)}
+                  className="rounded-xl"
+                />
+                <div className="flex gap-2">
+                  <Button onClick={handleAddSchedule} className="flex-1 rounded-xl" style={{ background: GOLD }}>حفظ</Button>
+                  <Button onClick={() => setAddingSchedule(false)} variant="outline" className="flex-1 rounded-xl">إلغاء</Button>
                 </div>
               </div>
-              <div
-                className="flex items-center gap-1 text-[10px] font-semibold whitespace-nowrap"
-                style={{ color: "hsl(38 35% 55%)" }}
-              >
-                <Clock className="w-3 h-3" />
-                {format(new Date(log.created_at), "MM/dd HH:mm")}
-              </div>
+            )}
+          </HeritageCard>
+
+          {/* Recent Complaints */}
+          <HeritageCard>
+            <SectionHeader title="الشكاوى والاقتراحات الأخيرة" icon={MessageSquare} />
+            <div className="space-y-3">
+              {recentComplaints.map((complaint) => (
+                <div key={complaint.id} className="flex items-center justify-between py-2 border-b border-dashed" style={{ borderColor: "rgba(201,160,99,0.2)" }}>
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ 
+                      background: complaint.status === "تم الحل" ? "hsl(140 50% 42% / 0.15)" : "hsl(10 65% 52% / 0.15)"
+                    }}>
+                      {complaint.status === "تم الحل" ? (
+                        <CheckCircle className="w-4 h-4" style={{ color: "hsl(140 50% 42%)" }} />
+                      ) : (
+                        <AlertTriangle className="w-4 h-4" style={{ color: "hsl(10 65% 52%)" }} />
+                      )}
+                    </div>
+                    <div>
+                      <div className="text-sm font-bold" style={{ color: MEDIUM_BROWN }}>{complaint.user}</div>
+                      <div className="text-[11px]" style={{ color: "hsl(32 18% 48%)" }}>{complaint.message}</div>
+                    </div>
+                  </div>
+                  <span 
+                    className="text-[10px] font-bold px-2 py-1 rounded-full"
+                    style={{ 
+                      background: complaint.status === "تم الحل" ? "hsl(140 50% 42% / 0.15)" : "hsl(10 65% 52% / 0.15)",
+                      color: complaint.status === "تم الحل" ? "hsl(140 50% 42%)" : "hsl(10 65% 52%)",
+                    }}
+                  >
+                    {complaint.status}
+                  </span>
+                </div>
+              ))}
             </div>
-          ))}
-          {(!logs || logs.length === 0) && (
-            <div
-              className="text-center py-8 text-[13px] font-semibold"
-              style={{ color: "hsl(38 30% 58%)" }}
+            <Button 
+              onClick={() => setLocation("/admin/complaints")}
+              variant="outline" 
+              className="w-full mt-3 rounded-xl"
+              style={{ borderColor: "rgba(201,160,99,0.3)" }}
             >
-              لا توجد أنشطة مسجلة
+              عرض الكل
+              <ChevronLeft className="w-4 h-4 mr-2" />
+            </Button>
+          </HeritageCard>
+        </div>
+
+        {/* Sidebar Actions */}
+        <div className="space-y-6">
+          {/* Send Notification */}
+          <HeritageCard>
+            <SectionHeader title="إرسال إشعار سريع" icon={Send} />
+            <div className="space-y-3">
+              <Input 
+                placeholder="عنوان الإشعار"
+                value={notificationTitle}
+                onChange={(e) => setNotificationTitle(e.target.value)}
+                className="rounded-xl"
+              />
+              <Input 
+                placeholder="محتوى الإشعار"
+                value={notificationBody}
+                onChange={(e) => setNotificationBody(e.target.value)}
+                className="rounded-xl"
+              />
+              <Button 
+                onClick={handleSendNotification}
+                disabled={sending}
+                className="w-full rounded-xl"
+                style={{ background: "linear-gradient(145deg, hsl(38 62% 52%), hsl(32 55% 42%))", color: "#fff" }}
+              >
+                {sending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4 ml-2" />}
+                {sending ? "جاري الإرسال..." : "إرسال الآن"}
+              </Button>
             </div>
-          )}
+          </HeritageCard>
+
+          {/* Add Theme */}
+          <HeritageCard>
+            <SectionHeader title="إضافة ثيم جديد" icon={Paintbrush} />
+            <div className="space-y-3">
+              <Input 
+                placeholder="اسم الثيم"
+                value={themeName}
+                onChange={(e) => setThemeName(e.target.value)}
+                className="rounded-xl"
+              />
+              <Button 
+                onClick={handleAddTheme}
+                className="w-full rounded-xl"
+                style={{ background: "linear-gradient(145deg, hsl(280 50% 52%), hsl(280 45% 45%))", color: "#fff" }}
+              >
+                <Plus className="w-4 h-4 ml-2" />
+                إضافة ثيم
+              </Button>
+            </div>
+          </HeritageCard>
+
+          {/* Social & Automation */}
+          <HeritageCard>
+            <SectionHeader title="التواصل والأتمتة" icon={Zap} />
+            <div className="space-y-2">
+              {[
+                { name: "X (Twitter)", icon: "X", connected: true, color: "#000" },
+                { name: "Instagram", icon: "IG", connected: false, color: "#E1306C" },
+                { name: "Telegram", icon: "TG", connected: true, color: "#0088CC" },
+                { name: "WhatsApp", icon: "WA", connected: false, color: "#25D366" },
+              ].map((platform) => (
+                <div key={platform.name} className="flex items-center justify-between py-2">
+                  <div className="flex items-center gap-2">
+                    <div 
+                      className="w-8 h-8 rounded-lg flex items-center justify-center text-[10px] font-bold text-white"
+                      style={{ background: platform.color }}
+                    >
+                      {platform.icon}
+                    </div>
+                    <span className="text-sm font-medium">{platform.name}</span>
+                  </div>
+                  <span 
+                    className="text-[10px] font-bold px-2 py-1 rounded-full"
+                    style={{ 
+                      background: platform.connected ? "hsl(140 50% 42% / 0.15)" : "hsl(0 0% 60% / 0.15)",
+                      color: platform.connected ? "hsl(140 50% 42%)" : "hsl(0 0% 50%)",
+                    }}
+                  >
+                    {platform.connected ? "متصل" : "غير متصل"}
+                  </span>
+                </div>
+              ))}
+            </div>
+            <Button 
+              onClick={() => setLocation("/admin/social")}
+              variant="outline" 
+              className="w-full mt-3 rounded-xl"
+              style={{ borderColor: "rgba(201,160,99,0.3)" }}
+            >
+              إدارة الربط والأتمتة
+              <ChevronLeft className="w-4 h-4 mr-2" />
+            </Button>
+          </HeritageCard>
+
+          {/* Quick Links */}
+          <HeritageCard>
+            <SectionHeader title="روابط سريعة" icon={ChevronLeft} />
+            <div className="space-y-2">
+              <Button 
+                onClick={() => setLocation("/admin/story")}
+                variant="ghost" 
+                className="w-full justify-start rounded-xl"
+              >
+                <ImageIcon className="w-4 h-4 ml-2" style={{ color: GOLD }} />
+                بطاقة اليوم
+              </Button>
+              <Button 
+                onClick={() => setLocation("/admin/news-jobs")}
+                variant="ghost" 
+                className="w-full justify-start rounded-xl"
+              >
+                <Newspaper className="w-4 h-4 ml-2" style={{ color: GOLD }} />
+                الأخبار والوظائف
+              </Button>
+              <Button 
+                onClick={() => setLocation("/admin/support")}
+                variant="ghost" 
+                className="w-full justify-start rounded-xl"
+              >
+                <FileText className="w-4 h-4 ml-2" style={{ color: GOLD }} />
+                الدعم والمساعدة
+              </Button>
+            </div>
+          </HeritageCard>
         </div>
       </div>
 
-      {/* Demo mode hint */}
-      <div
+      {/* Demo Mode Banner */}
+      <div 
         className="rounded-2xl p-4 text-center"
         style={{
           background: "linear-gradient(145deg, rgba(139,195,74,0.1), rgba(139,195,74,0.05))",

@@ -195,55 +195,109 @@ function ErrorBox({ message }: { message: string }) {
 }
 
 const navItems: NavItem[] = [
-  { href: "/admin", label: "الرئيسية", icon: LayoutDashboard },
-  { href: "/admin/members", label: "المستخدمون", icon: Users },
-  { href: "/admin/events", label: "المواعيد", icon: Calendar },
-  { href: "/admin/financial", label: "الرواتب والدعم", icon: Wallet },
-  { href: "/admin/official-financial", label: "الدعم الرسمي", icon: Wallet },
-  { href: "/admin/official-prayer", label: "الصلاة الرسمية", icon: Calendar },
-  { href: "/admin/messages", label: "رسائل اليوم", icon: MessageSquare },
-  { href: "/admin/story", label: "ستوري اليوم", icon: ImageIcon },
-  { href: "/admin/themes", label: "الثيمات", icon: Paintbrush },
-  { href: "/admin/notifications", label: "الإشعارات", icon: Bell },
-  { href: "/admin/news-jobs", label: "الأخبار والوظائف", icon: Newspaper },
-  { href: "/admin/complaints", label: "الشكاوى", icon: MessageSquare },
-  { href: "/admin/social", label: "التواصل والأتمتة", icon: Zap },
-  { href: "/admin/reports", label: "التقارير", icon: FileText },
-  { href: "/admin/permissions", label: "الصلاحيات", icon: Shield },
-  { href: "/admin/settings", label: "الإعدادات", icon: Settings },
-  { href: "/admin/support", label: "الدعم والمساعدة", icon: Headphones },
-  { href: "/admin/data-layer", label: "طبقة البيانات", icon: Database },
-  { href: "/admin/automation", label: "الأتمتة", icon: Zap },
+  { href: "/admin", label: "1. الرئيسية", icon: LayoutDashboard },
+  { href: "/admin/members", label: "2. المستخدمون", icon: Users },
+  { href: "/admin/financial", label: "3. الرواتب والدعم", icon: Wallet },
+  { href: "/admin/official-financial", label: "   المواعيد المالية", icon: Calendar },
+  { href: "/admin/official-prayer", label: "   مواقيت الصلاة", icon: Calendar },
+  { href: "/admin/messages", label: "4. الرسائل اليومية", icon: MessageSquare },
+  { href: "/admin/story", label: "5. بطاقة اليوم", icon: ImageIcon },
+  { href: "/admin/themes", label: "6. الثيمات", icon: Paintbrush },
+  { href: "/admin/notifications", label: "7. الإشعارات", icon: Bell },
+  { href: "/admin/complaints", label: "8. الشكاوى والاقتراحات", icon: MessageSquare },
+  { href: "/admin/news-jobs", label: "9. الأخبار والوظائف", icon: Newspaper },
+  { href: "/admin/reports", label: "10. التقارير", icon: FileText },
+  { href: "/admin/permissions", label: "11. الصلاحيات", icon: Shield },
+  { href: "/admin/settings", label: "12. الإعدادات", icon: Settings },
+  { href: "/admin/social", label: "13. التواصل والأتمتة", icon: Zap },
+  { href: "/admin/support", label: "14. الدعم والمساعدة", icon: Headphones },
 ];
 
 function AdminSidebar({ currentPath, onNavigate }: { currentPath: string; onNavigate?: () => void }) {
   return (
-    <aside className="h-full flex flex-col gap-4 p-4" style={{ background: "hsl(36 35% 96%)" }}>
-      <div className="px-3 py-4 rounded-2xl border" style={{ background: "#fff", borderColor: "hsl(38 45% 78%)" }}>
-        <div className="font-extrabold text-xl" style={{ color: "hsl(35 45% 38%)" }}>مواعيدك</div>
-        <div className="text-xs mt-1" style={{ color: "hsl(32 22% 42%)" }}>لوحة المالك</div>
+    <aside 
+      className="h-full flex flex-col" 
+      style={{ 
+        background: "linear-gradient(180deg, #FFFFFF 0%, #FAF5EE 50%, #F5EDDE 100%)",
+        borderRight: "1px solid rgba(201,160,99,0.3)",
+      }}
+    >
+      {/* Logo Header */}
+      <div 
+        className="p-5 border-b"
+        style={{ 
+          background: "linear-gradient(135deg, hsl(22 62% 18%) 0%, hsl(18 68% 14%) 100%)",
+          borderColor: "hsl(38 60% 40% / 0.4)",
+        }}
+      >
+        <div className="flex items-center gap-3">
+          <div 
+            className="w-12 h-12 rounded-xl flex items-center justify-center font-extrabold text-xl"
+            style={{ 
+              background: "linear-gradient(145deg, hsl(38 62% 52%), hsl(32 55% 42%))",
+              color: "#fff",
+              boxShadow: "0 4px 12px rgba(138,107,61,0.35)",
+            }}
+          >
+            م
+          </div>
+          <div>
+            <div className="font-extrabold text-lg" style={{ color: "#F5EDDE" }}>مواعيدك</div>
+            <div className="text-xs" style={{ color: "hsl(38 55% 60%)" }}>لوحة المالك</div>
+          </div>
+        </div>
       </div>
 
-      <nav className="flex-1 overflow-y-auto space-y-1 pr-1">
+      {/* Navigation */}
+      <nav className="flex-1 overflow-y-auto py-4 px-3">
         {navItems.map((item) => {
           const Icon = item.icon;
+          const isSubItem = item.label.startsWith("   ");
+          const label = isSubItem ? item.label.trim() : item.label;
           const active = currentPath === item.href || (item.href !== "/admin" && currentPath.startsWith(item.href));
+          
           return (
             <Link key={item.href} href={item.href} onClick={() => onNavigate?.()}>
               <div
-                className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-bold transition-colors cursor-pointer"
+                className={`flex items-center gap-3 rounded-xl px-3 py-2.5 mb-1 text-sm font-bold transition-all cursor-pointer ${isSubItem ? "mr-4 text-xs" : ""}`}
                 style={{
-                  background: active ? "linear-gradient(135deg, hsl(38 62% 52%), hsl(32 55% 42%))" : "transparent",
+                  background: active 
+                    ? "linear-gradient(135deg, hsl(38 62% 52%), hsl(32 55% 42%))" 
+                    : "transparent",
                   color: active ? "#fff" : "hsl(24 22% 24%)",
+                  boxShadow: active ? "0 4px 12px rgba(138,107,61,0.3)" : "none",
+                }}
+                onMouseEnter={(e) => {
+                  if (!active) {
+                    e.currentTarget.style.background = "rgba(201,160,99,0.12)";
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!active) {
+                    e.currentTarget.style.background = "transparent";
+                  }
                 }}
               >
-                <Icon className="h-4 w-4" />
-                <span>{item.label}</span>
+                <Icon className={isSubItem ? "h-3.5 w-3.5" : "h-4 w-4"} />
+                <span>{label}</span>
               </div>
             </Link>
           );
         })}
       </nav>
+
+      {/* Footer */}
+      <div 
+        className="p-4 border-t text-center"
+        style={{ 
+          background: "rgba(201,160,99,0.08)",
+          borderColor: "rgba(201,160,99,0.2)",
+        }}
+      >
+        <p className="text-[10px]" style={{ color: "hsl(32 18% 42%)" }}>
+          © 2025 مواعيدك
+        </p>
+      </div>
     </aside>
   );
 }
@@ -583,44 +637,103 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
   }
 
   return (
-    <div className="min-h-screen rtl" style={{ background: "hsl(36 34% 95%)", color: "hsl(24 22% 20%)" }}>
-      <div className="hidden lg:fixed lg:inset-y-0 lg:right-0 lg:z-40 lg:block lg:w-72 lg:border-l" style={{ borderColor: "hsl(38 32% 82%)" }}>
+    <div 
+      className="min-h-screen rtl" 
+      style={{ 
+        background: "linear-gradient(180deg, #FBF5EA 0%, #F5EDDE 50%, #EDE3D0 100%)",
+        color: "hsl(24 22% 20%)" 
+      }}
+    >
+      {/* Desktop Sidebar */}
+      <div 
+        className="hidden lg:fixed lg:inset-y-0 lg:right-0 lg:z-40 lg:block lg:w-72" 
+        style={{ 
+          boxShadow: "-4px 0 24px rgba(80,40,10,0.08)"
+        }}
+      >
         <AdminSidebar currentPath={location} />
       </div>
 
-      <header
-        className="sticky top-0 z-30 flex h-16 items-center justify-between border-b px-4 lg:pr-80"
-        style={{ background: "rgba(255, 251, 244, 0.92)", borderColor: "hsl(38 32% 82%)", backdropFilter: "blur(12px)" }}
-      >
-        <div className="flex items-center gap-2 lg:hidden">
-          <Sheet>
-            <SheetTrigger asChild>
-              <Button variant="outline" size="icon" aria-label="فتح القائمة">
-                <Menu className="h-4 w-4" />
+      {/* Main Content Area */}
+      <div className="lg:pr-72">
+        {/* Header */}
+        <header
+          className="sticky top-0 z-30 border-b px-4 lg:px-8"
+          style={{ 
+            background: "rgba(255, 251, 244, 0.95)", 
+            borderColor: "rgba(201,160,99,0.25)", 
+            backdropFilter: "blur(16px)",
+            boxShadow: "0 2px 12px rgba(80,40,10,0.06)",
+          }}
+        >
+          <div className="flex h-16 items-center justify-between gap-4">
+            {/* Mobile Menu Button */}
+            <div className="lg:hidden">
+              <Sheet>
+                <SheetTrigger asChild>
+                  <Button 
+                    variant="outline" 
+                    size="icon" 
+                    className="rounded-xl"
+                    style={{ 
+                      borderColor: "rgba(201,160,99,0.3)",
+                      background: "linear-gradient(145deg, #FFFBF4, #F5EDDE)",
+                    }}
+                    aria-label="فتح القائمة"
+                  >
+                    <Menu className="h-5 w-5" style={{ color: "#A78042" }} />
+                  </Button>
+                </SheetTrigger>
+                <SheetContent side="right" className="p-0 w-80">
+                  <AdminSidebar currentPath={location} onNavigate={() => setMenuOpen(false)} />
+                </SheetContent>
+              </Sheet>
+            </div>
+
+            {/* Date & Greeting */}
+            <div className="flex-1">
+              <div className="font-extrabold text-lg" style={{ color: "hsl(22 62% 22%)" }}>
+                لوحة المالك
+              </div>
+              <div className="text-xs" style={{ color: "hsl(32 18% 42%)" }}>
+                مرحباً، {userLabel} · {new Date().toLocaleDateString('ar-SA', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+              </div>
+            </div>
+
+            {/* Header Actions */}
+            <div className="flex items-center gap-3">
+              <Button 
+                type="button" 
+                variant="outline" 
+                onClick={handleLogout} 
+                className="gap-2 rounded-xl"
+                style={{ 
+                  borderColor: "rgba(201,160,99,0.3)",
+                  background: "linear-gradient(145deg, #FFFBF4, #F5EDDE)",
+                  color: "hsl(10 55% 48%)",
+                }}
+              >
+                <LogOut className="h-4 w-4" />
+                <span className="hidden sm:inline">تسجيل الخروج</span>
               </Button>
-            </SheetTrigger>
-            <SheetContent side="right" className="p-0 w-72">
-              <AdminSidebar currentPath={location} onNavigate={() => setMenuOpen(false)} />
-            </SheetContent>
-          </Sheet>
-        </div>
+            </div>
+          </div>
+        </header>
 
-        <div>
-          <div className="font-extrabold" style={{ color: "hsl(35 45% 34%)" }}>لوحة المالك</div>
-          <div className="text-xs" style={{ color: "hsl(32 18% 38%)" }}>مرحباً، {userLabel}</div>
-        </div>
+        {/* Page Content */}
+        <main>
+          <div className="mx-auto w-full p-4 sm:p-6 lg:p-8">
+            {children}
+          </div>
+        </main>
 
-        <Button type="button" variant="outline" onClick={handleLogout} className="gap-2">
-          <LogOut className="h-4 w-4" />
-          تسجيل الخروج
-        </Button>
-      </header>
-
-      <main className="lg:pr-72">
-        <div className="mx-auto w-full max-w-7xl p-4 sm:p-6 lg:p-8">
-          {children}
-        </div>
-      </main>
+        {/* Footer */}
+        <footer className="border-t px-8 py-6 text-center" style={{ borderColor: "rgba(201,160,99,0.2)", background: "rgba(201,160,99,0.05)" }}>
+          <p className="text-xs" style={{ color: "hsl(32 18% 48%)" }}>
+            © 2025 مواعيدك — جميع الحقوق محفوظة
+          </p>
+        </footer>
+      </div>
     </div>
   );
 }
