@@ -617,7 +617,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
 
           <Button 
             type="submit" 
-            disabled={submitting || !isSupabaseEnabled} 
+            disabled={submitting && isSupabaseEnabled} 
             className="w-full h-12 font-bold rounded-xl"
             style={{ background: "#C9A063", color: "#FFFFFF" }}
           >
