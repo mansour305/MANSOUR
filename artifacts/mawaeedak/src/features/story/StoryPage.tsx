@@ -11,13 +11,16 @@ import { useGetPrayerTimes } from "@workspace/api-client-react";
 import { useGatewayFinancialCountdown } from "@/hooks/useGatewayData";
 import { useStore } from "@/hooks/useStore";
 import { formatHijriDate, formatGregorianDate, getDayName } from "@/lib/utils";
-import { Copy, Share2, Save, CheckCircle2, Loader2 } from "lucide-react";
+import { Copy, Share2, Save, CheckCircle2, Loader2, Landmark } from "lucide-react";
 import { useTimeFormat } from "@/hooks/useTimeFormat";
+import desertHeroImg from "@assets/desert-hero.png";
 
-const BG_BROWN = "#5C3D11";
-const GOLD = "#D4AF37";
-const CREAM = "#FFF8E7";
-const DARK_GOLD = "#B8860B";
+const BG_CREAM = "hsl(36 38% 96%)";
+const BG_CARD = "#FAF7F2";
+const BROWN = "#8A6B3D";
+const GOLD = "#C9A063";
+const INK = "#2F2B25";
+const WARM_BG = "#F3E8D6";
 
 const PRAYER_KEYS: [string, string][] = [
   ["الفجر", "fajr"],
@@ -177,21 +180,31 @@ export default function StoryPage() {
   return (
     <AppShell title="ستوري اليوم">
       <div className="space-y-5">
-        {/* الستوري المرئي */}
-        <Card
-          className="overflow-hidden"
-          style={{
-            background: BG_BROWN,
-            border: `2px solid ${GOLD}`,
-            borderRadius: "20px",
-            boxShadow: `0 20px 50px rgba(92,61,17,0.35), 0 0 30px rgba(212,175,55,0.15) inset`,
+        {/* بطاقة الستوري - نفس هوية التطبيق */}
+        <div 
+          className="relative overflow-hidden rounded-[28px] border"
+          style={{ 
+            borderColor: "rgba(201,160,99,0.28)", 
+            boxShadow: "0 18px 45px rgba(138,107,61,0.18)",
+            height: "480px"
           }}
         >
-          <CardContent className="p-5 space-y-4" style={{ color: CREAM }}>
+          {/* خلفية الصورة */}
+          <img 
+            src={desertHeroImg} 
+            alt="" 
+            className="absolute inset-0 h-full w-full object-cover" 
+          />
+          
+          {/* تدرج كريمي من اليمين */}
+          <div className="absolute inset-0 bg-gradient-to-l from-[#FAF7F2]/95 via-[#FAF7F2]/75 to-transparent" />
+          
+          {/* محتوى البطاقة */}
+          <div className="relative z-10 flex h-full flex-col p-5">
             {/* الشعار */}
-            <div className="text-center">
-              <div className="text-3xl mb-1" style={{ color: GOLD }}>✦</div>
-              <h1 className="text-3xl font-extrabold tracking-tight" style={{ color: CREAM }}>
+            <div className="text-center mb-3">
+              <div className="text-2xl mb-1" style={{ color: GOLD }}>✦</div>
+              <h1 className="text-3xl font-extrabold tracking-tight" style={{ color: INK }}>
                 مواعيدك
               </h1>
               <div className="h-[2px] w-24 mx-auto mt-2" style={{ background: `linear-gradient(90deg, transparent, ${GOLD}, transparent)` }} />
@@ -199,27 +212,30 @@ export default function StoryPage() {
 
             {/* التاريخ */}
             {showDate && (
-              <div className="text-center space-y-1">
-                <div className="text-lg font-extrabold" style={{ color: GOLD }}>
+              <div className="text-center space-y-1 mb-3">
+                <div className="text-xl font-extrabold" style={{ color: BROWN }}>
                   {getDayName()}
                 </div>
-                <div className="flex justify-center gap-4 text-sm font-bold">
+                <div className="flex justify-center gap-4 text-sm font-bold" style={{ color: INK }}>
                   <span>📅 {formatHijriDate()}</span>
                   <span>📆 {formatGregorianDate()}</span>
                 </div>
               </div>
             )}
 
+            {/* Divider */}
+            <div className="h-[1px] w-full my-2" style={{ background: `linear-gradient(90deg, transparent, ${GOLD}, transparent)` }} />
+
             {/* رسالة اليوم */}
             {showMessage && customMessage.trim() && (
-              <div
-                className="rounded-xl border p-3 text-center"
-                style={{
-                  background: "rgba(255,255,255,0.06)",
-                  borderColor: "rgba(212,175,55,0.25)",
+              <div 
+                className="rounded-xl border p-3 text-center mb-2"
+                style={{ 
+                  background: "rgba(255,255,255,0.85)",
+                  borderColor: "rgba(201,160,99,0.25)",
                 }}
               >
-                <p className="text-sm font-medium leading-relaxed" style={{ color: CREAM }}>
+                <p className="text-sm font-medium leading-relaxed" style={{ color: INK }}>
                   {customMessage}
                 </p>
               </div>
@@ -227,20 +243,20 @@ export default function StoryPage() {
 
             {/* العدادات المالية */}
             {showCountdowns && countdowns.length > 0 && (
-              <div
-                className="rounded-xl border p-3"
-                style={{
-                  background: "rgba(255,255,255,0.04)",
-                  borderColor: "rgba(212,175,55,0.18)",
+              <div 
+                className="rounded-xl border p-3 mb-2"
+                style={{ 
+                  background: "rgba(255,255,255,0.75)",
+                  borderColor: "rgba(201,160,99,0.20)",
                 }}
               >
-                <div className="text-center text-xs font-bold mb-2" style={{ color: GOLD }}>
+                <div className="text-center text-xs font-bold mb-2" style={{ color: BROWN }}>
                   ⏳ كم باقي على:
                 </div>
                 <div className="space-y-1.5">
                   {countdowns.map((c: any, i: number) => (
                     <div key={i} className="flex items-center justify-between">
-                      <span className="text-xs font-medium" style={{ color: CREAM }}>
+                      <span className="text-xs font-medium" style={{ color: INK }}>
                         {EVENT_ICONS[c.type] ?? "📅"} {c.name}
                       </span>
                       <span className="shrink-0 text-xs font-extrabold" style={{ color: GOLD }}>
@@ -253,28 +269,32 @@ export default function StoryPage() {
             )}
 
             {showCountdowns && countdowns.length === 0 && (
-              <div className="rounded-xl border p-3 text-center" style={{ borderColor: "rgba(212,175,55,0.15)" }}>
-                <p className="text-xs opacity-60">لا توجد مواعيد مالية حالياً</p>
+              <div 
+                className="rounded-xl border p-3 text-center mb-2"
+                style={{ borderColor: "rgba(201,160,99,0.15)" }}
+              >
+                <p className="text-xs opacity-60" style={{ color: INK }}>لا توجد مواعيد مالية حالياً</p>
               </div>
             )}
 
             {/* مواقيت الصلاة */}
             {showPrayer && (
-              <div
-                className="rounded-xl border p-3"
-                style={{
-                  background: "rgba(255,255,255,0.04)",
-                  borderColor: "rgba(212,175,55,0.18)",
+              <div 
+                className="rounded-xl border p-3 mt-auto"
+                style={{ 
+                  background: WARM_BG,
+                  borderColor: "rgba(201,160,99,0.20)",
                 }}
               >
-                <div className="text-center text-xs font-bold mb-2" style={{ color: GOLD }}>
-                  🕌 مواقيت الصلاة
+                <div className="flex items-center justify-center gap-2 mb-2">
+                  <Landmark className="h-4 w-4" style={{ color: GOLD }} />
+                  <span className="text-xs font-bold" style={{ color: BROWN }}>مواقيت الصلاة</span>
                 </div>
                 <div className="grid grid-cols-3 gap-x-2 gap-y-1">
                   {PRAYER_KEYS.map(([label, key]) => (
                     <div key={key} className="flex flex-col items-center">
-                      <span className="text-[10px] opacity-60">{label}</span>
-                      <span className="text-[11px] font-bold" style={{ color: CREAM }}>
+                      <span className="text-[10px] opacity-60" style={{ color: INK }}>{label}</span>
+                      <span className="text-[11px] font-bold" style={{ color: BROWN }}>
                         {formatTime(prayers[key as keyof typeof prayers])}
                       </span>
                     </div>
@@ -284,17 +304,16 @@ export default function StoryPage() {
             )}
 
             {/* الفوتر */}
-            <div className="mt-auto pt-1">
-              <div className="h-[1px] w-32 mx-auto mb-2" style={{ background: `linear-gradient(90deg, transparent, ${GOLD}, transparent)` }} />
+            <div className="mt-auto pt-2">
               <div className="text-center text-[10px] font-extrabold tracking-wider" style={{ color: GOLD }}>
                 مواعيدك
               </div>
-              <div className="text-center text-[8px] opacity-50 mt-0.5">
+              <div className="text-center text-[8px] opacity-50" style={{ color: INK }}>
                 جميع الحقوق محفوظة © {new Date().getFullYear()}
               </div>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
 
         {/* رسالة اليوم */}
         <div className="space-y-1.5">
@@ -310,9 +329,9 @@ export default function StoryPage() {
         </div>
 
         {/* عناصر الستوري */}
-        <div
+        <div 
           className="rounded-2xl border p-4 space-y-3"
-          style={{
+          style={{ 
             background: "linear-gradient(145deg, #FFFBF4, #F3E8D6)",
             borderColor: "rgba(201,160,99,0.22)",
           }}
