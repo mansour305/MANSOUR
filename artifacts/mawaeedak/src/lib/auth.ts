@@ -25,7 +25,7 @@ const DEMO_ADMIN_USERNAME = "admin";
 const DEMO_ADMIN_PASSWORD = import.meta.env.VITE_DEMO_ADMIN_PASSWORD;
 const DEMO_SESSION_KEY = "mawaeedak_demo_session";
 const isDemoAuthAllowed = import.meta.env.DEV && typeof DEMO_ADMIN_PASSWORD === "string" && DEMO_ADMIN_PASSWORD.length > 0;
-const ADMIN_ROLES = ["admin", "super_admin"] as const;
+const ADMIN_ROLES = ["admin", "super_admin", "owner"] as const;
 
 // ── Supabase Auth ──────────────────────────────────────────────────────────
 
