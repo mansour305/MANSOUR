@@ -3,7 +3,7 @@ import { Link } from "wouter";
 import desertHeroImg from "@assets/desert-hero.png";
 import { AppShell } from "@/components/layout/AppShell";
 import { useGetPrayerTimes } from "@workspace/api-client-react";
-import { useGatewayFinancialCountdown } from "@/hooks/useGatewayData";
+import { useGatewayDailyMessages, useGatewayFinancialCountdown } from "@/hooks/useGatewayData";
 import { useStore } from "@/hooks/useStore";
 import { formatGregorianDate, formatHijriDate, getDayName } from "@/lib/utils";
 import { useOfficialPrayerTimes, useOfficialFinancialDates } from "@/hooks/useOfficialData";
@@ -15,6 +15,7 @@ const GOLD = "#C9A063";
 const BROWN = "#8A6B3D";
 const INK = "#2F2B25";
 const PAPER = "#FAF7F2";
+const DEFAULT_DAILY_MESSAGE = "ابدأ يومك بنية طيبة، وتوكل على الله في كل خطوة.";
 
 function currentGreeting() {
   const hour = new Date().getHours();
@@ -28,11 +29,10 @@ function PrayerIcon({ keyName }: { keyName: string }) {
 }
 
 /**
- * HomePage shows today's prayer times, a greeting hero section, and a list of
- * upcoming financial events. It prefers official prayer and financial data
- * fetched via Supabase. When official data is unavailable, it falls back
- * to the existing gateway services. This ensures accurate and reliable
- * information for users while maintaining backward compatibility.
+ * HomePage shows today's prayer times, a greeting hero section, today's admin
+ * message, and a list of upcoming financial events. The daily message is now
+ * read from the same Data Gateway used by /admin/messages so owner edits have
+ * a visible user-facing effect instead of leaving a hardcoded placeholder.
  */
 export default function HomePage() {
   const { user } = useStore();
@@ -45,9 +45,23 @@ export default function HomePage() {
   const todayIso = new Date().toISOString().split("T")[0];
   // Fetch official prayer times
   const { data: officialPrayer } = useOfficialPrayerTimes(cityKey, todayIso);
-  // Fetch financial events: official and fallback
+  // Fetch admin-managed daily messages and financial events
+  const { data: dailyMessages } = useGatewayDailyMessages();
   const { data: officialFinancial } = useOfficialFinancialDates();
   const { data: gatewayFinancial, isLoading: isFinancialLoading } = useGatewayFinancialCountdown();
+
+  const todayMessage = useMemo(() => {
+    if (!Array.isArray(dailyMessages)) return DEFAULT_DAILY_MESSAGE;
+
+    const activeMessages = dailyMessages
+      .filter((message: any) => message?.is_active !== false)
+      .filter((message: any) => typeof message?.message === "string" && message.message.trim().length > 0);
+
+    const datedMessage = activeMessages.find((message: any) => message.display_date === todayIso);
+    const selectedMessage = datedMessage ?? activeMessages[0];
+
+    return selectedMessage?.message?.trim() || DEFAULT_DAILY_MESSAGE;
+  }, [dailyMessages, todayIso]);
 
   // Map prayer times: prefer official if available
   const prayers = useMemo(() => {
@@ -177,7 +191,7 @@ export default function HomePage() {
               {currentGreeting()}{displayName ? ` يا ${displayName}` : ""}
             </h3>
             <p className="mt-4 text-[16px] font-semibold leading-8" style={{ color: "#5D554A" }}>
-              ابدأ يومك بنية طيبة، وتوكل على الله في كل خطوة.
+              {todayMessage}
             </p>
             <span className="mt-4 text-2xl" style={{ color: GOLD }}>♥</span>
           </div>
