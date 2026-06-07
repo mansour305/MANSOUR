@@ -1,10 +1,10 @@
-import { useMemo, useCallback } from "react";
+import { useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import DailyCardPreview from "./DailyCardPreview";
 import { useStore } from "@/hooks/useStore";
 import { formatHijriDate, formatGregorianDate, getDayName } from "@/lib/utils";
-import { Copy, Share2, Download, Loader2 } from "lucide-react";
+import { Copy, Share2, Download } from "lucide-react";
 
 // Saudi-based daily messages pool
 const DAILY_MESSAGES = [
@@ -28,6 +28,10 @@ const DAILY_MESSAGES = [
   "توكل على الله في كل أمر، فهو خير معين.",
   "ازرع خيراً حيثما حللت، تحصد خيراً حيثما كنت.",
   "ابدأ يومك بالصلاة، واختم يومك بالاستغفار.",
+  "الفرج قريب، فلا تيأس.",
+  "ازرع优良品德，收获美好人生。",
+  "ابدأ بالتوكل على الله تنجح.",
+  "أحسن إلى الناس تستعبد قلوبهم.",
 ];
 
 // Get today's message based on Saudi date
@@ -44,14 +48,11 @@ export default function DailyCardPage() {
   const { user } = useStore();
 
   const message = useMemo(() => getTodayMessage(), []);
-  const isLoading = false;
 
   // Generate text for copy
-  const generateText = useCallback((): string => {
-    const displayName = (user?.name && user.name.length > 0) ? user.name.split(" ")[0] : null;
+  const generateText = () => {
     const saudiHour = new Date(new Date().toLocaleString("en-US", { timeZone: "Asia/Riyadh" })).getHours();
     const greeting = saudiHour < 12 ? "صباح الخير" : "مساء الخير";
-    const fullGreeting = displayName ? `${greeting} يا ${displayName}` : greeting;
 
     const lines = [
       "✦ مواعيدك ✦",
@@ -59,7 +60,7 @@ export default function DailyCardPage() {
       `${formatHijriDate()} هـ`,
       `${formatGregorianDate()} م`,
       "",
-      fullGreeting,
+      greeting,
       message,
       "",
       "واذكروا الله ذكراً كثيراً",
@@ -69,7 +70,7 @@ export default function DailyCardPage() {
     ];
 
     return lines.join("\n");
-  }, [user, message]);
+  };
 
   const handleCopy = async () => {
     try {
@@ -107,40 +108,41 @@ export default function DailyCardPage() {
   };
 
   return (
-    <div className="min-h-screen" style={{ background: "linear-gradient(180deg, #FDF9F3 0%, #F3E8D6 100%)" }}>
-      <div className="flex flex-col items-center justify-start pt-6 pb-8 px-4">
-        <DailyCardPreview message={message} />
-        
-        <div className="flex gap-3 mt-6 w-full max-w-[360px]">
-          <Button 
-            className="flex-1 h-12 rounded-xl text-sm font-bold"
-            style={{ background: "#C9A063", color: "#FFFFFF" }}
-            onClick={handleCopy}
-            disabled={isLoading}
-          >
-            {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Copy className="w-4 h-4 ml-1" />}
-            نسخ
-          </Button>
-          <Button 
-            variant="outline"
-            className="flex-1 h-12 rounded-xl text-sm font-bold"
-            style={{ borderColor: "rgba(201,160,99,0.4)", color: "#8A6B3D" }}
-            onClick={handleShare}
-            disabled={isLoading}
-          >
-            <Share2 className="w-4 h-4 ml-1" />
-            مشاركة
-          </Button>
-          <Button 
-            variant="outline"
-            className="flex-1 h-12 rounded-xl text-sm font-bold"
-            style={{ borderColor: "rgba(201,160,99,0.4)", color: "#8A6B3D" }}
-            onClick={handleSaveImage}
-          >
-            <Download className="w-4 h-4 ml-1" />
-            صورة
-          </Button>
-        </div>
+    <div 
+      className="min-h-screen flex flex-col items-center justify-start pt-6 pb-8 px-4"
+      style={{ background: "linear-gradient(180deg, #FDF9F3 0%, #F3E8D6 100%)" }}
+    >
+      {/* Card preview only - no header, no bottom nav */}
+      <DailyCardPreview message={message} />
+      
+      {/* Action buttons only */}
+      <div className="flex gap-3 mt-6 w-full max-w-[360px]">
+        <Button 
+          className="flex-1 h-12 rounded-xl text-sm font-bold"
+          style={{ background: "#C9A063", color: "#FFFFFF" }}
+          onClick={handleCopy}
+        >
+          <Copy className="w-4 h-4 ml-1" />
+          نسخ
+        </Button>
+        <Button 
+          variant="outline"
+          className="flex-1 h-12 rounded-xl text-sm font-bold"
+          style={{ borderColor: "rgba(201,160,99,0.4)", color: "#8A6B3D" }}
+          onClick={handleShare}
+        >
+          <Share2 className="w-4 h-4 ml-1" />
+          مشاركة
+        </Button>
+        <Button 
+          variant="outline"
+          className="flex-1 h-12 rounded-xl text-sm font-bold"
+          style={{ borderColor: "rgba(201,160,99,0.4)", color: "#8A6B3D" }}
+          onClick={handleSaveImage}
+        >
+          <Download className="w-4 h-4 ml-1" />
+          صورة
+        </Button>
       </div>
     </div>
   );

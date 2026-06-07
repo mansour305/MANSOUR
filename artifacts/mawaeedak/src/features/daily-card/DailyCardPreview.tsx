@@ -12,8 +12,8 @@ const BROWN = "#8A6B3D";
 const INK = "#2F2B25";
 
 // SVG Icons
-const CalendarIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={GOLD} strokeWidth="2">
+const CalIcon = () => (
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={GOLD} strokeWidth="1.5">
     <rect x="3" y="4" width="18" height="18" rx="2"/>
     <line x1="16" y1="2" x2="16" y2="6"/>
     <line x1="8" y1="2" x2="8" y2="6"/>
@@ -22,46 +22,45 @@ const CalendarIcon = () => (
 );
 
 const QuoteIcon = () => (
-  <svg width="24" height="24" viewBox="0 0 24 24" fill={GOLD}>
+  <svg width="22" height="22" viewBox="0 0 24 24" fill={GOLD}>
     <path d="M6 17h3l2-4V7H5v6h3l-2 4zm8 0h3l2-4V7h-6v6h3l-2 4z"/>
   </svg>
 );
 
-const MosqueIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill={GOLD}>
+const PrayerIcon = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill={GOLD}>
     <path d="M12 2L14 6H10L12 2ZM12 6V8M12 8C8 8 4 10 4 14V18H20V14C20 10 16 8 12 8ZM6 18V22H18V18"/>
   </svg>
 );
 
 const ClockIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={GOLD} strokeWidth="2">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={GOLD} strokeWidth="1.5">
     <circle cx="12" cy="12" r="10"/>
     <polyline points="12,6 12,12 16,14"/>
   </svg>
 );
 
-const SalaryIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill={GOLD}>
-    <circle cx="12" cy="12" r="10" fill="none" stroke={GOLD} strokeWidth="2"/>
+const MoneyIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill={GOLD}>
+    <circle cx="12" cy="12" r="10" fill="none" stroke={GOLD} strokeWidth="1.5"/>
     <path d="M12 6V18M9 9H15M9 15H15"/>
   </svg>
 );
 
-const CitizenIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill={GOLD}>
+const PersonIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill={GOLD}>
     <circle cx="12" cy="8" r="4"/>
     <path d="M4 20C4 16 7.6 13 12 13C16.4 13 20 16 20 20"/>
   </svg>
 );
 
-const HousingIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill={GOLD}>
+const HomeIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill={GOLD}>
     <path d="M3 12L12 3L21 12V21H3V12Z"/>
     <rect x="10" y="15" width="4" height="6"/>
   </svg>
 );
 
-// Prayer times display order (right to left for RTL)
 const PRAYER_ORDER = [
   { key: "fajr", label: "الفجر" },
   { key: "sunrise", label: "الشروق" },
@@ -71,41 +70,26 @@ const PRAYER_ORDER = [
   { key: "isha", label: "العشاء" },
 ];
 
-// Event name mapping
 const EVENT_NAMES: Record<string, string> = {
   salary: "الراتب",
   citizen_account: "حساب المواطن",
   housing_support: "الدعم السكني",
-  social_security: "الضمان",
-  retirement: "التقاعد",
-  insurance: "التأمينات",
-  saned: "ساند",
-  hafiz: "حافز",
-  rehabilitation: "التأهيل الشامل",
-  agricultural_support: "الدعم الزراعي",
-  other: "دعم",
 };
 
 interface DailyCardPreviewProps {
   message: string;
-  showPrayer?: boolean;
-  showCountdowns?: boolean;
 }
 
 function getCountdownIcon(type: string): ReactNode {
   switch (type) {
-    case "salary": return <SalaryIcon />;
-    case "citizen_account": return <CitizenIcon />;
-    case "housing_support": return <HousingIcon />;
-    default: return <svg width="20" height="20" viewBox="0 0 24 24" fill={GOLD}><circle cx="12" cy="12" r="10"/></svg>;
+    case "salary": return <MoneyIcon />;
+    case "citizen_account": return <PersonIcon />;
+    case "housing_support": return <HomeIcon />;
+    default: return <MoneyIcon />;
   }
 }
 
-export default function DailyCardPreview({ 
-  message, 
-  showPrayer = true, 
-  showCountdowns = true 
-}: DailyCardPreviewProps) {
+export default function DailyCardPreview({ message }: DailyCardPreviewProps) {
   const { user } = useStore();
   const { formatTime } = useTimeFormat();
   const todayIso = new Date().toISOString().split("T")[0];
@@ -117,13 +101,11 @@ export default function DailyCardPreview({
   const { data: fallbackPrayer } = useGetPrayerTimes({ city: cityName });
   const { data: fallbackCountdowns } = useGatewayFinancialCountdown();
 
-  const displayName = (user?.name && user.name.length > 0) ? user.name.split(" ")[0] : null;
-  
+  // Greeting without name - just morning/evening
   const greeting = useMemo(() => {
-    const hour = new Date().getHours();
-    const base = hour < 12 ? "صباح الخير" : "مساء الخير";
-    return displayName ? `${base} يا ${displayName}` : base;
-  }, [displayName]);
+    const saudiHour = new Date(new Date().toLocaleString("en-US", { timeZone: "Asia/Riyadh" })).getHours();
+    return saudiHour < 12 ? "صباح الخير" : "مساء الخير";
+  }, []);
 
   const prayers = useMemo(() => {
     if (officialPrayer) {
@@ -177,7 +159,7 @@ export default function DailyCardPreview({
       });
     }
 
-    return result;
+    return result.slice(0, 3);
   }, [officialFinancial, fallbackCountdowns]);
 
   return (
@@ -185,16 +167,16 @@ export default function DailyCardPreview({
       className="relative overflow-hidden rounded-[24px]"
       style={{
         background: "linear-gradient(180deg, #FFFFFF 0%, #FAF5EE 100%)",
-        border: "1px solid rgba(201,160,99,0.35)",
-        boxShadow: "0 20px 60px rgba(138,107,61,0.15), 0 0 40px rgba(201,160,99,0.08) inset",
+        border: "1px solid rgba(201,160,99,0.3)",
+        boxShadow: "0 20px 60px rgba(138,107,61,0.15), 0 0 40px rgba(201,160,99,0.06) inset",
         width: "100%",
         maxWidth: "360px",
         margin: "0 auto",
       }}
     >
-      {/* Background decorations */}
+      {/* Background - Saudi architecture on right */}
       <div 
-        className="absolute top-0 right-0 w-2/5 h-full opacity-[0.06] pointer-events-none"
+        className="absolute top-0 right-0 w-2/5 h-full opacity-[0.08] pointer-events-none"
         style={{
           backgroundImage: `url(${desertHeroImg})`,
           backgroundSize: "cover",
@@ -203,20 +185,23 @@ export default function DailyCardPreview({
       />
       
       {/* Palm decorations */}
-      <div className="absolute top-0 left-0 w-24 h-24 opacity-[0.05] pointer-events-none" style={{
-        background: "radial-gradient(ellipse at 20% 0%, #C9A063 0%, transparent 60%)",
+      <div className="absolute top-0 left-0 w-28 h-28 opacity-[0.06] pointer-events-none" style={{
+        background: "radial-gradient(ellipse at 15% 5%, #C9A063 0%, transparent 55%)",
+      }} />
+      <div className="absolute bottom-0 left-0 w-24 h-32 opacity-[0.05] pointer-events-none" style={{
+        background: "radial-gradient(ellipse at 10% 95%, #C9A063 0%, transparent 50%)",
       }} />
       <div className="absolute top-0 right-0 w-20 h-20 opacity-[0.05] pointer-events-none" style={{
-        background: "radial-gradient(ellipse at 80% 0%, #C9A063 0%, transparent 60%)",
+        background: "radial-gradient(ellipse at 85% 5%, #C9A063 0%, transparent 55%)",
       }} />
 
-      {/* Golden lantern top right */}
-      <div className="absolute top-3 left-3 opacity-50 pointer-events-none" style={{ color: GOLD }}>
-        <svg width="32" height="40" viewBox="0 0 48 64" fill="currentColor">
+      {/* Golden lantern top left */}
+      <div className="absolute top-3 left-3 opacity-60 pointer-events-none" style={{ color: GOLD }}>
+        <svg width="36" height="48" viewBox="0 0 48 64" fill="currentColor">
           <path d="M24 0L28 8H20L24 0Z" fill="currentColor"/>
           <rect x="18" y="8" width="12" height="4" rx="1" fill="currentColor"/>
           <path d="M16 12H32V48C32 52 28 56 24 56C20 56 16 52 16 48V12Z" fill="currentColor" opacity="0.9"/>
-          <rect x="20" y="16" width="8" height="28" rx="2" fill="#FDF9F3" opacity="0.3"/>
+          <rect x="20" y="16" width="8" height="28" rx="2" fill="#FFFBF4" opacity="0.35"/>
           <rect x="14" y="48" width="20" height="4" rx="1" fill="currentColor"/>
           <rect x="12" y="52" width="24" height="6" rx="2" fill="currentColor"/>
           <rect x="20" y="58" width="8" height="4" rx="1" fill="currentColor"/>
@@ -226,13 +211,13 @@ export default function DailyCardPreview({
       {/* Main content */}
       <div className="relative z-10 p-5 space-y-4">
         {/* Label badge */}
-        <div className="text-center">
+        <div className="text-center pt-2">
           <span 
-            className="inline-block px-4 py-1.5 rounded-full text-xs font-bold"
+            className="inline-block px-4 py-1.5 rounded-full text-xs font-bold tracking-wide"
             style={{
-              background: "linear-gradient(135deg, rgba(201,160,99,0.15), rgba(201,160,99,0.25))",
+              background: "linear-gradient(135deg, rgba(201,160,99,0.12), rgba(201,160,99,0.22))",
               color: BROWN,
-              border: "1px solid rgba(201,160,99,0.35)",
+              border: "1px solid rgba(201,160,99,0.3)",
             }}
           >
             بطاقة يومية
@@ -240,7 +225,7 @@ export default function DailyCardPreview({
         </div>
 
         {/* Logo and title */}
-        <div className="text-center space-y-2">
+        <div className="text-center space-y-1.5">
           <div className="text-4xl" style={{ color: GOLD }}>✦</div>
           <h1 className="text-3xl font-extrabold tracking-tight" style={{ color: INK }}>
             مواعيدك
@@ -256,10 +241,10 @@ export default function DailyCardPreview({
           className="rounded-xl p-4 text-center"
           style={{
             background: "linear-gradient(145deg, #FFFFFF, #FAF5EE)",
-            border: "1px solid rgba(201,160,99,0.25)",
+            border: "1px solid rgba(201,160,99,0.22)",
           }}
         >
-          <div className="flex justify-center mb-2"><CalendarIcon /></div>
+          <div className="flex justify-center mb-2"><CalIcon /></div>
           <div className="text-xl font-extrabold" style={{ color: BROWN }}>
             {getDayName()}
           </div>
@@ -276,7 +261,7 @@ export default function DailyCardPreview({
           className="rounded-xl p-4"
           style={{
             background: "linear-gradient(145deg, #FFFFFF, #FAF5EE)",
-            border: "1px solid rgba(201,160,99,0.25)",
+            border: "1px solid rgba(201,160,99,0.22)",
           }}
         >
           <div className="flex justify-center mb-2"><QuoteIcon /></div>
@@ -295,70 +280,66 @@ export default function DailyCardPreview({
         </div>
 
         {/* Prayer times */}
-        {showPrayer && (
-          <div 
-            className="rounded-xl p-3"
-            style={{
-              background: "linear-gradient(145deg, #FFFFFF, #FAF5EE)",
-              border: "1px solid rgba(201,160,99,0.2)",
-            }}
-          >
-            <div className="flex items-center justify-center gap-2 mb-3">
-              <MosqueIcon />
-              <span className="text-sm font-bold" style={{ color: BROWN }}>مواقيت الصلاة</span>
-            </div>
-            <div className="grid grid-cols-6 gap-1">
-              {PRAYER_ORDER.map(({ key, label }) => (
-                <div key={key} className="flex flex-col items-center text-center">
-                  <div className="w-5 h-5 rounded-full flex items-center justify-center mb-1" style={{ background: "rgba(201,160,99,0.15)" }}>
-                    <span className="text-[8px]" style={{ color: GOLD }}>✦</span>
-                  </div>
-                  <span className="text-[9px] opacity-70 font-medium" style={{ color: INK }}>{label}</span>
-                  <span className="text-[10px] font-bold" style={{ color: BROWN }}>
-                    {formatTime(prayers[key as keyof typeof prayers])}
-                  </span>
-                </div>
-              ))}
-            </div>
+        <div 
+          className="rounded-xl p-3"
+          style={{
+            background: "linear-gradient(145deg, #FFFFFF, #FAF5EE)",
+            border: "1px solid rgba(201,160,99,0.2)",
+          }}
+        >
+          <div className="flex items-center justify-center gap-2 mb-3">
+            <PrayerIcon />
+            <span className="text-sm font-bold" style={{ color: BROWN }}>مواقيت الصلاة</span>
           </div>
-        )}
+          <div className="grid grid-cols-6 gap-1">
+            {PRAYER_ORDER.map(({ key, label }) => (
+              <div key={key} className="flex flex-col items-center text-center">
+                <div className="w-5 h-5 rounded-full flex items-center justify-center mb-1" style={{ background: "rgba(201,160,99,0.12)" }}>
+                  <span className="text-[7px]" style={{ color: GOLD }}>✦</span>
+                </div>
+                <span className="text-[9px] opacity-70 font-medium" style={{ color: INK }}>{label}</span>
+                <span className="text-[10px] font-bold" style={{ color: BROWN }}>
+                  {formatTime(prayers[key as keyof typeof prayers])}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
 
         {/* Countdowns */}
-        {showCountdowns && countdowns.length > 0 && (
-          <div 
-            className="rounded-xl p-3"
-            style={{
-              background: "linear-gradient(145deg, #FFFFFF, #FAF5EE)",
-              border: "1px solid rgba(201,160,99,0.2)",
-            }}
-          >
-            <div className="flex items-center justify-center gap-2 mb-3">
-              <ClockIcon />
-              <span className="text-sm font-bold" style={{ color: BROWN }}>كم باقي على</span>
-            </div>
-            <div className="grid grid-cols-3 gap-2">
-              {countdowns.slice(0, 3).map((item, i) => (
-                <div 
-                  key={i}
-                  className="rounded-lg p-2 text-center"
-                  style={{
-                    background: "linear-gradient(145deg, #FFFFFF, #FAF5EE)",
-                    border: "1px solid rgba(201,160,99,0.2)",
-                  }}
-                >
-                  <div className="flex justify-center mb-1">{item.icon}</div>
-                  <div className="text-[10px] font-medium truncate" style={{ color: INK }}>{item.name}</div>
-                  <div className="text-lg font-extrabold" style={{ color: GOLD }}>{item.days}</div>
-                  <div className="text-[9px] opacity-60" style={{ color: INK }}>يوم</div>
-                </div>
-              ))}
-            </div>
+        <div 
+          className="rounded-xl p-3"
+          style={{
+            background: "linear-gradient(145deg, #FFFFFF, #FAF5EE)",
+            border: "1px solid rgba(201,160,99,0.2)",
+          }}
+        >
+          <div className="flex items-center justify-center gap-2 mb-3">
+            <ClockIcon />
+            <span className="text-sm font-bold" style={{ color: BROWN }}>كم باقي على</span>
           </div>
-        )}
+          <div className="grid grid-cols-3 gap-2">
+            {countdowns.map((item, i) => (
+              <div 
+                key={i}
+                className="rounded-lg p-2 text-center"
+                style={{
+                  background: "linear-gradient(145deg, #FFFFFF, #FAF5EE)",
+                  border: "1px solid rgba(201,160,99,0.18)",
+                }}
+              >
+                <div className="flex justify-center mb-1">{item.icon}</div>
+                <div className="text-[10px] font-medium truncate" style={{ color: INK }}>{item.name}</div>
+                <div className="text-lg font-extrabold" style={{ color: GOLD }}>{item.days}</div>
+                <div className="text-[9px] opacity-60" style={{ color: INK }}>يوم</div>
+              </div>
+            ))}
+          </div>
+        </div>
 
         {/* Footer */}
-        <div className="text-center pt-2">
-          <div className="h-[1px] w-full mb-3" style={{ background: `linear-gradient(90deg, transparent, rgba(201,160,99,0.4), transparent)` }} />
+        <div className="text-center pt-1 pb-2">
+          <div className="h-[1px] w-full mb-3" style={{ background: `linear-gradient(90deg, transparent, rgba(201,160,99,0.35), transparent)` }} />
           <div className="text-sm font-extrabold tracking-wide" style={{ color: GOLD }}>
             مواعيدك
           </div>
