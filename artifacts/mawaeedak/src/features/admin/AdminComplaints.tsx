@@ -7,14 +7,14 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { ConfirmDialog } from "@/components/layout/ConfirmDialog";
-import { useToast } from "@/hooks/use-toast";
+import { showTopNotification } from "@/components/layout/TopNotificationBanner";
 import {
-  useListComplaints,
-  useUpdateComplaint,
-  useDeleteComplaint,
-  getListComplaintsQueryKey,
-} from "@workspace/api-client-react";
-import type { Complaint } from "@workspace/api-client-react";
+  getAllComplaints,
+  updateComplaintStatus,
+  deleteComplaint,
+  type Complaint,
+  type ComplaintStatus,
+} from "@/lib/complaintService";
 import { useQueryClient } from "@tanstack/react-query";
 import { Search, Loader2, MessageSquare, Trash2, Reply, Inbox } from "lucide-react";
 import { format } from "date-fns";
@@ -23,7 +23,7 @@ const STATUS_OPTIONS = [
   { value: "pending", label: "جديد", color: "bg-amber-500/10 text-amber-600 border-amber-500/30" },
   { value: "in_progress", label: "قيد المعالجة", color: "bg-blue-500/10 text-blue-600 border-blue-500/30" },
   { value: "resolved", label: "تم الحل", color: "bg-emerald-500/10 text-emerald-600 border-emerald-500/30" },
-  { value: "closed", label: "مغلق", color: "bg-muted text-muted-foreground border-border" },
+  { value: "rejected", label: "مرفوض", color: "bg-red-500/10 text-red-600 border-red-500/30" },
 ];
 
 function statusMeta(value: string) {
@@ -31,36 +31,50 @@ function statusMeta(value: string) {
 }
 
 export default function AdminComplaints() {
-  const { toast } = useToast();
   const queryClient = useQueryClient();
-  const { data: complaints, isLoading } = useListComplaints();
-  const updateComplaint = useUpdateComplaint();
-  const deleteComplaint = useDeleteComplaint();
-
+  const [complaints, setComplaints] = useState<Complaint[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [typeFilter, setTypeFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
-
   const [detail, setDetail] = useState<Complaint | null>(null);
   const [replyText, setReplyText] = useState("");
-  const [replyStatus, setReplyStatus] = useState("pending");
-  const [deleteId, setDeleteId] = useState<number | null>(null);
+  const [replyStatus, setReplyStatus] = useState<string>("pending");
+  const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [isUpdating, setIsUpdating] = useState(false);
 
-  const invalidate = () => queryClient.invalidateQueries({ queryKey: getListComplaintsQueryKey() });
+  // Load complaints on mount
+  useState(() => {
+    const load = async () => {
+      setIsLoading(true);
+      const data = await getAllComplaints();
+      setComplaints(data);
+      setIsLoading(false);
+    };
+    load();
+  });
+
+  const invalidate = () => {
+    const load = async () => {
+      const data = await getAllComplaints();
+      setComplaints(data);
+    };
+    load();
+  };
 
   const types = useMemo(() => {
     const set = new Set<string>();
-    (complaints ?? []).forEach(c => set.add(c.type));
+    complaints.forEach(c => set.add(c.type));
     return Array.from(set);
   }, [complaints]);
 
   const filtered = useMemo(() => {
-    return (complaints ?? []).filter(c => {
+    return complaints.filter(c => {
       if (typeFilter !== "all" && c.type !== typeFilter) return false;
       if (statusFilter !== "all" && c.status !== statusFilter) return false;
       if (search) {
         const q = search.toLowerCase();
-        const hay = `${c.title ?? ""} ${c.message} ${c.type} ${c.category ?? ""} ${c.contact ?? ""}`.toLowerCase();
+        const hay = `${c.message} ${c.type} ${c.category ?? ""}`.toLowerCase();
         if (!hay.includes(q)) return false;
       }
       return true;
@@ -68,55 +82,55 @@ export default function AdminComplaints() {
   }, [complaints, typeFilter, statusFilter, search]);
 
   const counts = useMemo(() => {
-    const all = complaints ?? [];
     return {
-      total: all.length,
-      pending: all.filter(c => c.status === "pending").length,
-      resolved: all.filter(c => c.status === "resolved").length,
-      awaitingReply: all.filter(c => !c.admin_reply && c.status !== "closed").length,
+      total: complaints.length,
+      pending: complaints.filter(c => c.status === "pending").length,
+      resolved: complaints.filter(c => c.status === "resolved").length,
+      awaitingReply: complaints.filter(c => !c.admin_response && c.status !== "rejected").length,
     };
   }, [complaints]);
 
   const openDetail = (c: Complaint) => {
     setDetail(c);
-    setReplyText(c.admin_reply ?? "");
+    setReplyText(c.admin_response ?? "");
     setReplyStatus(c.status);
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!detail) return;
-    updateComplaint.mutate(
-      { id: detail.id, data: { status: replyStatus, admin_reply: replyText || undefined } },
-      {
-        onSuccess: () => {
-          toast({ title: "تم الحفظ" });
-          invalidate();
-          setDetail(null);
-        },
-        onError: () => toast({ title: "خطأ", description: "تعذر حفظ التحديث", variant: "destructive" }),
-      }
-    );
+    setIsUpdating(true);
+    const result = await updateComplaintStatus(detail.id, replyStatus as ComplaintStatus, replyText || undefined);
+    setIsUpdating(false);
+    
+    if (result.success) {
+      showTopNotification("تم الحفظ بنجاح", "success");
+      invalidate();
+      setDetail(null);
+    } else {
+      showTopNotification(result.error || "فشل الحفظ", "error");
+    }
   };
 
-  const handleStatusInline = (c: Complaint, status: string) => {
-    updateComplaint.mutate(
-      { id: c.id, data: { status } },
-      {
-        onSuccess: () => { toast({ title: "تم تحديث الحالة" }); invalidate(); },
-        onError: () => toast({ title: "خطأ", description: "تعذر تحديث الحالة", variant: "destructive" }),
-      }
-    );
+  const handleStatusInline = async (c: Complaint, status: string) => {
+    const result = await updateComplaintStatus(c.id, status as ComplaintStatus);
+    if (result.success) {
+      showTopNotification("تم تحديث الحالة", "success");
+      invalidate();
+    } else {
+      showTopNotification(result.error || "فشل التحديث", "error");
+    }
   };
 
-  const handleDelete = () => {
-    if (deleteId == null) return;
-    deleteComplaint.mutate(
-      { id: deleteId },
-      {
-        onSuccess: () => { toast({ title: "تم الحذف" }); invalidate(); setDeleteId(null); },
-        onError: () => toast({ title: "خطأ", description: "تعذر الحذف", variant: "destructive" }),
-      }
-    );
+  const handleDelete = async () => {
+    if (!deleteId) return;
+    const result = await deleteComplaint(deleteId);
+    if (result.success) {
+      showTopNotification("تم الحذف بنجاح", "success");
+      invalidate();
+      setDeleteId(null);
+    } else {
+      showTopNotification(result.error || "فشل الحذف", "error");
+    }
   };
 
   return (
@@ -153,14 +167,14 @@ export default function AdminComplaints() {
           <SelectTrigger className="md:w-44"><SelectValue placeholder="النوع" /></SelectTrigger>
           <SelectContent className="rtl">
             <SelectItem value="all">كل الأنواع</SelectItem>
-            {(Array.isArray(types) ? types : []).map(t => <SelectItem key={t} value={t}>{t}</SelectItem>)}
+            {types.map(t => <SelectItem key={t} value={t}>{t}</SelectItem>)}
           </SelectContent>
         </Select>
         <Select value={statusFilter} onValueChange={setStatusFilter}>
           <SelectTrigger className="md:w-44"><SelectValue placeholder="الحالة" /></SelectTrigger>
           <SelectContent className="rtl">
             <SelectItem value="all">كل الحالات</SelectItem>
-            {(Array.isArray(STATUS_OPTIONS) ? STATUS_OPTIONS : []).map(s => <SelectItem key={s.value} value={s.value}>{s.label}</SelectItem>)}
+            {STATUS_OPTIONS.map(s => <SelectItem key={s.value} value={s.value}>{s.label}</SelectItem>)}
           </SelectContent>
         </Select>
       </div>
@@ -174,7 +188,7 @@ export default function AdminComplaints() {
             <div className="p-10 text-center text-muted-foreground">لا توجد رسائل مطابقة</div>
           ) : (
             <div className="divide-y divide-border">
-              {(Array.isArray(filtered) ? filtered : []).map(c => {
+              {filtered.map(c => {
                 const sm = statusMeta(c.status);
                 return (
                   <div key={c.id} className="p-4 hover:bg-muted/30 transition-colors">
@@ -184,20 +198,18 @@ export default function AdminComplaints() {
                           <span className="text-[10px] px-2 py-0.5 rounded-full bg-primary/10 text-primary font-bold">{c.type}</span>
                           {c.category && <span className="text-[10px] px-2 py-0.5 rounded-full bg-muted text-muted-foreground">{c.category}</span>}
                           <span className={`text-[10px] px-2 py-0.5 rounded-full border font-bold ${sm.color}`}>{sm.label}</span>
-                          {!c.admin_reply && <span className="text-[10px] px-2 py-0.5 rounded-full bg-rose-500/10 text-rose-600 font-bold">بانتظار رد</span>}
+                          {!c.admin_response && <span className="text-[10px] px-2 py-0.5 rounded-full bg-rose-500/10 text-rose-600 font-bold">بانتظار رد</span>}
                         </div>
-                        {c.title && <div className="font-bold text-sm text-foreground truncate">{c.title}</div>}
                         <div className="text-sm text-muted-foreground line-clamp-2">{c.message}</div>
                         <div className="text-[10px] text-muted-foreground mt-1 flex items-center gap-2">
-                          <span className="dir-ltr">{format(new Date(c.created_at), "yyyy-MM-dd HH:mm")}</span>
-                          {c.contact && <span className="dir-ltr">· {c.contact}</span>}
+                          <span>{format(new Date(c.created_at), "yyyy-MM-dd HH:mm")}</span>
                         </div>
                       </div>
                       <div className="flex flex-col items-end gap-2 shrink-0">
                         <Select value={c.status} onValueChange={v => handleStatusInline(c, v)}>
                           <SelectTrigger className="h-8 w-32 text-xs"><SelectValue /></SelectTrigger>
                           <SelectContent className="rtl">
-                            {(Array.isArray(STATUS_OPTIONS) ? STATUS_OPTIONS : []).map(s => <SelectItem key={s.value} value={s.value}>{s.label}</SelectItem>)}
+                            {STATUS_OPTIONS.map(s => <SelectItem key={s.value} value={s.value}>{s.label}</SelectItem>)}
                           </SelectContent>
                         </Select>
                         <div className="flex gap-1">
@@ -210,9 +222,9 @@ export default function AdminComplaints() {
                         </div>
                       </div>
                     </div>
-                    {c.admin_reply && (
+                    {c.admin_response && (
                       <div className="mt-2 p-2 rounded-lg bg-primary/5 border border-primary/15 text-xs text-foreground">
-                        <span className="font-bold text-primary">الرد: </span>{c.admin_reply}
+                        <span className="font-bold text-primary">الرد: </span>{c.admin_response}
                       </div>
                     )}
                   </div>
@@ -235,15 +247,13 @@ export default function AdminComplaints() {
                 <span className="text-[10px] px-2 py-0.5 rounded-full bg-primary/10 text-primary font-bold">{detail.type}</span>
                 {detail.category && <span className="text-[10px] px-2 py-0.5 rounded-full bg-muted text-muted-foreground">{detail.category}</span>}
               </div>
-              {detail.title && <div className="font-bold text-foreground">{detail.title}</div>}
               <div className="p-3 rounded-lg bg-muted/40 text-sm text-foreground whitespace-pre-wrap">{detail.message}</div>
-              {detail.contact && <div className="text-xs text-muted-foreground dir-ltr">{detail.contact}</div>}
               <div className="space-y-2">
                 <Label>الحالة</Label>
                 <Select value={replyStatus} onValueChange={setReplyStatus}>
                   <SelectTrigger><SelectValue /></SelectTrigger>
                   <SelectContent className="rtl">
-                    {(Array.isArray(STATUS_OPTIONS) ? STATUS_OPTIONS : []).map(s => <SelectItem key={s.value} value={s.value}>{s.label}</SelectItem>)}
+                    {STATUS_OPTIONS.map(s => <SelectItem key={s.value} value={s.value}>{s.label}</SelectItem>)}
                   </SelectContent>
                 </Select>
               </div>
@@ -253,8 +263,8 @@ export default function AdminComplaints() {
               </div>
               <div className="flex gap-2 justify-end">
                 <Button variant="outline" onClick={() => setDetail(null)}>إلغاء</Button>
-                <Button onClick={handleSave} disabled={updateComplaint.isPending}>
-                  {updateComplaint.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : "حفظ"}
+                <Button onClick={handleSave} disabled={isUpdating}>
+                  {isUpdating ? <Loader2 className="w-4 h-4 animate-spin" /> : "حفظ"}
                 </Button>
               </div>
             </div>
@@ -263,7 +273,7 @@ export default function AdminComplaints() {
       </Dialog>
 
       <ConfirmDialog
-        open={deleteId != null}
+        open={!!deleteId}
         onOpenChange={open => { if (!open) setDeleteId(null); }}
         title="حذف الرسالة"
         description="هل أنت متأكد من حذف هذه الرسالة؟ لا يمكن التراجع."

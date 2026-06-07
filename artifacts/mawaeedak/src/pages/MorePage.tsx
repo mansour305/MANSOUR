@@ -6,7 +6,7 @@ import desertHeroImg from "@assets/desert-hero.png";
 import { AppShell } from "@/components/layout/AppShell";
 import { MawaeedakLogo } from "@/components/layout/TopBar";
 import { ConfirmDialog } from "@/components/layout/ConfirmDialog";
-import { toast } from "@/hooks/use-toast";
+import { showTopNotification } from "@/components/layout/TopNotificationBanner";
 import { useStore } from "@/hooks/useStore";
 
 function MoreRow({
@@ -44,10 +44,20 @@ export default function MorePage() {
   const shareApp = async () => {
     const url = window.location.origin;
     if (navigator.share) {
-      await navigator.share({ title: "مواعيدك", text: "كل مواعيدك في مكان واحد", url }).catch(() => {});
+      try {
+        await navigator.share({ title: "مواعيدك", text: "كل مواعيدك في مكان واحد", url });
+        showTopNotification("تمت المشاركة بنجاح", "success");
+      } catch {
+        // User cancelled or failed
+        showTopNotification("فشل مشاركة التطبيق", "error");
+      }
     } else {
-      await navigator.clipboard.writeText(url).catch(() => {});
-      toast({ title: "تم نسخ رابط التطبيق", duration: 2500 });
+      try {
+        await navigator.clipboard.writeText(url);
+        showTopNotification("تم نسخ رابط التطبيق", "info");
+      } catch {
+        showTopNotification("فشل نسخ الرابط", "error");
+      }
     }
   };
 
@@ -56,7 +66,7 @@ export default function MorePage() {
     await authSignOut().catch(() => {});
     localStorage.removeItem("app-user");
     localStorage.removeItem("mawaeedak_onboarded");
-    toast({ title: "تم تسجيل الخروج", duration: 2500 });
+    showTopNotification("تم تسجيل الخروج", "success");
     setLocation("/");
   };
 

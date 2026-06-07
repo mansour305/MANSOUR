@@ -7,15 +7,13 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { createComplaint, type ComplaintType } from "@/lib/complaintService";
-import { useToast } from "@/hooks/use-toast";
 import { useStore } from "@/hooks/useStore";
+import { showTopNotification } from "@/components/layout/TopNotificationBanner";
 import { MessageSquare, Loader2, CheckCircle2 } from "lucide-react";
 
 export default function CentersComplaintsPage() {
-  const { toast } = useToast();
   const { user } = useStore();
   const [type, setType] = useState<"complaint" | "suggestion" | "inquiry">("suggestion");
-  const [title, setTitle] = useState("");
   const [message, setMessage] = useState("");
   const [contact, setContact] = useState("");
   const [isSuccess, setIsSuccess] = useState(false);
@@ -23,7 +21,7 @@ export default function CentersComplaintsPage() {
 
   const handleSubmit = async () => {
     if (!message || message.length < 10) { 
-      toast({ title: "خطأ", description: "الرسالة يجب أن تكون 10 أحرف على الأقل", variant: "destructive" }); 
+      showTopNotification("الرسالة يجب أن تكون 10 أحرف على الأقل", "error");
       return; 
     }
 
@@ -37,11 +35,12 @@ export default function CentersComplaintsPage() {
       
       if (result.success) {
         setIsSuccess(true);
+        showTopNotification("تم إرسال رسالتك بنجاح", "success");
       } else {
-        toast({ title: "خطأ", description: result.error || "فشل إرسال الرسالة", variant: "destructive" });
+        showTopNotification(result.error || "فشل إرسال الرسالة", "error");
       }
     } catch (err) {
-      toast({ title: "خطأ", description: "حدث خطأ غير متوقع", variant: "destructive" });
+      showTopNotification("حدث خطأ غير متوقع", "error");
     } finally {
       setIsSubmitting(false);
     }

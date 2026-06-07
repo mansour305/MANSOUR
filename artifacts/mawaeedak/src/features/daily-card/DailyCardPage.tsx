@@ -1,10 +1,10 @@
 import { useMemo, useRef } from "react";
 import { Button } from "@/components/ui/button";
-import { useToast } from "@/hooks/use-toast";
 import DailyCardPreview from "./DailyCardPreview";
 import { useStore } from "@/hooks/useStore";
 import { formatHijriDate, formatGregorianDate, getDayName } from "@/lib/utils";
 import { Copy, Share2, Download } from "lucide-react";
+import { showTopNotification } from "@/components/layout/TopNotificationBanner";
 
 // Saudi-based daily messages pool
 const DAILY_MESSAGES = [
@@ -44,7 +44,6 @@ function getTodayMessage(): string {
 }
 
 export default function DailyCardPage() {
-  const { toast } = useToast();
   const { user } = useStore();
   const cardRef = useRef<HTMLDivElement>(null);
 
@@ -76,9 +75,9 @@ export default function DailyCardPage() {
   const handleCopy = async () => {
     try {
       await navigator.clipboard.writeText(generateText());
-      toast({ title: "تم نسخ البطاقة بنجاح" });
+      showTopNotification("تم نسخ البطاقة بنجاح", "success");
     } catch {
-      toast({ title: "فشل نسخ البطاقة", variant: "destructive" });
+      showTopNotification("فشل نسخ البطاقة", "error");
     }
   };
 
@@ -90,19 +89,22 @@ export default function DailyCardPage() {
           text: generateText(),
           url: window.location.origin,
         });
+        showTopNotification("تمت المشاركة بنجاح", "success");
       } else {
         await navigator.clipboard.writeText(generateText());
-        toast({ title: "تم نسخ البطاقة للمشاركة" });
+        showTopNotification("تم نسخ البطاقة للمشاركة", "info");
       }
     } catch (e: any) {
       if (e?.name !== "AbortError") {
-        toast({ title: "فشل المشاركة", variant: "destructive" });
+        showTopNotification("فشل المشاركة", "error");
       }
     }
   };
 
   const handleSaveImage = async () => {
     if (!cardRef.current) return;
+    
+    showTopNotification("جاري حفظ الصورة...", "info");
     
     try {
       const { default: html2canvas } = await import("html2canvas");
@@ -117,10 +119,10 @@ export default function DailyCardPage() {
       link.href = canvas.toDataURL("image/png");
       link.click();
       
-      toast({ title: "تم حفظ الصورة بنجاح" });
+      showTopNotification("تم حفظ الصورة بنجاح", "success");
     } catch (err) {
       console.error("[DailyCard] Save image error:", err);
-      toast({ title: "فشل حفظ الصورة", variant: "destructive" });
+      showTopNotification("فشل حفظ الصورة", "error");
     }
   };
 

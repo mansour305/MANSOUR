@@ -6,6 +6,7 @@ import { StoreProvider } from "@/hooks/useStore";
 import { useTheme } from "@/hooks/useTheme";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import NotFound from "@/pages/not-found";
+import { TopNotificationContainer } from "@/components/layout/TopNotificationBanner";
 
 // Pages
 import SplashScreen from "@/pages/SplashScreen";
@@ -174,6 +175,7 @@ function App() {
               <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
                 <Router />
               </WouterRouter>
+              <TopNotificationContainer />
               <Toaster />
             </TooltipProvider>
           </ThemeWrapper>
