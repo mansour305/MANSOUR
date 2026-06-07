@@ -219,6 +219,17 @@ export default function AdminDashboard() {
 
   return (
     <div className="space-y-6">
+      {/* Page Title */}
+      <div className="flex items-center gap-3">
+        <div 
+          className="w-1 h-6 rounded-full"
+          style={{ background: "linear-gradient(180deg, hsl(38 62% 52%), hsl(32 55% 42%))" }}
+        />
+        <h1 className="text-2xl font-extrabold" style={{ color: "hsl(22 62% 18%)" }}>
+          لوحة المالك
+        </h1>
+      </div>
+
       {/* Stats Cards */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
         <StatCard label="إجمالي المستخدمين" value={stats.totalUsers} icon={Users} trend="+12%" color={GOLD} />

@@ -67,9 +67,15 @@ export default function AdminSettings() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center gap-2">
-        <Settings className="w-5 h-5 text-primary" />
-        <h2 className="text-xl font-bold">إعدادات التطبيق العامة</h2>
+      {/* Page Title */}
+      <div className="flex items-center gap-3">
+        <div 
+          className="w-1 h-6 rounded-full"
+          style={{ background: "linear-gradient(180deg, hsl(38 62% 52%), hsl(32 55% 42%))" }}
+        />
+        <h1 className="text-2xl font-extrabold" style={{ color: "hsl(22 62% 18%)" }}>
+          الإعدادات
+        </h1>
       </div>
 
       {/* App Identity */}

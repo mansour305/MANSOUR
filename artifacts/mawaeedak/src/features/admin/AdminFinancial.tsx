@@ -91,10 +91,21 @@ export default function AdminFinancial() {
   };
 
   return (
-    <div className="space-y-4">
-      <div className="flex justify-between items-center">
-        <h2 className="text-xl font-bold">المواعيد المالية</h2>
-        <Button onClick={openAdd} size="sm"><Plus className="w-4 h-4 ml-1" /> إضافة موعد</Button>
+    <div className="space-y-6">
+      {/* Page Title */}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div 
+            className="w-1 h-6 rounded-full"
+            style={{ background: "linear-gradient(180deg, hsl(38 62% 52%), hsl(32 55% 42%))" }}
+          />
+          <h1 className="text-2xl font-extrabold" style={{ color: "hsl(22 62% 18%)" }}>
+            الرواتب والدعم
+          </h1>
+        </div>
+        <Button onClick={openAdd} size="sm">
+          <Plus className="w-4 h-4 ml-1" /> إضافة موعد
+        </Button>
       </div>
       
       <Select value={filterType} onValueChange={setFilterType}>

@@ -195,8 +195,17 @@ export default function AdminNewsJobs() {
   };
 
   return (
-    <div className="space-y-4">
-      <h2 className="text-xl font-bold">الأخبار والوظائف</h2>
+    <div className="space-y-6">
+      {/* Page Title */}
+      <div className="flex items-center gap-3">
+        <div 
+          className="w-1 h-6 rounded-full"
+          style={{ background: "linear-gradient(180deg, hsl(38 62% 52%), hsl(32 55% 42%))" }}
+        />
+        <h1 className="text-2xl font-extrabold" style={{ color: "hsl(22 62% 18%)" }}>
+          الأخبار والوظائف
+        </h1>
+      </div>
 
       <Tabs defaultValue="news" className="space-y-4">
         <TabsList className="w-full grid grid-cols-2">

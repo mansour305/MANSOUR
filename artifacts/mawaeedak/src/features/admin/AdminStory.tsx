@@ -136,17 +136,18 @@ export default function AdminStory() {
   };
 
   return (
-    <div className="space-y-4">
-      <ConfirmDialog
-        open={isDeleteOpen}
-        onOpenChange={setIsDeleteOpen}
-        title="حذف القالب"
-        description="هل تريد حذف هذا القالب؟ لا يمكن التراجع."
-        onConfirm={handleDelete}
-      />
-
-      <div className="flex justify-between items-center">
-        <h2 className="text-xl font-bold">إدارة قوالب ستوري اليوم</h2>
+    <div className="space-y-6">
+      {/* Page Title */}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div 
+            className="w-1 h-6 rounded-full"
+            style={{ background: "linear-gradient(180deg, hsl(38 62% 52%), hsl(32 55% 42%))" }}
+          />
+          <h1 className="text-2xl font-extrabold" style={{ color: "hsl(22 62% 18%)" }}>
+            بطاقة اليوم / ستوري اليوم
+          </h1>
+        </div>
         <Dialog open={isOpen} onOpenChange={(v) => { setIsOpen(v); if (!v) resetForm(); }}>
           <DialogTrigger asChild>
             <Button size="sm" className="gap-1" onClick={openAdd}>
@@ -223,6 +224,15 @@ export default function AdminStory() {
           </DialogContent>
         </Dialog>
       </div>
+
+      {/* Delete Confirmation */}
+      <ConfirmDialog
+        open={isDeleteOpen}
+        onOpenChange={setIsDeleteOpen}
+        title="حذف القالب"
+        description="هل تريد حذف هذا القالب؟ لا يمكن التراجع."
+        onConfirm={handleDelete}
+      />
 
       {isLoading ? (
         <div className="flex justify-center p-8">

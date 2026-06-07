@@ -74,9 +74,19 @@ export default function AdminReports() {
   };
 
   return (
-    <div className="space-y-4">
-      <div className="flex justify-between items-center flex-wrap gap-3">
-        <h2 className="text-xl font-bold">تقارير النظام</h2>
+    <div className="space-y-6">
+      {/* Page Title */}
+      <div className="flex items-center gap-3">
+        <div 
+          className="w-1 h-6 rounded-full"
+          style={{ background: "linear-gradient(180deg, hsl(38 62% 52%), hsl(32 55% 42%))" }}
+        />
+        <h1 className="text-2xl font-extrabold" style={{ color: "hsl(22 62% 18%)" }}>
+          التقارير
+        </h1>
+      </div>
+      
+      <div className="flex justify-end">
         <Button variant="outline" size="sm" onClick={handleExportCSV} disabled={exporting || filteredLogs.length === 0}>
           {exporting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4 ml-1" />}
           <FileSpreadsheet className="w-4 h-4 ml-1" /> تصدير CSV

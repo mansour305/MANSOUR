@@ -125,10 +125,16 @@ export default function AdminThemes() {
   };
 
   return (
-    <div className="space-y-4">
-      <div className="flex justify-between items-center">
-        <h2 className="text-xl font-bold">إدارة الثيمات</h2>
-        <span className="text-xs text-muted-foreground bg-muted px-2 py-1 rounded">{themes?.length ?? 0} ثيم</span>
+    <div className="space-y-6">
+      {/* Page Title */}
+      <div className="flex items-center gap-3">
+        <div 
+          className="w-1 h-6 rounded-full"
+          style={{ background: "linear-gradient(180deg, hsl(38 62% 52%), hsl(32 55% 42%))" }}
+        />
+        <h1 className="text-2xl font-extrabold" style={{ color: "hsl(22 62% 18%)" }}>
+          إدارة الثيمات
+        </h1>
       </div>
 
       <Dialog open={isOpen} onOpenChange={setIsOpen}>

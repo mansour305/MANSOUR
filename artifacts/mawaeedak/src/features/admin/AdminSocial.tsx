@@ -84,10 +84,16 @@ export default function AdminSocial() {
   }
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center gap-2">
-        <Twitter className="w-5 h-5 text-primary" />
-        <h2 className="text-xl font-bold">أتمتة النشر على X (تويتر)</h2>
+    <div className="space-y-6">
+      {/* Page Title */}
+      <div className="flex items-center gap-3">
+        <div 
+          className="w-1 h-6 rounded-full"
+          style={{ background: "linear-gradient(180deg, hsl(38 62% 52%), hsl(32 55% 42%))" }}
+        />
+        <h1 className="text-2xl font-extrabold" style={{ color: "hsl(22 62% 18%)" }}>
+          ربط التواصل الاجتماعي والأتمتة
+        </h1>
       </div>
 
       <Card className="border-border shadow-sm">

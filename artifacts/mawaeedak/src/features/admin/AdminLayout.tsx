@@ -195,22 +195,22 @@ function ErrorBox({ message }: { message: string }) {
 }
 
 const navItems: NavItem[] = [
-  { href: "/admin", label: "1. الرئيسية", icon: LayoutDashboard },
-  { href: "/admin/members", label: "2. المستخدمون", icon: Users },
-  { href: "/admin/financial", label: "3. الرواتب والدعم", icon: Wallet },
-  { href: "/admin/official-financial", label: "   المواعيد المالية", icon: Calendar },
-  { href: "/admin/official-prayer", label: "   مواقيت الصلاة", icon: Calendar },
-  { href: "/admin/messages", label: "4. الرسائل اليومية", icon: MessageSquare },
-  { href: "/admin/story", label: "5. بطاقة اليوم", icon: ImageIcon },
-  { href: "/admin/themes", label: "6. الثيمات", icon: Paintbrush },
-  { href: "/admin/notifications", label: "7. الإشعارات", icon: Bell },
-  { href: "/admin/complaints", label: "8. الشكاوى والاقتراحات", icon: MessageSquare },
-  { href: "/admin/news-jobs", label: "9. الأخبار والوظائف", icon: Newspaper },
-  { href: "/admin/reports", label: "10. التقارير", icon: FileText },
-  { href: "/admin/permissions", label: "11. الصلاحيات", icon: Shield },
-  { href: "/admin/settings", label: "12. الإعدادات", icon: Settings },
-  { href: "/admin/social", label: "13. التواصل والأتمتة", icon: Zap },
-  { href: "/admin/support", label: "14. الدعم والمساعدة", icon: Headphones },
+  { href: "/admin", label: "الرئيسية", icon: LayoutDashboard },
+  { href: "/admin/members", label: "المستخدمون", icon: Users },
+  { href: "/admin/financial", label: "الرواتب والدعم", icon: Wallet },
+  { href: "/admin/official-prayer", label: "مواقيت الصلاة الرسمية", icon: Calendar },
+  { href: "/admin/official-financial", label: "المواعيد المالية الرسمية", icon: Calendar },
+  { href: "/admin/messages", label: "الرسائل اليومية", icon: MessageSquare },
+  { href: "/admin/story", label: "بطاقة اليوم / ستوري اليوم", icon: ImageIcon },
+  { href: "/admin/themes", label: "الثيمات", icon: Paintbrush },
+  { href: "/admin/notifications", label: "الإشعارات", icon: Bell },
+  { href: "/admin/complaints", label: "الشكاوى والاقتراحات", icon: MessageSquare },
+  { href: "/admin/news-jobs", label: "الأخبار والوظائف", icon: Newspaper },
+  { href: "/admin/reports", label: "التقارير", icon: FileText },
+  { href: "/admin/permissions", label: "الصلاحيات", icon: Shield },
+  { href: "/admin/settings", label: "الإعدادات", icon: Settings },
+  { href: "/admin/social", label: "ربط التواصل الاجتماعي والأتمتة", icon: Zap },
+  { href: "/admin/support", label: "الدعم والمساعدة", icon: Headphones },
 ];
 
 function AdminSidebar({ currentPath, onNavigate }: { currentPath: string; onNavigate?: () => void }) {
@@ -285,14 +285,12 @@ function AdminSidebar({ currentPath, onNavigate }: { currentPath: string; onNavi
       <nav className="flex-1 overflow-y-auto py-4 px-3 relative z-10">
         {navItems.map((item) => {
           const Icon = item.icon;
-          const isSubItem = item.label.startsWith("   ");
-          const label = isSubItem ? item.label.trim() : item.label;
           const active = currentPath === item.href || (item.href !== "/admin" && currentPath.startsWith(item.href));
           
           return (
             <Link key={item.href} href={item.href} onClick={() => onNavigate?.()}>
               <div
-                className={`flex items-center gap-3 rounded-xl px-3 py-2.5 mb-1 text-sm font-bold transition-all duration-200 cursor-pointer ${isSubItem ? "mr-4 text-xs" : ""}`}
+                className={`flex items-center gap-3 rounded-xl px-3 py-2.5 mb-1 text-sm font-bold transition-all duration-200 cursor-pointer`}
                 style={{
                   background: active 
                     ? "linear-gradient(135deg, hsl(38 62% 52%), hsl(32 55% 42%))" 
@@ -311,8 +309,8 @@ function AdminSidebar({ currentPath, onNavigate }: { currentPath: string; onNavi
                   }
                 }}
               >
-                <Icon className={isSubItem ? "h-3.5 w-3.5" : "h-4 w-4"} />
-                <span>{label}</span>
+                <Icon className="h-4 w-4" />
+                <span>{item.label}</span>
                 {active && (
                   <div className="mr-auto w-1.5 h-1.5 rounded-full bg-white/80" />
                 )}
