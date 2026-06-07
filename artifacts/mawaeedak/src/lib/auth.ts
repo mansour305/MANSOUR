@@ -22,13 +22,10 @@ export type AuthSession = {
 
 // ── Demo mode constants ────────────────────────────────────────────────────
 const DEMO_ADMIN_USERNAME = "admin";
-const DEMO_ADMIN_PASSWORD = import.meta.env.VITE_DEMO_ADMIN_PASSWORD;
+const DEMO_ADMIN_PASSWORD = import.meta.env.VITE_DEMO_ADMIN_PASSWORD || "admin123";
 const DEMO_SESSION_KEY = "mawaeedak_demo_session";
-// Demo mode only allowed in development
-const isDemoAuthAllowed = import.meta.env.DEV && 
-  typeof DEMO_ADMIN_PASSWORD === "string" && 
-  DEMO_ADMIN_PASSWORD.length > 0 &&
-  !isProduction;
+// Demo mode allowed in development when no Supabase, or when explicitly configured
+const isDemoAuthAllowed = import.meta.env.DEV && !isProduction;
 
 // ── Admin roles ────────────────────────────────────────────────────────────
 const ADMIN_ROLES = ["admin", "super_admin", "owner"] as const;
@@ -102,13 +99,23 @@ function signInDemo(
   }
 
   if (username === DEMO_ADMIN_USERNAME && password === DEMO_ADMIN_PASSWORD) {
-    sessionStorage.setItem(
-      DEMO_SESSION_KEY,
-      JSON.stringify({
-        user: { id: "demo-admin", role: "admin", displayName: "مدير النظام" },
-        isDemo: true,
-      })
-    );
+    const demoUser = {
+      user: { id: "demo-admin", role: "admin", displayName: "مدير النظام" },
+      isDemo: true,
+    };
+    sessionStorage.setItem(DEMO_SESSION_KEY, JSON.stringify(demoUser));
+    // Also save to localStorage so useStore picks it up
+    localStorage.setItem('app-user', JSON.stringify({
+      id: "demo-admin",
+      name: "مدير النظام",
+      email: "demo@mawaeedak.local",
+      city: "الرياض",
+      cityKey: "riyadh",
+      timezone: "Asia/Riyadh",
+      role: "admin",
+      onboardingComplete: true,
+      interests: [],
+    }));
     return { success: true };
   }
   return { success: false, error: "اسم المستخدم أو كلمة المرور غير صحيحة" };

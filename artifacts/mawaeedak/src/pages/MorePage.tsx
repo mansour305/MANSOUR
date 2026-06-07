@@ -66,6 +66,7 @@ export default function MorePage() {
     await authSignOut().catch(() => {});
     localStorage.removeItem("app-user");
     localStorage.removeItem("mawaeedak_onboarded");
+    sessionStorage.removeItem("mawaeedak_demo_session");
     showTopNotification("تم تسجيل الخروج", "success");
     setLocation("/");
   };

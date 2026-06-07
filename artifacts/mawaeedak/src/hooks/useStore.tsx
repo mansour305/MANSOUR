@@ -104,6 +104,30 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
 
   // Listen for auth state changes
   useEffect(() => {
+    // Handle demo session on mount
+    if (!isSupabaseEnabled) {
+      try {
+        const demoSession = sessionStorage.getItem('mawaeedak_demo_session');
+        if (demoSession) {
+          const parsed = JSON.parse(demoSession);
+          if (parsed?.user) {
+            setUserState({
+              id: parsed.user.id,
+              name: parsed.user.displayName || 'مدير النظام',
+              email: 'demo@mawaeedak.local',
+              city: 'الرياض',
+              cityKey: 'riyadh',
+              timezone: 'Asia/Riyadh',
+              role: parsed.user.role || 'admin',
+              onboardingComplete: true,
+              interests: [],
+            });
+            setAdmin(parsed.user.role === 'admin' || parsed.user.role === 'super_admin' || parsed.user.role === 'owner');
+          }
+        }
+      } catch {}
+    }
+
     if (!isSupabaseEnabled || !supabase) return;
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
