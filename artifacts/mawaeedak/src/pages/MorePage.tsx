@@ -1,7 +1,7 @@
 import { useState } from "react";
 import type { ElementType } from "react";
 import { useLocation } from "wouter";
-import { ChevronLeft, FileText, Headphones, Lamp, LogIn, LogOut, Settings, Share2, Shield, ShieldCheck, Sparkles, User } from "lucide-react";
+import { ChevronLeft, FileText, Gift, Headphones, Lamp, LogIn, LogOut, Settings, Share2, Shield, ShieldCheck, Sparkles, User } from "lucide-react";
 import desertHeroImg from "@assets/desert-hero.png";
 import { AppShell } from "@/components/layout/AppShell";
 import { MawaeedakLogo } from "@/components/layout/TopBar";
@@ -84,8 +84,7 @@ export default function MorePage() {
           {isLoggedIn && <MoreRow icon={User} label="الملف الشخصي" onClick={() => setLocation("/account")} />}
           {isLoggedIn && <MoreRow icon={Settings} label="الإعدادات" onClick={() => setLocation("/account#settings")} />}
           <MoreRow icon={Share2} label="مشاركة التطبيق" onClick={shareApp} />
-          <MoreRow icon={Lamp} label="ستوري اليوم" onClick={() => setLocation("/story")} />
-          <MoreRow icon={Lamp} label="بطاقة يومية" onClick={() => setLocation("/daily-card")} />
+          <MoreRow icon={Gift} label="بطاقة يومية" onClick={() => setLocation("/daily-card")} />
           <MoreRow icon={ShieldCheck} label="سياسة الخصوصية" onClick={() => setLocation("/privacy")} />
           <MoreRow icon={FileText} label="الشروط والأحكام" onClick={() => setLocation("/terms")} />
           <MoreRow icon={Headphones} label="المساعدة والدعم" onClick={() => setLocation("/support")} />

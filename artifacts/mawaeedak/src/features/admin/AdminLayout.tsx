@@ -21,6 +21,7 @@ import {
   Wallet,
   Zap,
 } from "lucide-react";
+import desertHeroImg from "@assets/desert-hero.png";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -101,34 +102,76 @@ function translateLoginError(err: unknown): string {
 function AuthShell({ children }: { children: ReactNode }) {
   return (
     <div
-      className="min-h-[100dvh] flex items-center justify-center p-6 rtl max-w-[480px] mx-auto app-frame relative"
-      style={{
-        background: "radial-gradient(ellipse at top, hsl(36 28% 92%) 0%, hsl(36 22% 88%) 100%)",
-      }}
+      className="min-h-[100dvh] flex items-center justify-center p-4 rtl relative overflow-hidden"
+      style={{ background: "linear-gradient(180deg, #FDF9F3 0%, #F3E8D6 50%, #EDE3D0 100%)" }}
     >
-      <div
-        className="absolute inset-0 pointer-events-none"
+      {/* Saudi architecture pattern - left background */}
+      <div 
+        className="absolute left-0 top-0 w-3/5 h-full opacity-[0.07] pointer-events-none"
         style={{
-          backgroundImage: "radial-gradient(circle, hsl(38 40% 60% / 0.12) 1px, transparent 1px)",
-          backgroundSize: "18px 18px",
+          backgroundImage: `url(${desertHeroImg})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center left",
         }}
       />
-      <div className="w-full max-w-sm relative z-10 rounded-3xl overflow-hidden shadow-xl border border-[hsl(38_55%_72%_/_0.55)]">
-        <div
-          className="px-6 py-7 text-center"
-          style={{
-            background: "linear-gradient(160deg, hsl(22 72% 16%) 0%, hsl(16 72% 12%) 60%, hsl(22 62% 14%) 100%)",
-          }}
-        >
-          <div className="text-3xl font-extrabold tracking-wider mb-2" style={{ color: "hsl(38 85% 82%)" }}>
+      
+      {/* Palm decorations - right edge */}
+      <div className="absolute top-0 right-0 w-32 h-40 opacity-[0.06] pointer-events-none" style={{
+        background: "radial-gradient(ellipse at 90% 10%, #C9A063 0%, transparent 60%)",
+      }} />
+      <div className="absolute bottom-0 right-0 w-40 h-48 opacity-[0.05] pointer-events-none" style={{
+        background: "radial-gradient(ellipse at 85% 90%, #C9A063 0%, transparent 55%)",
+      }} />
+      
+      {/* Palm decorations - left edge */}
+      <div className="absolute top-0 left-0 w-32 h-32 opacity-[0.05] pointer-events-none" style={{
+        background: "radial-gradient(ellipse at 10% 5%, #C9A063 0%, transparent 60%)",
+      }} />
+      
+      {/* Golden lantern - bottom left */}
+      <div className="absolute bottom-8 left-8 text-4xl opacity-30 pointer-events-none" style={{ color: "#C9A063" }}>
+        <svg width="48" height="64" viewBox="0 0 48 64" fill="currentColor">
+          <path d="M24 0L28 8H20L24 0Z" fill="currentColor"/>
+          <rect x="18" y="8" width="12" height="4" rx="1" fill="currentColor"/>
+          <path d="M16 12H32V48C32 52 28 56 24 56C20 56 16 52 16 48V12Z" fill="currentColor" opacity="0.9"/>
+          <rect x="20" y="16" width="8" height="28" rx="2" fill="#FDF9F3" opacity="0.3"/>
+          <rect x="14" y="48" width="20" height="4" rx="1" fill="currentColor"/>
+          <rect x="12" y="52" width="24" height="6" rx="2" fill="currentColor"/>
+          <rect x="20" y="58" width="8" height="4" rx="1" fill="currentColor"/>
+        </svg>
+      </div>
+
+      {/* Central card */}
+      <div 
+        className="w-full max-w-[380px] relative z-10 rounded-[28px] overflow-hidden"
+        style={{
+          background: "linear-gradient(180deg, #FFFFFF 0%, #FFFBF4 100%)",
+          boxShadow: "0 25px 80px rgba(138,107,61,0.18), 0 8px 30px rgba(138,107,61,0.08)",
+          border: "1px solid rgba(201,160,99,0.3)",
+        }}
+      >
+        {/* Card header with logo */}
+        <div className="px-8 py-10 text-center" style={{ background: "linear-gradient(180deg, #FFFFFF 0%, #FAF5EE 100%)" }}>
+          <div className="text-5xl mb-3" style={{ color: "#C9A063" }}>✦</div>
+          <h1 className="text-4xl font-extrabold tracking-tight mb-2" style={{ color: "#2F2B25" }}>
             مواعيدك
-          </div>
-          <p className="text-[12px] font-semibold" style={{ color: "hsl(38 55% 58%)" }}>
+          </h1>
+          <p className="text-sm font-medium mb-1" style={{ color: "#8A6B3D" }}>
             لوحة المالك والإدارة
           </p>
+          <div className="h-[1px] w-32 mx-auto mt-4" style={{ background: "linear-gradient(90deg, transparent, #C9A063, transparent)" }} />
         </div>
-        <div className="px-6 py-6" style={{ background: "linear-gradient(145deg, #FFFBF4 0%, hsl(36 28% 93%) 100%)" }}>
+        
+        {/* Card content */}
+        <div className="px-8 py-8" style={{ background: "#FFFBF4" }}>
           {children}
+        </div>
+        
+        {/* Card footer */}
+        <div className="px-8 py-4 text-center" style={{ background: "#F3E8D6" }}>
+          <p className="text-xs opacity-60" style={{ color: "#6F6557" }}>
+            © 2025 مواعيدك جميع الحقوق محفوظة
+          </p>
         </div>
       </div>
     </div>
@@ -367,18 +410,30 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
   if (phase !== "ready") {
     return (
       <AuthShell>
-        <form className="space-y-4" onSubmit={handleLoginSubmit}>
-          <div className="text-center space-y-1 mb-4">
-            <h2 className="text-xl font-extrabold" style={{ color: "hsl(24 22% 24%)" }}>تسجيل دخول المالك</h2>
-            <p className="text-xs" style={{ color: "hsl(32 18% 38%)" }}>
-              الدخول محمي عبر Supabase Auth وصلاحيات admin / super_admin فقط
+        <form className="space-y-5" onSubmit={handleLoginSubmit}>
+          <div className="text-center space-y-1 mb-2">
+            <h2 className="text-lg font-extrabold" style={{ color: "#2F2B25" }}>تسجيل دخول المالك</h2>
+            <p className="text-xs" style={{ color: "#8A6B3D" }}>
+              الدخول مخصص لإدارة لوحة مواعيدك فقط
             </p>
           </div>
+
+          {!isSupabaseEnabled && (
+            <div 
+              className="px-4 py-3 rounded-xl text-xs font-semibold text-center"
+              style={{
+                background: "rgba(201,160,99,0.15)",
+                border: "1px solid rgba(201,160,99,0.3)",
+                color: "#8A6B3D",
+              }}
+            >
+              لوحة المالك تتطلب تفعيل Supabase Auth في بيئة الإنتاج
+            </div>
+          )}
 
           {loginError && <ErrorBox message={loginError} />}
 
           <div className="space-y-2">
-            <Label htmlFor="admin-email">البريد الإلكتروني</Label>
             <Input
               id="admin-email"
               dir="ltr"
@@ -386,12 +441,14 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
               value={identifier}
               onChange={(event) => setIdentifier(event.target.value)}
               autoComplete="email"
+              placeholder="أدخل البريد الإلكتروني"
               required
+              className="h-12 rounded-xl bg-white/80 border-0"
+              style={{ border: "1px solid rgba(201,160,99,0.25)" }}
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="admin-password">كلمة المرور</Label>
             <Input
               id="admin-password"
               dir="ltr"
@@ -399,11 +456,19 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
               value={password}
               onChange={(event) => setPassword(event.target.value)}
               autoComplete="current-password"
+              placeholder="أدخل كلمة المرور"
               required
+              className="h-12 rounded-xl bg-white/80 border-0"
+              style={{ border: "1px solid rgba(201,160,99,0.25)" }}
             />
           </div>
 
-          <Button type="submit" disabled={submitting} className="w-full h-11 font-bold">
+          <Button 
+            type="submit" 
+            disabled={submitting || !isSupabaseEnabled} 
+            className="w-full h-12 font-bold rounded-xl"
+            style={{ background: "#C9A063", color: "#FFFFFF" }}
+          >
             {submitting ? <Loader2 className="h-4 w-4 animate-spin" /> : "تسجيل الدخول"}
           </Button>
         </form>
