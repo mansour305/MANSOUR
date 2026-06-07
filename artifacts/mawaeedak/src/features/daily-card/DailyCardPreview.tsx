@@ -25,7 +25,7 @@ const PRAYER_ORDER = [
 
 // Event icons
 const EVENT_ICONS: Record<string, string> = {
-  salary: "💼",
+  salary: "💰",
   citizen_account: "👨‍👩‍👧",
   housing_support: "🏠",
   social_security: "🛡️",
