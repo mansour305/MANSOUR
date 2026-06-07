@@ -34,12 +34,14 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: npm
-          cache-dependency-path: mobile/package-lock.json
 
       - name: Install mobile dependencies
         working-directory: mobile
         run: npm install
+
+      - name: Run Expo Doctor
+        working-directory: mobile
+        run: npm run doctor
 
       - name: Typecheck mobile app
         working-directory: mobile
