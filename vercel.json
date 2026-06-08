@@ -1,6 +1,6 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "buildCommand": "pnpm run build",
+  "buildCommand": "VITE_DATA_SOURCE_MODE=supabase pnpm run build",
   "outputDirectory": "artifacts/mawaeedak/dist/public",
   "rewrites": [
     {
