@@ -6,8 +6,9 @@
  *           mode=api/shadow → PATCH /api/themes/:id
  *           mode=supabase   → Supabase UPDATE
  *
- * set default: localStorage فقط عبر changeTheme (لا write إلى Supabase — demo mode)
- * Invalidation: gwQueryKeys.themes + getListThemesQueryKey
+ * Default theme:
+ * - mode=supabase   → public.app_settings upsert (no api-server dependency)
+ * - mode=api/shadow → legacy API endpoint when a deployed API exists
  */
 
 import { useState } from "react";
@@ -21,6 +22,8 @@ import { useToast } from "@/hooks/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
 import { useTheme, setCachedGlobalDefault } from "@/hooks/useTheme";
 import { authedFetch } from "@/lib/apiAuth";
+import { DATA_SOURCE_MODE } from "@/lib/dataSourceMode";
+import { supabase } from "@/lib/supabase";
 import { getListThemesQueryKey } from "@workspace/api-client-react";
 import { Edit2, Loader2, Paintbrush, Check } from "lucide-react";
 import { useGatewayThemes, gwQueryKeys } from "@/hooks/useGatewayData";
@@ -45,11 +48,9 @@ export default function AdminThemes() {
   const { globalDefault } = useTheme();
   const [defaultPending, setDefaultPending] = useState<string | null>(null);
 
-  // Phase 12M: Gateway read
   const { data: themes, isLoading, refetch: refetchThemes } = useGatewayThemes();
 
   const [savePending, setSavePending] = useState(false);
-
   const [isOpen, setIsOpen] = useState(false);
   const [editId, setEditId] = useState<number | null>(null);
 
@@ -93,6 +94,31 @@ export default function AdminThemes() {
   const handleSetDefault = async (theme: { slug: string; name: string }) => {
     setDefaultPending(theme.slug);
     try {
+      if (DATA_SOURCE_MODE === "supabase") {
+        if (!supabase) {
+          toast({ title: "Supabase غير متصل", description: "تحقق من VITE_SUPABASE_URL و VITE_SUPABASE_ANON_KEY", variant: "destructive" });
+          return;
+        }
+
+        const { error } = await supabase.from("app_settings").upsert(
+          {
+            key: "default_theme",
+            value: theme.slug,
+            updated_at: new Date().toISOString(),
+          },
+          { onConflict: "key" }
+        );
+
+        if (error) {
+          toast({ title: "فشل التعيين", description: error.message, variant: "destructive" });
+          return;
+        }
+
+        setCachedGlobalDefault(theme.slug);
+        toast({ title: `تم تعيين "${theme.name}" كثيم افتراضي عام`, description: "تم الحفظ في Supabase بدون الاعتماد على api-server" });
+        return;
+      }
+
       const resp = await authedFetch("/api/settings/default-theme", {
         method: "PUT",
         headers: { "content-type": "application/json" },
@@ -108,7 +134,7 @@ export default function AdminThemes() {
         toast({ title: "فشل التعيين", description: (err && (err.error?.message || err.error)) || "خطأ غير معروف", variant: "destructive" });
       }
     } catch {
-      toast({ title: "فشل التعيين", description: "تعذر الاتصال بالخادم", variant: "destructive" });
+      toast({ title: "فشل التعيين", description: DATA_SOURCE_MODE === "supabase" ? "تعذر الحفظ في Supabase" : "تعذر الاتصال بالخادم", variant: "destructive" });
     } finally {
       setDefaultPending(null);
     }
@@ -126,9 +152,8 @@ export default function AdminThemes() {
 
   return (
     <div className="space-y-6">
-      {/* Page Title */}
       <div className="flex items-center gap-3">
-        <div 
+        <div
           className="w-1 h-6 rounded-full"
           style={{ background: "linear-gradient(180deg, hsl(38 62% 52%), hsl(32 55% 42%))" }}
         />
@@ -245,7 +270,7 @@ export default function AdminThemes() {
       )}
 
       <p className="text-xs text-muted-foreground px-1">
-        ملاحظة: تعيين الافتراضي العام يُحفَظ مركزياً في الخادم ويُطبَّق على جميع المستخدمين الذين لم يختاروا ثيماً خاصاً بهم.
+        ملاحظة: تعيين الافتراضي العام يُحفَظ مركزياً في Supabase عند وضع الإنتاج الحالي، ولا يعتمد على api-server غير المنشور.
       </p>
     </div>
   );
