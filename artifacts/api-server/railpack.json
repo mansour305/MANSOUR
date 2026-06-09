@@ -1,6 +1,4 @@
 {
   "$schema": "https://schema.railpack.com",
-  "deploy": {
-    "installCommand": "echo 'Install handled by buildCommand'"
-  }
+  "installCommand": "echo 'Install handled by buildCommand'"
 }
