@@ -1,11 +1,24 @@
+/**
+ * Root Layout — Global layout for Mawaeedak Mobile App
+ * 
+ * Provides:
+ * - RTL support for Arabic
+ * - QueryClient for data fetching
+ * - Error boundary
+ * - Status bar styling
+ */
+
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { I18nManager } from 'react-native';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
+// Force RTL for Arabic language
 I18nManager.allowRTL(true);
 I18nManager.forceRTL(true);
 
+// Query Client configuration
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -21,14 +34,16 @@ const queryClient = new QueryClient({
 
 export default function RootLayout() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <StatusBar style="dark" />
-      <Stack
-        screenOptions={{
-          headerShown: false,
-          contentStyle: { backgroundColor: '#F7EFE2' }
-        }}
-      />
-    </QueryClientProvider>
+    <SafeAreaProvider>
+      <QueryClientProvider client={queryClient}>
+        <StatusBar style="dark" />
+        <Stack
+          screenOptions={{
+            headerShown: false,
+            contentStyle: { backgroundColor: '#FAF7F2' }
+          }}
+        />
+      </QueryClientProvider>
+    </SafeAreaProvider>
   );
 }
