@@ -15,11 +15,13 @@ function MoreRow({
   label,
   onClick,
   danger = false,
+  description,
 }: {
   icon: ElementType;
   label: string;
   onClick: () => void;
   danger?: boolean;
+  description?: string;
 }) {
   return (
     <button
@@ -28,8 +30,47 @@ function MoreRow({
       style={{ borderColor: "rgba(201,160,99,0.16)", color: danger ? "#B9483F" : "#2F2B25" }}
     >
       <Icon className="h-7 w-7 shrink-0" strokeWidth={1.6} style={{ color: danger ? "#B9483F" : "#A78042" }} />
-      <span className="flex-1 text-[21px] font-extrabold">{label}</span>
+      <div className="flex-1 text-right">
+        <span className="block text-[21px] font-extrabold">{label}</span>
+        {description && (
+          <span className="block text-[14px] font-bold mt-0.5" style={{ color: "#6F6557" }}>
+            {description}
+          </span>
+        )}
+      </div>
       <ChevronLeft className="h-5 w-5 shrink-0" style={{ color: "#6F6557" }} />
+    </button>
+  );
+}
+
+function DailyCardRow({ onClick }: { onClick: () => void }) {
+  return (
+    <button
+      onClick={onClick}
+      className="flex w-full items-center justify-between rounded-[20px] border p-4 text-right transition active:scale-[0.98]"
+      style={{
+        borderColor: "rgba(201,160,99,0.30)",
+        background: "linear-gradient(135deg, rgba(201,160,99,0.08), rgba(201,160,99,0.03))",
+        boxShadow: "0 4px 12px rgba(138,107,61,0.08)"
+      }}
+    >
+      <div className="flex items-center gap-4">
+        <div
+          className="flex h-14 w-14 items-center justify-center rounded-[16px]"
+          style={{ background: "linear-gradient(135deg, #C9A063, #A78042)" }}
+        >
+          <Gift className="h-7 w-7 text-white" strokeWidth={1.6} />
+        </div>
+        <div className="text-right">
+          <h3 className="text-[19px] font-extrabold" style={{ color: "#2F2B25" }}>
+            بطاقة يومية
+          </h3>
+          <p className="text-[14px] font-bold mt-0.5" style={{ color: "#6F6557" }}>
+            شارك يومك مع الآخرين
+          </p>
+        </div>
+      </div>
+      <ChevronLeft className="h-6 w-6" style={{ color: "#A78042" }} />
     </button>
   );
 }
@@ -43,6 +84,7 @@ export default function MorePage() {
 
   const shareApp = async () => {
     const url = window.location.origin;
+
     if (navigator.share) {
       try {
         await navigator.share({ title: "مواعيدك", text: "كل مواعيدك في مكان واحد", url });
@@ -62,6 +104,7 @@ export default function MorePage() {
 
   const logout = async () => {
     await authSignOut().catch(() => {});
+
     localStorage.removeItem("app-user");
     localStorage.removeItem("mawaeedak_onboarded");
     sessionStorage.removeItem("mawaeedak_demo_session");
@@ -102,11 +145,14 @@ export default function MorePage() {
           </div>
         </section>
 
+        <section className="px-1">
+          <DailyCardRow onClick={() => setLocation("/daily-card")} />
+        </section>
+
         <section className="overflow-hidden rounded-[24px] border bg-white/82" style={{ borderColor: "rgba(201,160,99,0.22)", boxShadow: "0 14px 34px rgba(138,107,61,0.10)" }}>
           {isLoggedIn && <MoreRow icon={User} label="الملف الشخصي" onClick={() => setLocation("/account")} />}
           {isLoggedIn && <MoreRow icon={Settings} label="الإعدادات" onClick={() => setLocation("/account#settings")} />}
           <MoreRow icon={Share2} label="مشاركة التطبيق" onClick={shareApp} />
-          <MoreRow icon={Gift} label="بطاقة يومية" onClick={() => setLocation("/daily-card")} />
           <MoreRow icon={ShieldCheck} label="سياسة الخصوصية" onClick={() => setLocation("/privacy")} />
           <MoreRow icon={FileText} label="الشروط والأحكام" onClick={() => setLocation("/terms")} />
           <MoreRow icon={Headphones} label="المساعدة والدعم" onClick={() => setLocation("/support")} />
