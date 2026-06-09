@@ -1,9 +1,21 @@
 /**
- * Admin Storage — LocalStorage Fallback for Admin Panel
+ * Admin Storage — DEPRECATED ⚠️
  * 
- * This module provides localStorage persistence for admin operations
- * when Supabase is not available. All admin data is stored locally
- * with proper typing and validation.
+ * PHASE 2: Admin Recovery
+ * 
+ * ⚠️ WARNING: This module is DEPRECATED for production use!
+ * 
+ * All admin operations should now use adminGateway (admin-gateway.ts)
+ * which connects directly to Supabase.
+ * 
+ * This localStorage fallback is kept only for:
+ * - Development/testing purposes
+ * - Offline fallback scenarios
+ * - Legacy compatibility
+ * 
+ * DO NOT USE in production. Use adminGateway instead.
+ * 
+ * Last updated: 2026-06-09
  */
 
 import { isSupabaseEnabled, supabase } from "@/lib/supabase";

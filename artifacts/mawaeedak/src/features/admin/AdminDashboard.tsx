@@ -195,6 +195,7 @@ export default function AdminDashboard() {
       const result = await sendNotification({
         title: notificationTitle,
         body: notificationBody,
+        type: "broadcast",
         target: "all",
       });
       if (result.success) {
