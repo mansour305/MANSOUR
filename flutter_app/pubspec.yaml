@@ -1,10 +1,18 @@
 name: mawaeedak_flutter
-description: "مواعيدك - كل مواعيدك في مكان واحد"
+description: "مواعيدك - كل مواعيدك في مكان واحد - Saudi Luxury Scheduling App"
 publish_to: 'none'
 version: 1.0.0+1
 
 environment:
   sdk: ^3.5.0
+
+# App Configuration
+# For production release 1.0.0
+app:
+  name: "مواعيدك"
+  tagline: "كل مواعيدك في مكان واحد"
+  version: "1.0.0"
+  build_number: 1
 
 dependencies:
   flutter:

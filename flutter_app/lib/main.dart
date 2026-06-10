@@ -3,10 +3,15 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'core/theme/app_theme.dart';
+import 'core/supabase_config.dart';
+import 'data/services/auth_service.dart';
 import 'routes/app_router.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  
+  // Initialize Auth Service
+  await AuthService.instance.initialize();
   
   // Force RTL for Arabic language
   SystemChrome.setSystemUIOverlayStyle(
@@ -28,6 +33,9 @@ class MawaeedakApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Log app initialization
+    SupabaseConfig.log('Mawaeedak App starting...');
+    
     return MaterialApp.router(
       title: 'مواعيدك',
       debugShowCheckedModeBanner: false,
