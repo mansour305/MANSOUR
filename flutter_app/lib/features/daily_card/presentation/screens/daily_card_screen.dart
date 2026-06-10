@@ -1,19 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/constants/app_constants.dart';
-import '../../../../data/models/models.dart';
 import '../../../home/providers/providers.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class DailyCardScreen extends ConsumerWidget {
   const DailyCardScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final prayerTimes = ref.watch(prayerTimesProvider);
-    final financialEvents = ref.watch(financialEventsProvider);
     final dailyMessage = ref.watch(dailyMessageProvider);
 
     final now = DateTime.now();
@@ -22,409 +20,211 @@ class DailyCardScreen extends ConsumerWidget {
     final monthName = AppConstants.arabicMonths[now.month - 1];
 
     return Scaffold(
-      backgroundColor: AppColors.paper,
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            // Header
-            Padding(
-              padding: const EdgeInsets.only(top: 40),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  GestureDetector(
-                    onTap: () => context.pop(),
-                    child: Container(
-                      width: 44,
-                      height: 44,
-                      decoration: BoxDecoration(
-                        color: AppColors.cream,
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: const Icon(Icons.arrow_forward, color: AppColors.ink),
-                    ),
-                  ),
-                  const Text(
-                    'البطاقة اليومية',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w700,
-                      color: AppColors.ink,
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: () => _shareCard(context),
-                    child: Container(
-                      width: 44,
-                      height: 44,
-                      decoration: BoxDecoration(
-                        color: AppColors.cream,
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: const Icon(Icons.share, color: AppColors.brown),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 24),
-            // Premium Card
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(24),
-              decoration: BoxDecoration(
-                color: AppColors.cream,
-                borderRadius: BorderRadius.circular(28),
-                border: Border.all(color: AppColors.borderGold),
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.brown.withOpacity(0.15),
-                    blurRadius: 24,
-                    offset: const Offset(0, 8),
-                  ),
-                ],
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Card Header
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 14,
-                          vertical: 6,
-                        ),
+      backgroundColor: const Color(0xFFFDF9F3),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [Color(0xFFFDF9F3), Color(0xFFF3E8D6)],
+          ),
+        ),
+        child: SafeArea(
+          child: Column(
+            children: [
+              // Header
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    GestureDetector(
+                      onTap: () => context.pop(),
+                      child: Container(
+                        width: 44,
+                        height: 44,
                         decoration: BoxDecoration(
-                          color: AppColors.gold.withOpacity(0.2),
-                          borderRadius: BorderRadius.circular(20),
+                          color: Colors.white.withOpacity(0.7),
+                          borderRadius: BorderRadius.circular(14),
+                          border: Border.all(color: AppColors.borderGold),
                         ),
-                        child: const Text(
-                          'بطاقة اليوم',
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w600,
-                            color: AppColors.gold,
-                          ),
-                        ),
+                        child: Icon(Icons.arrow_forward, color: AppColors.brown, size: 22),
                       ),
-                      const Text('🕌', style: TextStyle(fontSize: 36)),
-                    ],
-                  ),
-                  const SizedBox(height: 20),
-                  // Greeting
-                  Text(
-                    greeting,
-                    style: const TextStyle(
-                      fontSize: 28,
-                      fontWeight: FontWeight.w800,
-                      color: AppColors.ink,
                     ),
-                  ),
-                  Text(
-                    '$dayName، ${now.day} $monthName ${now.year}',
-                    style: const TextStyle(
-                      fontSize: 15,
-                      color: AppColors.textSecondary,
+                    Text(
+                      'البطاقة اليومية',
+                      style: GoogleFonts.cairo(fontSize: 20, fontWeight: FontWeight.w700, color: AppColors.ink),
                     ),
-                  ),
-                  const SizedBox(height: 24),
-                  // Next Prayer
-                  const Text(
-                    'الصلاة القادمة',
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.textSecondary,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Container(
-                    padding: const EdgeInsets.all(18),
-                    decoration: BoxDecoration(
-                      color: AppColors.gold.withOpacity(0.15),
-                      borderRadius: BorderRadius.circular(18),
-                      border: Border.all(color: AppColors.borderGold),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            const Text('☀️', style: TextStyle(fontSize: 32)),
-                            const SizedBox(width: 12),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const Text(
-                                  'العصر',
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.w700,
-                                    color: AppColors.ink,
-                                  ),
-                                ),
-                                Text(
-                                  prayerTimes.asr,
-                                  style: const TextStyle(
-                                    fontSize: 15,
-                                    color: AppColors.textSecondary,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
+                    GestureDetector(
+                      onTap: () => _shareCard(context),
+                      child: Container(
+                        width: 44,
+                        height: 44,
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.7),
+                          borderRadius: BorderRadius.circular(14),
+                          border: Border.all(color: AppColors.borderGold),
                         ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: const [
-                            Text(
-                              'متبقي',
-                              style: TextStyle(
-                                fontSize: 11,
-                                color: AppColors.textSecondary,
-                              ),
-                            ),
-                            Text(
-                              '2 ساعة و 30 دقيقة',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w700,
-                                color: AppColors.gold,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-                  // Daily Message
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text('❝', style: TextStyle(fontSize: 24)),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Text(
-                          dailyMessage,
-                          style: const TextStyle(
-                            fontSize: 16,
-                            color: AppColors.ink,
-                            height: 1.6,
-                            fontStyle: FontStyle.italic,
-                          ),
-                        ),
+                        child: Icon(Icons.share, color: AppColors.gold, size: 22),
                       ),
-                    ],
-                  ),
-                  const SizedBox(height: 24),
-                  // Prayer Times
-                  const Text(
-                    'مواقيت الصلاة',
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.textSecondary,
                     ),
-                  ),
-                  const SizedBox(height: 12),
-                  _buildPrayerGrid(prayerTimes),
-                  const SizedBox(height: 24),
-                  // Financial Countdown
-                  const Text(
-                    'المواعيد المالية',
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.textSecondary,
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  ...financialEvents.take(2).map((event) => _buildFinancialItem(event)),
-                  const SizedBox(height: 16),
-                  // Footer
-                  Center(
-                    child: Column(
-                      children: const [
-                        Text(
-                          'كل مواعيدك في مكان واحد',
-                          style: TextStyle(
-                            fontSize: 13,
-                            color: AppColors.textSecondary,
-                          ),
-                        ),
-                        Text(
-                          'مواعيدك',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w700,
-                            color: AppColors.gold,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-            const SizedBox(height: 24),
-            // Action Buttons
-            Row(
-              children: [
-                Expanded(
-                  flex: 2,
-                  child: ElevatedButton.icon(
-                    onPressed: () => _saveCard(context),
-                    icon: const Icon(Icons.download),
-                    label: const Text('حفظ البطاقة'),
+              // Card with background image
+              Expanded(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    children: [
+                      // Premium Card with daily-card.png background
+                      Container(
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(28),
+                          border: Border.all(color: AppColors.borderGold),
+                          boxShadow: [BoxShadow(color: AppColors.brown.withOpacity(0.15), blurRadius: 24, offset: const Offset(0, 8))],
+                        ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(28),
+                          child: Stack(
+                            children: [
+                              // Background image
+                              Positioned.fill(
+                                child: Image.asset(
+                                  'assets/images/daily-card.png',
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (context, error, stackTrace) => Container(color: AppColors.cream),
+                                ),
+                              ),
+                              // Gradient overlay
+                              Positioned.fill(
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      begin: Alignment.topCenter,
+                                      end: Alignment.bottomCenter,
+                                      colors: [Colors.white.withOpacity(0.9), Colors.white.withOpacity(0.85), Colors.white.withOpacity(0.95)],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              // Content
+                              Padding(
+                                padding: const EdgeInsets.all(24),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    // Logo
+                                    Row(
+                                      children: [
+                                        Container(
+                                          width: 48,
+                                          height: 48,
+                                          decoration: BoxDecoration(
+                                            color: Colors.white.withOpacity(0.8),
+                                            borderRadius: BorderRadius.circular(14),
+                                            border: Border.all(color: AppColors.borderGold),
+                                          ),
+                                          child: Center(
+                                            child: Text('م', style: GoogleFonts.cairo(fontSize: 28, fontWeight: FontWeight.w800, color: AppColors.gold)),
+                                          ),
+                                        ),
+                                        const SizedBox(width: 12),
+                                        Text('مواعيدك', style: GoogleFonts.cairo(fontSize: 24, fontWeight: FontWeight.w800, color: AppColors.brown)),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 20),
+                                    // Greeting
+                                    Text(greeting, style: GoogleFonts.cairo(fontSize: 30, fontWeight: FontWeight.w800, color: AppColors.ink, height: 1.3)),
+                                    const SizedBox(height: 8),
+                                    Text('$dayName، ${now.day} $monthName ${now.year}', style: GoogleFonts.cairo(fontSize: 16, fontWeight: FontWeight.w600, color: AppColors.textSecondary)),
+                                    const SizedBox(height: 28),
+                                    // Daily Message
+                                    Container(
+                                      padding: const EdgeInsets.all(20),
+                                      decoration: BoxDecoration(
+                                        color: AppColors.gold.withOpacity(0.1),
+                                        borderRadius: BorderRadius.circular(20),
+                                        border: Border.all(color: AppColors.borderGold.withOpacity(0.3)),
+                                      ),
+                                      child: Text(dailyMessage, style: GoogleFonts.cairo(fontSize: 20, fontWeight: FontWeight.w700, color: AppColors.ink, height: 1.8), textAlign: TextAlign.center),
+                                    ),
+                                    const SizedBox(height: 24),
+                                    // Footer
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Text('✦', style: TextStyle(color: AppColors.gold, fontSize: 16)),
+                                        const SizedBox(width: 8),
+                                        Text('واذكروا الله ذكراً كثيراً', style: GoogleFonts.cairo(fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.brown)),
+                                        const SizedBox(width: 8),
+                                        Text('✦', style: TextStyle(color: AppColors.gold, fontSize: 16)),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 24),
+                      // Action Buttons
+                      Row(
+                        children: [
+                          Expanded(
+                            child: ElevatedButton.icon(
+                              onPressed: () => _copyCard(context, dailyMessage),
+                              icon: const Icon(Icons.copy, size: 20),
+                              label: Text('نسخ', style: GoogleFonts.cairo(fontSize: 16)),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: AppColors.gold,
+                                foregroundColor: Colors.white,
+                                padding: const EdgeInsets.symmetric(vertical: 16),
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: OutlinedButton.icon(
+                              onPressed: () => _shareCard(context),
+                              icon: const Icon(Icons.share, size: 20),
+                              label: Text('مشاركة', style: GoogleFonts.cairo(fontSize: 16)),
+                              style: OutlinedButton.styleFrom(
+                                foregroundColor: AppColors.brown,
+                                side: BorderSide(color: AppColors.gold.withOpacity(0.4)),
+                                padding: const EdgeInsets.symmetric(vertical: 16),
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 40),
+                    ],
                   ),
                 ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: OutlinedButton.icon(
-                    onPressed: () => _shareCard(context),
-                    icon: const Icon(Icons.share),
-                    label: const Text('مشاركة'),
-                  ),
-                ),
-              ],
-            ),
-          ],
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 
-  Widget _buildPrayerGrid(PrayerTimes times) {
-    final prayers = [
-      {'label': 'الفجر', 'time': times.fajr, 'icon': '🌙'},
-      {'label': 'الشروق', 'time': times.sunrise, 'icon': '🌅'},
-      {'label': 'الظهر', 'time': times.dhuhr, 'icon': '☀️'},
-      {'label': 'العصر', 'time': times.asr, 'icon': '☀️'},
-      {'label': 'المغرب', 'time': times.maghrib, 'icon': '🌅'},
-      {'label': 'العشاء', 'time': times.isha, 'icon': '🌙'},
-    ];
-
-    return GridView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 3,
-        crossAxisSpacing: 10,
-        mainAxisSpacing: 10,
-        childAspectRatio: 1,
-      ),
-      itemCount: prayers.length,
-      itemBuilder: (context, index) {
-        final prayer = prayers[index];
-        final isNext = prayer['label'] == 'العصر';
-        return Container(
-          decoration: BoxDecoration(
-            color: AppColors.paper,
-            borderRadius: BorderRadius.circular(14),
-            border: Border.all(
-              color: isNext ? AppColors.gold : AppColors.border,
-            ),
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                prayer['icon'] as String,
-                style: const TextStyle(fontSize: 18),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                prayer['label'] as String,
-                style: TextStyle(
-                  fontSize: 11,
-                  color: isNext ? AppColors.gold : AppColors.textSecondary,
-                  fontWeight: isNext ? FontWeight.w600 : FontWeight.normal,
-                ),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                prayer['time'] as String,
-                style: TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.w700,
-                  color: isNext ? AppColors.gold : AppColors.ink,
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _buildFinancialItem(FinancialEvent event) {
-    final daysText = event.daysRemaining == 0
-        ? 'اليوم'
-        : event.daysRemaining == 1
-            ? 'غداً'
-            : '${event.daysRemaining} يوم';
-    final daysColor = event.daysRemaining <= 2 ? AppColors.error : AppColors.gold;
-
-    return Container(
-      margin: const EdgeInsets.only(bottom: 8),
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: AppColors.paper,
-        borderRadius: BorderRadius.circular(14),
-      ),
-      child: Row(
-        children: [
-          const Icon(Icons.attach_money, color: AppColors.gold, size: 18),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Text(
-              event.name,
-              style: const TextStyle(
-                fontSize: 15,
-                fontWeight: FontWeight.w600,
-                color: AppColors.ink,
-              ),
-            ),
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Text(
-                '${event.amount} ر.س',
-                style: const TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.w700,
-                  color: AppColors.ink,
-                ),
-              ),
-              Text(
-                daysText,
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                  color: daysColor,
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _saveCard(BuildContext context) {
+  void _copyCard(BuildContext context, String message) {
+    final text = '✦ مواعيدك ✦\n$message\n\nواذكروا الله ذكراً كثيراً\n\nمواعيدك — منصة تجمع وقتك وراتبك ودعمك وأهم مواعيدك';
+    Clipboard.setData(ClipboardData(text: text));
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('تم حفظ البطاقة')),
+      SnackBar(content: Text('تم نسخ البطاقة', style: GoogleFonts.cairo()), backgroundColor: AppColors.gold),
     );
   }
 
   void _shareCard(BuildContext context) {
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('جاري مشاركة البطاقة...')),
+      SnackBar(content: Text('مشاركة البطاقة', style: GoogleFonts.cairo()), backgroundColor: AppColors.brown),
     );
   }
 }
