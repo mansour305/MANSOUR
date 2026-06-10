@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/constants/app_constants.dart';
 import '../../../../data/models/models.dart';
@@ -16,9 +17,11 @@ class HomeScreen extends ConsumerWidget {
     final dailyMessage = ref.watch(dailyMessageProvider);
 
     return Scaffold(
+      backgroundColor: AppColors.paper,
       body: SafeArea(
         bottom: false,
         child: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
           padding: const EdgeInsets.all(16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -26,26 +29,25 @@ class HomeScreen extends ConsumerWidget {
               const SizedBox(height: 40),
               // Header
               _buildHeader(),
-              const SizedBox(height: 20),
-              // Daily Message
+              const SizedBox(height: 24),
+              // Daily Message Card
               _buildDailyMessageCard(dailyMessage),
-              const SizedBox(height: 24),
+              const SizedBox(height: 28),
               // Prayer Times Section
-              _buildSectionTitle('مواقيت الصلاة'),
-              _buildSectionSubtitle('الرياض'),
-              const SizedBox(height: 12),
+              _buildSectionHeader('مواقيت الصلاة', 'الرياض'),
+              const SizedBox(height: 14),
               _buildPrayerGrid(prayerTimes),
-              const SizedBox(height: 24),
+              const SizedBox(height: 28),
               // Financial Events Section
-              _buildSectionTitle('المواعيد المالية'),
-              const SizedBox(height: 12),
+              _buildSectionHeader('المواعيد المالية', null),
+              const SizedBox(height: 14),
               _buildFinancialList(financialEvents),
-              const SizedBox(height: 24),
+              const SizedBox(height: 28),
               // Quick Actions
-              _buildSectionTitle('إجراءات سريعة'),
-              const SizedBox(height: 12),
+              _buildSectionHeader('إجراءات سريعة', null),
+              const SizedBox(height: 14),
               _buildQuickActions(context),
-              const SizedBox(height: 100), // Bottom padding for nav bar
+              const SizedBox(height: 100),
             ],
           ),
         ),
@@ -61,24 +63,26 @@ class HomeScreen extends ConsumerWidget {
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               greeting,
-              style: const TextStyle(
+              style: GoogleFonts.cairo(
                 fontSize: 28,
                 fontWeight: FontWeight.w800,
                 color: AppColors.ink,
+                height: 1.3,
               ),
             ),
-            const SizedBox(height: 4),
+            const SizedBox(height: 6),
             Text(
               '$dayName، ${now.day} $monthName ${now.year}',
-              style: const TextStyle(
+              style: GoogleFonts.cairo(
                 fontSize: 14,
+                fontWeight: FontWeight.w500,
                 color: AppColors.textSecondary,
               ),
             ),
@@ -89,72 +93,82 @@ class HomeScreen extends ConsumerWidget {
           height: 56,
           decoration: BoxDecoration(
             color: AppColors.cream,
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(AppRadius.lg),
+            border: Border.all(color: AppColors.border),
           ),
-          child: const Center(
-            child: Text('🕌', style: TextStyle(fontSize: 32)),
+          child: Center(
+            child: Text('🕌', style: GoogleFonts.cairo(fontSize: 32)),
           ),
         ),
       ],
     );
   }
 
+  Widget _buildSectionHeader(String title, String? subtitle) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          title,
+          style: GoogleFonts.cairo(
+            fontSize: 20,
+            fontWeight: FontWeight.w700,
+            color: AppColors.ink,
+            height: 1.3,
+          ),
+        ),
+        if (subtitle != null) ...[
+          const SizedBox(height: 4),
+          Text(
+            subtitle,
+            style: GoogleFonts.cairo(
+              fontSize: 13,
+              fontWeight: FontWeight.w500,
+              color: AppColors.textSecondary,
+            ),
+          ),
+        ],
+      ],
+    );
+  }
+
   Widget _buildDailyMessageCard(String message) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
         color: AppColors.cream,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(AppRadius.xl),
         border: Border.all(color: AppColors.border),
+        boxShadow: AppShadows.soft,
       ),
       child: Row(
         children: [
           Container(
-            width: 36,
-            height: 36,
+            width: 44,
+            height: 44,
             decoration: BoxDecoration(
-              color: AppColors.gold.withOpacity(0.2),
-              borderRadius: BorderRadius.circular(10),
+              color: AppColors.gold.withOpacity(0.15),
+              borderRadius: BorderRadius.circular(AppRadius.md),
             ),
             child: const Icon(
-              Icons.chat_bubble_outline,
+              Icons.chat_bubble_outline_rounded,
               color: AppColors.gold,
-              size: 20,
+              size: 22,
             ),
           ),
-          const SizedBox(width: 12),
+          const SizedBox(width: 14),
           Expanded(
             child: Text(
               message,
-              style: const TextStyle(
+              style: GoogleFonts.cairo(
                 fontSize: 15,
                 color: AppColors.ink,
-                height: 1.5,
+                height: 1.6,
+                fontWeight: FontWeight.w500,
               ),
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildSectionTitle(String title) {
-    return Text(
-      title,
-      style: const TextStyle(
-        fontSize: 20,
-        fontWeight: FontWeight.w700,
-        color: AppColors.ink,
-      ),
-    );
-  }
-
-  Widget _buildSectionSubtitle(String subtitle) {
-    return Text(
-      subtitle,
-      style: const TextStyle(
-        fontSize: 14,
-        color: AppColors.textSecondary,
       ),
     );
   }
@@ -169,52 +183,61 @@ class HomeScreen extends ConsumerWidget {
       {'key': 'isha', 'label': 'العشاء', 'time': times.isha, 'icon': '🌙'},
     ];
 
-    return GridView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 3,
-        crossAxisSpacing: 8,
-        mainAxisSpacing: 8,
-        childAspectRatio: 1,
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: AppColors.cream,
+        borderRadius: BorderRadius.circular(AppRadius.xl),
+        border: Border.all(color: AppColors.border),
       ),
-      itemCount: prayers.length,
-      itemBuilder: (context, index) {
-        final prayer = prayers[index];
-        return Container(
-          decoration: BoxDecoration(
-            color: AppColors.cream,
-            borderRadius: BorderRadius.circular(14),
-            border: Border.all(color: AppColors.border),
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                prayer['icon'] as String,
-                style: const TextStyle(fontSize: 20),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                prayer['label'] as String,
-                style: const TextStyle(
-                  fontSize: 12,
-                  color: AppColors.textSecondary,
+      child: GridView.builder(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 3,
+          crossAxisSpacing: 10,
+          mainAxisSpacing: 10,
+          childAspectRatio: 0.95,
+        ),
+        itemCount: prayers.length,
+        itemBuilder: (context, index) {
+          final prayer = prayers[index];
+          return Container(
+            decoration: BoxDecoration(
+              color: AppColors.paper,
+              borderRadius: BorderRadius.circular(AppRadius.lg),
+              border: Border.all(color: AppColors.border),
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  prayer['icon'] as String,
+                  style: GoogleFonts.cairo(fontSize: 22),
                 ),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                prayer['time'] as String,
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w700,
-                  color: AppColors.ink,
+                const SizedBox(height: 6),
+                Text(
+                  prayer['label'] as String,
+                  style: GoogleFonts.cairo(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.textSecondary,
+                  ),
                 ),
-              ),
-            ],
-          ),
-        );
-      },
+                const SizedBox(height: 4),
+                Text(
+                  prayer['time'] as String,
+                  style: GoogleFonts.cairo(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.ink,
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
+      ),
     );
   }
 
@@ -238,59 +261,62 @@ class HomeScreen extends ConsumerWidget {
             : '${event.daysRemaining} يوم';
 
     return Container(
-      margin: const EdgeInsets.only(bottom: 8),
-      padding: const EdgeInsets.all(14),
+      margin: const EdgeInsets.only(bottom: 10),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: AppColors.cream,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(AppRadius.lg),
         border: Border.all(color: AppColors.border),
       ),
       child: Row(
         children: [
           Container(
-            width: 44,
-            height: 44,
+            width: 48,
+            height: 48,
             decoration: BoxDecoration(
               color: AppColors.paper,
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(AppRadius.md),
             ),
             child: Center(
-              child: Text(icon, style: const TextStyle(fontSize: 24)),
+              child: Text(icon, style: GoogleFonts.cairo(fontSize: 24)),
             ),
           ),
-          const SizedBox(width: 12),
+          const SizedBox(width: 14),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   event.name,
-                  style: const TextStyle(
+                  style: GoogleFonts.cairo(
                     fontSize: 15,
                     fontWeight: FontWeight.w600,
                     color: AppColors.ink,
                   ),
                 ),
-                if (event.amount != null)
+                if (event.amount != null) ...[
+                  const SizedBox(height: 4),
                   Text(
                     '${event.amount} ر.س',
-                    style: const TextStyle(
+                    style: GoogleFonts.cairo(
                       fontSize: 13,
+                      fontWeight: FontWeight.w500,
                       color: AppColors.textSecondary,
                     ),
                   ),
+                ],
               ],
             ),
           ),
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
             decoration: BoxDecoration(
-              color: color.withOpacity(0.2),
-              borderRadius: BorderRadius.circular(8),
+              color: color.withOpacity(0.15),
+              borderRadius: BorderRadius.circular(AppRadius.md),
             ),
             child: Text(
               daysText,
-              style: TextStyle(
+              style: GoogleFonts.cairo(
                 fontSize: 13,
                 fontWeight: FontWeight.w600,
                 color: color,
@@ -309,7 +335,7 @@ class HomeScreen extends ConsumerWidget {
           child: _QuickActionButton(
             icon: '🎴',
             label: 'البطاقة اليومية',
-            color: AppColors.gold.withOpacity(0.2),
+            color: AppColors.gold.withOpacity(0.15),
             onTap: () => context.pushNamed('daily-card'),
           ),
         ),
@@ -318,7 +344,7 @@ class HomeScreen extends ConsumerWidget {
           child: _QuickActionButton(
             icon: '📅',
             label: 'المواعيد',
-            color: AppColors.brown.withOpacity(0.2),
+            color: AppColors.brown.withOpacity(0.15),
             onTap: () => context.goNamed('calendar'),
           ),
         ),
@@ -327,7 +353,7 @@ class HomeScreen extends ConsumerWidget {
           child: _QuickActionButton(
             icon: '🏢',
             label: 'الخدمات',
-            color: AppColors.success.withOpacity(0.2),
+            color: AppColors.olive.withOpacity(0.15),
             onTap: () => context.goNamed('services'),
           ),
         ),
@@ -354,33 +380,35 @@ class _QuickActionButton extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(18),
         decoration: BoxDecoration(
           color: AppColors.cream,
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(AppRadius.xl),
           border: Border.all(color: AppColors.border),
+          boxShadow: AppShadows.soft,
         ),
         child: Column(
           children: [
             Container(
-              width: 48,
-              height: 48,
+              width: 52,
+              height: 52,
               decoration: BoxDecoration(
                 color: color,
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: BorderRadius.circular(AppRadius.lg),
               ),
               child: Center(
-                child: Text(icon, style: const TextStyle(fontSize: 24)),
+                child: Text(icon, style: GoogleFonts.cairo(fontSize: 26)),
               ),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 10),
             Text(
               label,
-              style: const TextStyle(
+              style: GoogleFonts.cairo(
                 fontSize: 13,
                 fontWeight: FontWeight.w600,
                 color: AppColors.ink,
               ),
+              textAlign: TextAlign.center,
             ),
           ],
         ),

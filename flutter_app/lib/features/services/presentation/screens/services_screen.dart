@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../../../../core/theme/app_theme.dart';
 
 class ServicesScreen extends StatelessWidget {
@@ -8,32 +9,35 @@ class ServicesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.paper,
       body: SafeArea(
         bottom: false,
         child: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
           padding: const EdgeInsets.all(16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 40),
               // Header
-              const Text(
+              Text(
                 'خدماتك',
-                style: TextStyle(
+                style: GoogleFonts.cairo(
                   fontSize: 28,
                   fontWeight: FontWeight.w800,
                   color: AppColors.ink,
+                  height: 1.3,
                 ),
               ),
               const SizedBox(height: 8),
-              const Text(
+              Text(
                 'اختر الخدمة التي تحتاجها',
-                style: TextStyle(
+                style: GoogleFonts.cairo(
                   fontSize: 14,
                   color: AppColors.textSecondary,
                 ),
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: 28),
               // Services Grid
               _buildServicesGrid(context),
               const SizedBox(height: 100),
@@ -58,7 +62,7 @@ class ServicesScreen extends StatelessWidget {
         'name': 'حساب التكاليف',
         'description': 'تتبع مشاريعك وتكاليفك',
         'route': 'cost-calculator',
-        'color': AppColors.info,
+        'color': AppColors.mistBlue,
       },
       {
         'icon': '🔔',
@@ -72,7 +76,7 @@ class ServicesScreen extends StatelessWidget {
         'name': 'السفر',
         'description': 'رحلاتك وتأشيراتك',
         'route': 'travel',
-        'color': const Color(0xFF4A7FB5),
+        'color': AppColors.info,
       },
       {
         'icon': '📚',
@@ -109,9 +113,9 @@ class ServicesScreen extends StatelessWidget {
       physics: const NeverScrollableScrollPhysics(),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
-        crossAxisSpacing: 12,
-        mainAxisSpacing: 12,
-        childAspectRatio: 0.9,
+        crossAxisSpacing: 14,
+        mainAxisSpacing: 14,
+        childAspectRatio: 0.88,
       ),
       itemCount: services.length,
       itemBuilder: (context, index) {
@@ -177,41 +181,42 @@ class _ServiceCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(18),
         decoration: BoxDecoration(
           color: AppColors.cream,
-          borderRadius: BorderRadius.circular(18),
+          borderRadius: BorderRadius.circular(AppRadius.xl),
           border: Border.all(color: AppColors.border),
+          boxShadow: AppShadows.soft,
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
-              width: 64,
-              height: 64,
+              width: 68,
+              height: 68,
               decoration: BoxDecoration(
                 color: color.withOpacity(0.15),
-                borderRadius: BorderRadius.circular(18),
+                borderRadius: BorderRadius.circular(AppRadius.lg),
               ),
               child: Center(
-                child: Text(icon, style: const TextStyle(fontSize: 28)),
+                child: Text(icon, style: GoogleFonts.cairo(fontSize: 32)),
               ),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: 14),
             Text(
               name,
-              style: const TextStyle(
-                fontSize: 15,
+              style: GoogleFonts.cairo(
+                fontSize: 16,
                 fontWeight: FontWeight.w700,
                 color: AppColors.ink,
               ),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 4),
+            const SizedBox(height: 6),
             Text(
               description,
-              style: const TextStyle(
-                fontSize: 11,
+              style: GoogleFonts.cairo(
+                fontSize: 12,
                 color: AppColors.textSecondary,
               ),
               textAlign: TextAlign.center,

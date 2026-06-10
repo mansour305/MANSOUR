@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/constants/app_constants.dart';
 
@@ -12,6 +13,7 @@ class MainScaffold extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.paper,
       body: child,
       extendBody: true,
       bottomNavigationBar: const _CustomBottomNavBar(),
@@ -31,22 +33,16 @@ class _CustomBottomNavBar extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.paper,
         borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(30),
-          topRight: Radius.circular(30),
+          topLeft: Radius.circular(AppRadius.xxl),
+          topRight: Radius.circular(AppRadius.xxl),
         ),
-        border: Border.all(color: AppColors.borderGold),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.brown.withOpacity(0.12),
-            blurRadius: 20,
-            offset: const Offset(0, -4),
-          ),
-        ],
+        border: Border.all(color: AppColors.borderGold, width: 1),
+        boxShadow: AppShadows.soft,
       ),
       child: SafeArea(
         top: false,
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: TabConfig.tabs.map((tab) {
@@ -115,36 +111,36 @@ class _TabItem extends StatelessWidget {
       behavior: HitTestBehavior.opaque,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
         decoration: BoxDecoration(
           color: isSelected ? AppColors.cream : Colors.transparent,
-          borderRadius: BorderRadius.circular(22),
+          borderRadius: BorderRadius.circular(AppRadius.full),
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             Icon(
               icon,
-              size: 24,
+              size: 26,
               color: isSelected ? AppColors.gold : AppColors.brown,
             ),
-            const SizedBox(height: 4),
+            const SizedBox(height: 5),
             Text(
               label,
-              style: TextStyle(
+              style: GoogleFonts.cairo(
                 fontSize: 10,
                 fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
                 color: isSelected ? AppColors.gold : AppColors.brown,
               ),
             ),
             if (isSelected) ...[
-              const SizedBox(height: 3),
+              const SizedBox(height: 4),
               Container(
-                width: 18,
-                height: 2.5,
+                width: 20,
+                height: 3,
                 decoration: BoxDecoration(
                   color: AppColors.gold,
-                  borderRadius: BorderRadius.circular(1.25),
+                  borderRadius: BorderRadius.circular(1.5),
                 ),
               ),
             ],

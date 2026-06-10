@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/constants/app_constants.dart';
@@ -31,9 +32,11 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
         .toList();
 
     return Scaffold(
+      backgroundColor: AppColors.paper,
       body: SafeArea(
         bottom: false,
         child: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
           padding: const EdgeInsets.all(16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -506,6 +509,7 @@ class _AddAppointmentSheetState extends State<_AddAppointmentSheet> {
         bottom: MediaQuery.of(context).viewInsets.bottom + 40,
       ),
       child: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,

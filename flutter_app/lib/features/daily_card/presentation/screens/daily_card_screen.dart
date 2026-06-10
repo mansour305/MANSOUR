@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/constants/app_constants.dart';
@@ -21,6 +22,7 @@ class DailyCardScreen extends ConsumerWidget {
     final monthName = AppConstants.arabicMonths[now.month - 1];
 
     return Scaffold(
+      backgroundColor: AppColors.paper,
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(

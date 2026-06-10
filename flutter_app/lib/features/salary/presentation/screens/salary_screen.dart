@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../data/models/models.dart';
 import '../../../home/providers/providers.dart';
@@ -19,31 +20,28 @@ class _SalaryScreenState extends ConsumerState<SalaryScreen> {
     final billEvents = financialEvents.where((e) => e.type == 'bill').toList();
 
     return Scaffold(
+      backgroundColor: AppColors.paper,
       body: SafeArea(
         bottom: false,
         child: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
           padding: const EdgeInsets.all(16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 40),
-              // Header
               _buildHeader(context),
-              const SizedBox(height: 20),
-              // Salary Card
+              const SizedBox(height: 24),
               _buildSalaryCard(),
-              const SizedBox(height: 16),
-              // Support Card
+              const SizedBox(height: 18),
               if (salaryEvents.isNotEmpty) ...[
                 _buildSupportCard(salaryEvents.first),
-                const SizedBox(height: 24),
+                const SizedBox(height: 28),
               ],
-              // Bills Section
               _buildSectionTitle('الفواتير'),
-              const SizedBox(height: 12),
+              const SizedBox(height: 14),
               _buildBillsList(billEvents),
-              const SizedBox(height: 24),
-              // Summary
+              const SizedBox(height: 28),
               _buildSummary(billEvents),
               const SizedBox(height: 100),
             ],
@@ -57,18 +55,19 @@ class _SalaryScreenState extends ConsumerState<SalaryScreen> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        const Text(
+        Text(
           'المواعيد المالية',
-          style: TextStyle(
+          style: GoogleFonts.cairo(
             fontSize: 28,
             fontWeight: FontWeight.w800,
             color: AppColors.ink,
+            height: 1.3,
           ),
         ),
         ElevatedButton.icon(
           onPressed: () => _showAddBillDialog(context),
           icon: const Icon(Icons.add, size: 20),
-          label: const Text('إضافة'),
+          label: Text('إضافة', style: GoogleFonts.cairo()),
         ),
       ],
     );
@@ -76,43 +75,45 @@ class _SalaryScreenState extends ConsumerState<SalaryScreen> {
 
   Widget _buildSalaryCard() {
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
         color: AppColors.cream,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(AppRadius.xl),
         border: Border.all(color: AppColors.borderGold),
+        boxShadow: AppShadows.gold,
       ),
       child: Column(
         children: [
           Row(
             children: [
               Container(
-                width: 64,
-                height: 64,
+                width: 68,
+                height: 68,
                 decoration: BoxDecoration(
-                  color: AppColors.gold.withOpacity(0.2),
-                  borderRadius: BorderRadius.circular(18),
+                  color: AppColors.gold.withOpacity(0.15),
+                  borderRadius: BorderRadius.circular(AppRadius.lg),
                 ),
                 child: const Center(
-                  child: Text('💰', style: TextStyle(fontSize: 32)),
+                  child: Text('💰', style: TextStyle(fontSize: 34)),
                 ),
               ),
-              const SizedBox(width: 16),
+              const SizedBox(width: 18),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
+                    Text(
                       'الراتب القادم',
-                      style: TextStyle(
+                      style: GoogleFonts.cairo(
                         fontSize: 14,
                         color: AppColors.textSecondary,
                       ),
                     ),
-                    const Text(
+                    const SizedBox(height: 4),
+                    Text(
                       '12,000 ر.س',
-                      style: TextStyle(
-                        fontSize: 32,
+                      style: GoogleFonts.cairo(
+                        fontSize: 34,
                         fontWeight: FontWeight.w800,
                         color: AppColors.ink,
                       ),
@@ -122,9 +123,9 @@ class _SalaryScreenState extends ConsumerState<SalaryScreen> {
               ),
             ],
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 20),
           const Divider(),
-          const SizedBox(height: 16),
+          const SizedBox(height: 20),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
@@ -143,15 +144,15 @@ class _SalaryScreenState extends ConsumerState<SalaryScreen> {
       children: [
         Text(
           label,
-          style: const TextStyle(
+          style: GoogleFonts.cairo(
             fontSize: 12,
             color: AppColors.textSecondary,
           ),
         ),
-        const SizedBox(height: 4),
+        const SizedBox(height: 6),
         Text(
           value,
-          style: TextStyle(
+          style: GoogleFonts.cairo(
             fontSize: 15,
             fontWeight: FontWeight.w600,
             color: color ?? AppColors.ink,
@@ -189,11 +190,12 @@ class _SalaryScreenState extends ConsumerState<SalaryScreen> {
 
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
         color: AppColors.cream,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(AppRadius.lg),
         border: Border.all(color: AppColors.border),
+        boxShadow: AppShadows.soft,
       ),
       child: Row(
         children: [
@@ -201,40 +203,40 @@ class _SalaryScreenState extends ConsumerState<SalaryScreen> {
             width: 56,
             height: 56,
             decoration: BoxDecoration(
-              color: color.withOpacity(0.2),
-              borderRadius: BorderRadius.circular(16),
+              color: color.withOpacity(0.15),
+              borderRadius: BorderRadius.circular(AppRadius.lg),
             ),
             child: Center(
-              child: Text(icon, style: const TextStyle(fontSize: 28)),
+              child: Text(icon, style: GoogleFonts.cairo(fontSize: 28)),
             ),
           ),
-          const SizedBox(width: 14),
+          const SizedBox(width: 16),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   title,
-                  style: const TextStyle(
+                  style: GoogleFonts.cairo(
                     fontSize: 17,
                     fontWeight: FontWeight.w700,
                     color: AppColors.ink,
                   ),
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(height: 6),
                 Row(
                   children: [
                     Text(
                       amount,
-                      style: const TextStyle(
+                      style: GoogleFonts.cairo(
                         fontSize: 14,
                         color: AppColors.textSecondary,
                       ),
                     ),
-                    const SizedBox(width: 12),
+                    const SizedBox(width: 14),
                     Text(
                       date,
-                      style: const TextStyle(
+                      style: GoogleFonts.cairo(
                         fontSize: 14,
                         color: AppColors.textSecondary,
                       ),
@@ -245,14 +247,14 @@ class _SalaryScreenState extends ConsumerState<SalaryScreen> {
             ),
           ),
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
             decoration: BoxDecoration(
-              color: daysColor.withOpacity(0.2),
-              borderRadius: BorderRadius.circular(8),
+              color: daysColor.withOpacity(0.15),
+              borderRadius: BorderRadius.circular(AppRadius.md),
             ),
             child: Text(
               daysText,
-              style: TextStyle(
+              style: GoogleFonts.cairo(
                 fontSize: 13,
                 fontWeight: FontWeight.w600,
                 color: daysColor,
@@ -270,7 +272,7 @@ class _SalaryScreenState extends ConsumerState<SalaryScreen> {
       children: [
         Text(
           title,
-          style: const TextStyle(
+          style: GoogleFonts.cairo(
             fontSize: 18,
             fontWeight: FontWeight.w700,
             color: AppColors.ink,
@@ -308,43 +310,45 @@ class _SalaryScreenState extends ConsumerState<SalaryScreen> {
 
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
-      padding: const EdgeInsets.all(14),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: AppColors.cream,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(AppRadius.lg),
         border: Border.all(color: AppColors.border),
+        boxShadow: AppShadows.soft,
       ),
       child: Row(
         children: [
           Container(
-            width: 40,
-            height: 40,
+            width: 44,
+            height: 44,
             decoration: BoxDecoration(
               color: AppColors.paper,
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(AppRadius.md),
             ),
             child: const Icon(
               Icons.description_outlined,
               color: AppColors.brown,
-              size: 20,
+              size: 22,
             ),
           ),
-          const SizedBox(width: 12),
+          const SizedBox(width: 14),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   bill.name,
-                  style: const TextStyle(
+                  style: GoogleFonts.cairo(
                     fontSize: 15,
                     fontWeight: FontWeight.w600,
                     color: AppColors.ink,
                   ),
                 ),
+                const SizedBox(height: 4),
                 Text(
                   'تاريخ الاستحقاق: ${bill.date}',
-                  style: const TextStyle(
+                  style: GoogleFonts.cairo(
                     fontSize: 12,
                     color: AppColors.textSecondary,
                   ),
@@ -357,15 +361,16 @@ class _SalaryScreenState extends ConsumerState<SalaryScreen> {
             children: [
               Text(
                 '${bill.amount} ر.س',
-                style: const TextStyle(
+                style: GoogleFonts.cairo(
                   fontSize: 16,
                   fontWeight: FontWeight.w700,
                   color: AppColors.ink,
                 ),
               ),
+              const SizedBox(height: 4),
               Text(
                 daysText,
-                style: TextStyle(
+                style: GoogleFonts.cairo(
                   fontSize: 12,
                   fontWeight: FontWeight.w600,
                   color: daysColor,
@@ -385,37 +390,38 @@ class _SalaryScreenState extends ConsumerState<SalaryScreen> {
     });
 
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(22),
       decoration: BoxDecoration(
         color: AppColors.cream,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(AppRadius.xl),
         border: Border.all(color: AppColors.border),
+        boxShadow: AppShadows.soft,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             'ملخص الشهر',
-            style: TextStyle(
+            style: GoogleFonts.cairo(
               fontSize: 16,
               fontWeight: FontWeight.w700,
               color: AppColors.ink,
             ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 18),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text(
+              Text(
                 'إجمالي المستحق',
-                style: TextStyle(
+                style: GoogleFonts.cairo(
                   fontSize: 14,
                   color: AppColors.textSecondary,
                 ),
               ),
               Text(
                 '${(total + 14000).toStringAsFixed(0)} ر.س',
-                style: const TextStyle(
+                style: GoogleFonts.cairo(
                   fontSize: 16,
                   fontWeight: FontWeight.w700,
                   color: AppColors.ink,
@@ -423,20 +429,20 @@ class _SalaryScreenState extends ConsumerState<SalaryScreen> {
               ),
             ],
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 14),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text(
+              Text(
                 'المتبقي حتى الراتب',
-                style: TextStyle(
+                style: GoogleFonts.cairo(
                   fontSize: 14,
                   color: AppColors.textSecondary,
                 ),
               ),
-              const Text(
+              Text(
                 '16 يوم',
-                style: TextStyle(
+                style: GoogleFonts.cairo(
                   fontSize: 16,
                   fontWeight: FontWeight.w700,
                   color: AppColors.gold,
@@ -480,17 +486,17 @@ class _AddBillBottomSheetState extends ConsumerState<_AddBillBottomSheet> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         color: AppColors.paper,
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(24),
-          topRight: Radius.circular(24),
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(AppRadius.xl),
+          topRight: Radius.circular(AppRadius.xl),
         ),
       ),
       padding: EdgeInsets.only(
-        left: 20,
-        right: 20,
-        top: 20,
+        left: 24,
+        right: 24,
+        top: 24,
         bottom: MediaQuery.of(context).viewInsets.bottom + 40,
       ),
       child: Column(
@@ -500,9 +506,9 @@ class _AddBillBottomSheetState extends ConsumerState<_AddBillBottomSheet> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text(
+              Text(
                 'إضافة فاتورة',
-                style: TextStyle(
+                style: GoogleFonts.cairo(
                   fontSize: 18,
                   fontWeight: FontWeight.w700,
                   color: AppColors.ink,
@@ -514,10 +520,10 @@ class _AddBillBottomSheetState extends ConsumerState<_AddBillBottomSheet> {
               ),
             ],
           ),
-          const SizedBox(height: 20),
-          const Text(
+          const SizedBox(height: 24),
+          Text(
             'الاسم',
-            style: TextStyle(
+            style: GoogleFonts.cairo(
               fontSize: 14,
               fontWeight: FontWeight.w600,
               color: AppColors.ink,
@@ -526,14 +532,15 @@ class _AddBillBottomSheetState extends ConsumerState<_AddBillBottomSheet> {
           const SizedBox(height: 8),
           TextField(
             controller: _nameController,
-            decoration: const InputDecoration(
+            decoration: InputDecoration(
               hintText: 'أدخل اسم الفاتورة',
+              hintStyle: GoogleFonts.cairo(color: AppColors.textSecondary),
             ),
           ),
-          const SizedBox(height: 16),
-          const Text(
+          const SizedBox(height: 18),
+          Text(
             'المبلغ',
-            style: TextStyle(
+            style: GoogleFonts.cairo(
               fontSize: 14,
               fontWeight: FontWeight.w600,
               color: AppColors.ink,
@@ -543,24 +550,25 @@ class _AddBillBottomSheetState extends ConsumerState<_AddBillBottomSheet> {
           TextField(
             controller: _amountController,
             keyboardType: TextInputType.number,
-            decoration: const InputDecoration(
+            decoration: InputDecoration(
               hintText: 'أدخل المبلغ',
+              hintStyle: GoogleFonts.cairo(color: AppColors.textSecondary),
             ),
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: 28),
           Row(
             children: [
               Expanded(
                 child: OutlinedButton(
                   onPressed: () => Navigator.pop(context),
-                  child: const Text('إلغاء'),
+                  child: Text('إلغاء', style: GoogleFonts.cairo()),
                 ),
               ),
-              const SizedBox(width: 12),
+              const SizedBox(width: 14),
               Expanded(
                 child: ElevatedButton(
                   onPressed: _addBill,
-                  child: const Text('إضافة'),
+                  child: Text('إضافة', style: GoogleFonts.cairo()),
                 ),
               ),
             ],
@@ -573,7 +581,7 @@ class _AddBillBottomSheetState extends ConsumerState<_AddBillBottomSheet> {
   void _addBill() {
     if (_nameController.text.isEmpty || _amountController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('يرجى ملء جميع الحقول')),
+        SnackBar(content: Text('يرجى ملء جميع الحقول', style: GoogleFonts.cairo())),
       );
       return;
     }

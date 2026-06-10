@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../../../../core/theme/app_theme.dart';
 
 class MoreScreen extends StatelessWidget {
@@ -8,37 +9,45 @@ class MoreScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.paper,
       body: SafeArea(
         bottom: false,
         child: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
           padding: const EdgeInsets.all(16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 40),
-              const Text(
+              // Header
+              Text(
                 'المزيد',
-                style: TextStyle(
+                style: GoogleFonts.cairo(
                   fontSize: 28,
                   fontWeight: FontWeight.w800,
                   color: AppColors.ink,
+                  height: 1.3,
                 ),
               ),
+              const SizedBox(height: 28),
+              // User Profile Card
+              _buildUserCard(context),
               const SizedBox(height: 24),
               // Daily Card Section
               _buildDailyCardRow(context),
-              const SizedBox(height: 24),
+              const SizedBox(height: 28),
               // Account Section
               _buildSectionTitle('الحساب'),
+              const SizedBox(height: 12),
               _buildMenuList([
                 _MenuItem(
-                  icon: '👤',
+                  icon: Icons.person_outline_rounded,
                   label: 'حسابي',
                   description: 'الملف الشخصي والإعدادات',
                   onTap: () => context.pushNamed('account'),
                 ),
                 _MenuItem(
-                  icon: '🔔',
+                  icon: Icons.notifications_outlined,
                   label: 'الإشعارات',
                   description: 'إدارة التنبيهات',
                   onTap: () => context.pushNamed('settings'),
@@ -47,15 +56,16 @@ class MoreScreen extends StatelessWidget {
               const SizedBox(height: 24),
               // Settings Section
               _buildSectionTitle('الإعدادات'),
+              const SizedBox(height: 12),
               _buildMenuList([
                 _MenuItem(
-                  icon: '⚙️',
+                  icon: Icons.settings_outlined,
                   label: 'إعدادات التطبيق',
                   description: 'المظهر والإشعارات',
                   onTap: () => context.pushNamed('settings'),
                 ),
                 _MenuItem(
-                  icon: '🌍',
+                  icon: Icons.location_on_outlined,
                   label: 'المدينة',
                   description: 'الرياض',
                   onTap: () => _showCityDialog(context),
@@ -64,15 +74,16 @@ class MoreScreen extends StatelessWidget {
               const SizedBox(height: 24),
               // Support Section
               _buildSectionTitle('الدعم'),
+              const SizedBox(height: 12),
               _buildMenuList([
                 _MenuItem(
-                  icon: '💬',
+                  icon: Icons.chat_bubble_outline_rounded,
                   label: 'تواصل معنا',
                   description: 'مساعدة واستفسارات',
                   onTap: () => _showSupportDialog(context),
                 ),
                 _MenuItem(
-                  icon: 'ℹ️',
+                  icon: Icons.info_outline_rounded,
                   label: 'عن التطبيق',
                   onTap: () => _showAboutDialog(context),
                 ),
@@ -81,36 +92,37 @@ class MoreScreen extends StatelessWidget {
               // Actions Section
               _buildMenuList([
                 _MenuItem(
-                  icon: '📤',
+                  icon: Icons.share_outlined,
                   label: 'مشاركة التطبيق',
                   onTap: () => _shareApp(context),
                 ),
                 _MenuItem(
-                  icon: '🚪',
+                  icon: Icons.logout_rounded,
                   label: 'تسجيل الخروج',
                   isDanger: true,
                   onTap: () => _showLogoutDialog(context),
                 ),
               ]),
-              const SizedBox(height: 24),
+              const SizedBox(height: 32),
               // Footer
               Center(
                 child: Column(
                   children: [
-                    const Text(
+                    Text(
                       'مواعيدك v1.0.0',
-                      style: TextStyle(
+                      style: GoogleFonts.cairo(
                         fontSize: 14,
                         fontWeight: FontWeight.w600,
                         color: AppColors.ink,
                       ),
                     ),
-                    const SizedBox(height: 4),
-                    const Text(
-                      'كل مواعيدك في مكان واحد',
-                      style: TextStyle(
+                    const SizedBox(height: 6),
+                    Text(
+                      'بارك الله في وقتك',
+                      style: GoogleFonts.cairo(
                         fontSize: 12,
-                        color: AppColors.textSecondary,
+                        color: AppColors.gold,
+                        fontWeight: FontWeight.w500,
                       ),
                     ),
                   ],
@@ -124,17 +136,85 @@ class MoreScreen extends StatelessWidget {
     );
   }
 
+  Widget _buildUserCard(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: AppColors.cream,
+        borderRadius: BorderRadius.circular(AppRadius.xl),
+        border: Border.all(color: AppColors.borderGold),
+        boxShadow: AppShadows.soft,
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 64,
+            height: 64,
+            decoration: BoxDecoration(
+              color: AppColors.gold,
+              borderRadius: BorderRadius.circular(AppRadius.lg),
+            ),
+            child: Center(
+              child: Text(
+                'أ',
+                style: GoogleFonts.cairo(
+                  fontSize: 28,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'أحمد محمد',
+                  style: GoogleFonts.cairo(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.ink,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  'ahmed@example.com',
+                  style: GoogleFonts.cairo(
+                    fontSize: 13,
+                    color: AppColors.textSecondary,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Container(
+            width: 40,
+            height: 40,
+            decoration: BoxDecoration(
+              color: AppColors.gold.withOpacity(0.15),
+              borderRadius: BorderRadius.circular(AppRadius.md),
+            ),
+            child: const Icon(
+              Icons.edit_outlined,
+              color: AppColors.gold,
+              size: 20,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildSectionTitle(String title) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
-      child: Text(
-        title.toUpperCase(),
-        style: const TextStyle(
-          fontSize: 14,
-          fontWeight: FontWeight.w600,
-          color: AppColors.textSecondary,
-          letterSpacing: 0.5,
-        ),
+    return Text(
+      title.toUpperCase(),
+      style: GoogleFonts.cairo(
+        fontSize: 13,
+        fontWeight: FontWeight.w600,
+        color: AppColors.textSecondary,
+        letterSpacing: 0.5,
       ),
     );
   }
@@ -143,49 +223,43 @@ class MoreScreen extends StatelessWidget {
     return GestureDetector(
       onTap: () => context.pushNamed('daily-card'),
       child: Container(
-        padding: const EdgeInsets.all(18),
+        padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
           color: AppColors.cream,
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(AppRadius.xl),
           border: Border.all(color: AppColors.borderGold),
-          boxShadow: [
-            BoxShadow(
-              color: AppColors.brown.withOpacity(0.08),
-              blurRadius: 12,
-              offset: const Offset(0, 4),
-            ),
-          ],
+          boxShadow: AppShadows.soft,
         ),
         child: Row(
           children: [
             Container(
-              width: 56,
-              height: 56,
+              width: 60,
+              height: 60,
               decoration: BoxDecoration(
-                color: AppColors.gold.withOpacity(0.2),
-                borderRadius: BorderRadius.circular(16),
+                color: AppColors.gold.withOpacity(0.15),
+                borderRadius: BorderRadius.circular(AppRadius.lg),
               ),
               child: const Center(
-                child: Text('🎴', style: TextStyle(fontSize: 28)),
+                child: Text('🎴', style: TextStyle(fontSize: 30)),
               ),
             ),
-            const SizedBox(width: 14),
-            const Expanded(
+            const SizedBox(width: 16),
+            Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     'البطاقة اليومية',
-                    style: TextStyle(
+                    style: GoogleFonts.cairo(
                       fontSize: 18,
                       fontWeight: FontWeight.w700,
                       color: AppColors.ink,
                     ),
                   ),
-                  SizedBox(height: 2),
+                  const SizedBox(height: 4),
                   Text(
                     'شارك يومك مع الآخرين',
-                    style: TextStyle(
+                    style: GoogleFonts.cairo(
                       fontSize: 13,
                       color: AppColors.textSecondary,
                     ),
@@ -193,10 +267,18 @@ class MoreScreen extends StatelessWidget {
                 ],
               ),
             ),
-            const Icon(
-              Icons.chevron_left,
-              color: AppColors.brown,
-              size: 22,
+            Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                color: AppColors.gold.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(AppRadius.md),
+              ),
+              child: const Icon(
+                Icons.arrow_forward_ios_rounded,
+                color: AppColors.gold,
+                size: 18,
+              ),
             ),
           ],
         ),
@@ -208,7 +290,7 @@ class MoreScreen extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: AppColors.cream,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(AppRadius.lg),
         border: Border.all(color: AppColors.border),
       ),
       child: Column(
@@ -219,7 +301,7 @@ class MoreScreen extends StatelessWidget {
             children: [
               _buildMenuRow(item),
               if (index < items.length - 1)
-                const Divider(height: 1, indent: 70),
+                const Divider(height: 1, indent: 72),
             ],
           );
         }).toList(),
@@ -235,19 +317,18 @@ class MoreScreen extends StatelessWidget {
         child: Row(
           children: [
             Container(
-              width: 44,
-              height: 44,
+              width: 48,
+              height: 48,
               decoration: BoxDecoration(
                 color: item.isDanger
                     ? AppColors.error.withOpacity(0.1)
                     : AppColors.paper,
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(AppRadius.md),
               ),
-              child: Center(
-                child: Text(
-                  item.icon,
-                  style: const TextStyle(fontSize: 22),
-                ),
+              child: Icon(
+                item.icon,
+                color: item.isDanger ? AppColors.error : AppColors.brown,
+                size: 22,
               ),
             ),
             const SizedBox(width: 14),
@@ -257,18 +338,18 @@ class MoreScreen extends StatelessWidget {
                 children: [
                   Text(
                     item.label,
-                    style: TextStyle(
+                    style: GoogleFonts.cairo(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
                       color: item.isDanger ? AppColors.error : AppColors.ink,
                     ),
                   ),
                   if (item.description != null) ...[
-                    const SizedBox(height: 2),
+                    const SizedBox(height: 4),
                     Text(
                       item.description!,
-                      style: const TextStyle(
-                        fontSize: 13,
+                      style: GoogleFonts.cairo(
+                        fontSize: 12,
                         color: AppColors.textSecondary,
                       ),
                     ),
@@ -279,6 +360,7 @@ class MoreScreen extends StatelessWidget {
             Icon(
               Icons.chevron_left,
               color: item.isDanger ? AppColors.error : AppColors.textSecondary,
+              size: 22,
             ),
           ],
         ),
@@ -290,33 +372,38 @@ class MoreScreen extends StatelessWidget {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('اختر المدينة'),
+        title: Text(
+          'اختر المدينة',
+          style: GoogleFonts.cairo(fontWeight: FontWeight.w700),
+        ),
         content: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              _buildCityOption(context, 'الرياض', 'riyadh'),
-              _buildCityOption(context, 'جدة', 'jeddah'),
-              _buildCityOption(context, 'مكة المكرمة', 'mecca'),
-              _buildCityOption(context, 'المدينة المنورة', 'medina'),
-              _buildCityOption(context, 'الدمام', 'dammam'),
+              _buildCityOption(context, 'الرياض', true),
+              _buildCityOption(context, 'جدة', false),
+              _buildCityOption(context, 'مكة المكرمة', false),
+              _buildCityOption(context, 'المدينة المنورة', false),
+              _buildCityOption(context, 'الدمام', false),
             ],
           ),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('إلغاء'),
+            child: Text('إلغاء', style: GoogleFonts.cairo()),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildCityOption(BuildContext context, String name, String key) {
+  Widget _buildCityOption(BuildContext context, String name, bool isSelected) {
     return ListTile(
-      title: Text(name),
-      trailing: name == 'الرياض' ? const Icon(Icons.check, color: AppColors.gold) : null,
+      title: Text(name, style: GoogleFonts.cairo()),
+      trailing: isSelected
+          ? const Icon(Icons.check_circle, color: AppColors.gold)
+          : null,
       onTap: () {
         Navigator.pop(context);
         ScaffoldMessenger.of(context).showSnackBar(
@@ -330,12 +417,12 @@ class MoreScreen extends StatelessWidget {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('تواصل معنا'),
-        content: const Text('support@mawaeedak.app'),
+        title: Text('تواصل معنا', style: GoogleFonts.cairo(fontWeight: FontWeight.w700)),
+        content: Text('support@mawaeedak.app', style: GoogleFonts.cairo()),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('حسناً'),
+            child: Text('حسناً', style: GoogleFonts.cairo()),
           ),
         ],
       ),
@@ -346,14 +433,15 @@ class MoreScreen extends StatelessWidget {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('عن التطبيق'),
-        content: const Text(
+        title: Text('عن التطبيق', style: GoogleFonts.cairo(fontWeight: FontWeight.w700)),
+        content: Text(
           'مواعيدك v1.0.0\n\nكل مواعيدك في مكان واحد\n\n© 2026 مواعيدك',
+          style: GoogleFonts.cairo(),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('حسناً'),
+            child: Text('حسناً', style: GoogleFonts.cairo()),
           ),
         ],
       ),
@@ -370,12 +458,12 @@ class MoreScreen extends StatelessWidget {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('تسجيل الخروج'),
-        content: const Text('هل أنت متأكد من تسجيل الخروج؟'),
+        title: Text('تسجيل الخروج', style: GoogleFonts.cairo(fontWeight: FontWeight.w700)),
+        content: Text('هل أنت متأكد من تسجيل الخروج؟', style: GoogleFonts.cairo()),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('إلغاء'),
+            child: Text('إلغاء', style: GoogleFonts.cairo()),
           ),
           ElevatedButton(
             onPressed: () {
@@ -385,7 +473,7 @@ class MoreScreen extends StatelessWidget {
               );
             },
             style: ElevatedButton.styleFrom(backgroundColor: AppColors.error),
-            child: const Text('تسجيل الخروج'),
+            child: Text('تسجيل الخروج', style: GoogleFonts.cairo()),
           ),
         ],
       ),
@@ -394,7 +482,7 @@ class MoreScreen extends StatelessWidget {
 }
 
 class _MenuItem {
-  final String icon;
+  final IconData icon;
   final String label;
   final String? description;
   final VoidCallback onTap;
