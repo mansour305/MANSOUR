@@ -58,7 +58,6 @@ class HomeScreen extends ConsumerWidget {
     final greeting = now.hour < 12 ? 'صباح الخير' : 'مساء الخير';
     final dayName = AppConstants.arabicDays[now.weekday % 7];
     final monthName = AppConstants.arabicMonths[now.month - 1];
-    final hijriMonth = AppConstants.hijriMonths[now.month - 1];
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -81,15 +80,6 @@ class HomeScreen extends ConsumerWidget {
               style: const TextStyle(
                 fontSize: 14,
                 color: AppColors.textSecondary,
-              ),
-            ),
-            // Hijri date - requires proper library for accurate calculation
-            // For production, integrate with a Hijri date library
-            Text(
-              '15 ذو الحجة 1447 هـ',
-              style: const TextStyle(
-                fontSize: 14,
-                color: AppColors.gold,
               ),
             ),
           ],

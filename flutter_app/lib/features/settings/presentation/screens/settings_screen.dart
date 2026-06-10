@@ -213,14 +213,41 @@ class SettingsScreen extends ConsumerWidget {
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('اختر المدينة'),
-        content: const Text('قريباً'),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _buildCityOption(context, 'الرياض', 'riyadh'),
+              _buildCityOption(context, 'جدة', 'jeddah'),
+              _buildCityOption(context, 'مكة المكرمة', 'mecca'),
+              _buildCityOption(context, 'المدينة المنورة', 'medina'),
+              _buildCityOption(context, 'الدمام', 'dammam'),
+              _buildCityOption(context, 'الخبر', 'khobar'),
+              _buildCityOption(context, 'أبها', 'abha'),
+              _buildCityOption(context, 'تبوك', 'tabuk'),
+            ],
+          ),
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('حسناً'),
+            child: const Text('إلغاء'),
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildCityOption(BuildContext context, String name, String key) {
+    return ListTile(
+      title: Text(name),
+      trailing: name == 'الرياض' ? const Icon(Icons.check, color: AppColors.gold) : null,
+      onTap: () {
+        Navigator.pop(context);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('تم تغيير المدينة إلى $name')),
+        );
+      },
     );
   }
 

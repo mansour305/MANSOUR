@@ -117,11 +117,11 @@ class ServicesScreen extends StatelessWidget {
       itemBuilder: (context, index) {
         final service = services[index];
         return _ServiceCard(
-          icon: service['icon']!,
-          name: service['name']!,
-          description: service['description']!,
+          icon: service['icon'] as String,
+          name: service['name'] as String,
+          description: service['description'] as String,
           color: service['color'] as Color,
-          onTap: () => _navigateToService(context, service['route']!),
+          onTap: () => _navigateToService(context, service['route'] as String),
         );
       },
     );
