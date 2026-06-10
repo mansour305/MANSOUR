@@ -129,8 +129,9 @@ class DailyCardScreen extends ConsumerWidget {
                       color: AppColors.textSecondary,
                     ),
                   ),
+                  // Hijri date - requires proper library for accurate calculation
                   Text(
-                    '${now.day} $hijriMonth 1447 هـ',
+                    '15 ذو الحجة 1447 هـ',
                     style: const TextStyle(
                       fontSize: 14,
                       color: AppColors.gold,

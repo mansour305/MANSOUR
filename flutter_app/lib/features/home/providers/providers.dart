@@ -271,6 +271,7 @@ class AppSettings {
   final bool dailyCardNotifications;
   final bool hapticFeedback;
   final bool autoLocation;
+  final String themeMode;
 
   const AppSettings({
     this.prayerNotifications = true,
@@ -279,6 +280,7 @@ class AppSettings {
     this.dailyCardNotifications = false,
     this.hapticFeedback = true,
     this.autoLocation = true,
+    this.themeMode = 'light',
   });
 
   AppSettings copyWith({
@@ -288,6 +290,7 @@ class AppSettings {
     bool? dailyCardNotifications,
     bool? hapticFeedback,
     bool? autoLocation,
+    String? themeMode,
   }) {
     return AppSettings(
       prayerNotifications: prayerNotifications ?? this.prayerNotifications,
@@ -296,6 +299,7 @@ class AppSettings {
       dailyCardNotifications: dailyCardNotifications ?? this.dailyCardNotifications,
       hapticFeedback: hapticFeedback ?? this.hapticFeedback,
       autoLocation: autoLocation ?? this.autoLocation,
+      themeMode: themeMode ?? this.themeMode,
     );
   }
 }
@@ -329,6 +333,10 @@ class SettingsNotifier extends StateNotifier<AppSettings> {
 
   void toggleAutoLocation() {
     state = state.copyWith(autoLocation: !state.autoLocation);
+  }
+
+  void setThemeMode(String mode) {
+    state = state.copyWith(themeMode: mode);
   }
 }
 

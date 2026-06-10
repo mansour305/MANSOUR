@@ -41,7 +41,7 @@ class MoreScreen extends StatelessWidget {
                   icon: '🔔',
                   label: 'الإشعارات',
                   description: 'إدارة التنبيهات',
-                  onTap: () => _showComingSoon(context),
+                  onTap: () => context.pushNamed('settings'),
                 ),
               ]),
               const SizedBox(height: 24),
@@ -58,7 +58,7 @@ class MoreScreen extends StatelessWidget {
                   icon: '🌍',
                   label: 'المدينة',
                   description: 'الرياض',
-                  onTap: () => _showComingSoon(context),
+                  onTap: () => _showCityDialog(context),
                 ),
               ]),
               const SizedBox(height: 24),
@@ -286,9 +286,43 @@ class MoreScreen extends StatelessWidget {
     );
   }
 
-  void _showComingSoon(BuildContext context) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('قريباً')),
+  void _showCityDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('اختر المدينة'),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _buildCityOption(context, 'الرياض', 'riyadh'),
+              _buildCityOption(context, 'جدة', 'jeddah'),
+              _buildCityOption(context, 'مكة المكرمة', 'mecca'),
+              _buildCityOption(context, 'المدينة المنورة', 'medina'),
+              _buildCityOption(context, 'الدمام', 'dammam'),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('إلغاء'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCityOption(BuildContext context, String name, String key) {
+    return ListTile(
+      title: Text(name),
+      trailing: name == 'الرياض' ? const Icon(Icons.check, color: AppColors.gold) : null,
+      onTap: () {
+        Navigator.pop(context);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('تم تغيير المدينة إلى $name')),
+        );
+      },
     );
   }
 

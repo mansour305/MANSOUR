@@ -1,37 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import '../../../../core/theme/app_theme.dart';
-import '../../../../data/models/models.dart';
-import '../../../home/providers/providers.dart';
 
-class ServicesScreen extends ConsumerStatefulWidget {
+class ServicesScreen extends StatelessWidget {
   const ServicesScreen({super.key});
 
   @override
-  ConsumerState<ServicesScreen> createState() => _ServicesScreenState();
-}
-
-class _ServicesScreenState extends ConsumerState<ServicesScreen> {
-  final _searchController = TextEditingController();
-  String _searchQuery = '';
-  ServiceCenter? _selectedCenter;
-
-  @override
-  void dispose() {
-    _searchController.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    final serviceCenters = ref.watch(serviceCentersProvider);
-    final filteredCenters = _searchQuery.isEmpty
-        ? serviceCenters
-        : serviceCenters.where((center) {
-            return center.name.contains(_searchQuery) ||
-                center.services.any((s) => s.contains(_searchQuery));
-          }).toList();
-
     return Scaffold(
       body: SafeArea(
         bottom: false,
@@ -42,16 +17,25 @@ class _ServicesScreenState extends ConsumerState<ServicesScreen> {
             children: [
               const SizedBox(height: 40),
               // Header
-              _buildHeader(),
-              const SizedBox(height: 20),
-              // Search Bar
-              _buildSearchBar(),
-              const SizedBox(height: 20),
-              // Content
-              if (_selectedCenter != null)
-                _buildCenterDetail(_selectedCenter!)
-              else
-                _buildCentersGrid(filteredCenters),
+              const Text(
+                'خدماتك',
+                style: TextStyle(
+                  fontSize: 28,
+                  fontWeight: FontWeight.w800,
+                  color: AppColors.ink,
+                ),
+              ),
+              const SizedBox(height: 8),
+              const Text(
+                'اختر الخدمة التي تحتاجها',
+                style: TextStyle(
+                  fontSize: 14,
+                  color: AppColors.textSecondary,
+                ),
+              ),
+              const SizedBox(height: 24),
+              // Services Grid
+              _buildServicesGrid(context),
               const SizedBox(height: 100),
             ],
           ),
@@ -60,51 +44,66 @@ class _ServicesScreenState extends ConsumerState<ServicesScreen> {
     );
   }
 
-  Widget _buildHeader() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'مراكز الخدمات',
-          style: TextStyle(
-            fontSize: 28,
-            fontWeight: FontWeight.w800,
-            color: AppColors.ink,
-          ),
-        ),
-        const SizedBox(height: 4),
-        Text(
-          '${ref.watch(serviceCentersProvider).length} مراكز متاحة',
-          style: const TextStyle(
-            fontSize: 14,
-            color: AppColors.textSecondary,
-          ),
-        ),
-      ],
-    );
-  }
+  Widget _buildServicesGrid(BuildContext context) {
+    final services = [
+      {
+        'icon': '🎯',
+        'name': 'احسب هدفك',
+        'description': 'حدد أهدافك واحسب تقدمك',
+        'route': 'goal-calculator',
+        'color': AppColors.gold,
+      },
+      {
+        'icon': '📊',
+        'name': 'حساب التكاليف',
+        'description': 'تتبع مشاريعك وتكاليفك',
+        'route': 'cost-calculator',
+        'color': AppColors.info,
+      },
+      {
+        'icon': '🔔',
+        'name': 'ذكرني',
+        'description': 'تذكيرات ذكية لمواعيدك',
+        'route': 'reminder',
+        'color': AppColors.success,
+      },
+      {
+        'icon': '✈️',
+        'name': 'السفر',
+        'description': 'رحلاتك وتأشيراتك',
+        'route': 'travel',
+        'color': const Color(0xFF4A7FB5),
+      },
+      {
+        'icon': '📚',
+        'name': 'الدراسة والإجازات',
+        'description': 'اختبارات وإجازات دراسية',
+        'route': 'study',
+        'color': const Color(0xFF9B59B6),
+      },
+      {
+        'icon': '💼',
+        'name': 'الوظائف والأخبار',
+        'description': 'وظائف وأخبار جديدة',
+        'route': 'jobs',
+        'color': const Color(0xFFE67E22),
+      },
+      {
+        'icon': '🎴',
+        'name': 'بطاقة اليوم',
+        'description': 'شارك يومك مع الآخرين',
+        'route': 'daily-card',
+        'color': AppColors.brown,
+      },
+      {
+        'icon': '💬',
+        'name': 'صوتك مسموع',
+        'description': 'شاركنا رأيك واقتراحاتك',
+        'route': 'feedback',
+        'color': const Color(0xFF1ABC9C),
+      },
+    ];
 
-  Widget _buildSearchBar() {
-    return TextField(
-      controller: _searchController,
-      onChanged: (value) => setState(() => _searchQuery = value),
-      decoration: InputDecoration(
-        hintText: 'ابحث عن خدمة أو مركز...',
-        prefixIcon: const Icon(Icons.search, color: AppColors.textSecondary),
-        suffixIcon: _searchQuery.isNotEmpty
-            ? IconButton(
-                icon: const Icon(Icons.close, color: AppColors.textSecondary),
-                onPressed: () {
-                  _searchController.clear();
-                  setState(() => _searchQuery = '');
-                },
-              )
-            : null,
-      ),
-    );
-  }
-
-  Widget _buildCentersGrid(List<ServiceCenter> centers) {
     return GridView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
@@ -114,154 +113,71 @@ class _ServicesScreenState extends ConsumerState<ServicesScreen> {
         mainAxisSpacing: 12,
         childAspectRatio: 0.9,
       ),
-      itemCount: centers.length,
+      itemCount: services.length,
       itemBuilder: (context, index) {
-        final center = centers[index];
-        return _CenterCard(
-          center: center,
-          onTap: () => setState(() => _selectedCenter = center),
+        final service = services[index];
+        return _ServiceCard(
+          icon: service['icon']!,
+          name: service['name']!,
+          description: service['description']!,
+          color: service['color'] as Color,
+          onTap: () => _navigateToService(context, service['route']!),
         );
       },
     );
   }
 
-  Widget _buildCenterDetail(ServiceCenter center) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // Back button
-        GestureDetector(
-          onTap: () => setState(() => _selectedCenter = null),
-          child: Row(
-            children: const [
-              Icon(Icons.arrow_forward, color: AppColors.ink),
-              SizedBox(width: 8),
-              Text(
-                'رجوع',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.ink,
-                ),
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(height: 24),
-        // Center Header
-        Center(
-          child: Column(
-            children: [
-              Container(
-                width: 100,
-                height: 100,
-                decoration: BoxDecoration(
-                  color: AppColors.cream,
-                  borderRadius: BorderRadius.circular(28),
-                ),
-                child: Center(
-                  child: Text(center.icon, style: const TextStyle(fontSize: 48)),
-                ),
-              ),
-              const SizedBox(height: 16),
-              Text(
-                center.name,
-                style: const TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.w800,
-                  color: AppColors.ink,
-                ),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                '${center.services.length} خدمات متاحة',
-                style: const TextStyle(
-                  fontSize: 14,
-                  color: AppColors.textSecondary,
-                ),
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(height: 24),
-        // Services List
-        const Text(
-          'الخدمات المتاحة',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w700,
-            color: AppColors.ink,
-          ),
-        ),
-        const SizedBox(height: 16),
-        ...center.services.map((service) => _buildServiceItem(service)),
-      ],
-    );
-  }
-
-  Widget _buildServiceItem(String service) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 10),
-      decoration: BoxDecoration(
-        color: AppColors.cream,
-        borderRadius: BorderRadius.circular(14),
-      ),
-      child: ListTile(
-        onTap: () => _showBookingDialog(service),
-        title: Text(
-          service,
-          style: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w600,
-            color: AppColors.ink,
-          ),
-        ),
-        trailing: const Icon(
-          Icons.chevron_left,
-          color: AppColors.brown,
-        ),
-      ),
-    );
-  }
-
-  void _showBookingDialog(String service) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(service),
-        content: const Text('هل تريد حجز موعد لهذه الخدمة؟'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('إلغاء'),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.pop(context);
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('تم توجيهك لتطبيق المواعيد')),
-              );
-            },
-            child: const Text('حجز موعد'),
-          ),
-        ],
-      ),
-    );
+  void _navigateToService(BuildContext context, String route) {
+    switch (route) {
+      case 'goal-calculator':
+        context.push('/goal-calculator');
+        break;
+      case 'cost-calculator':
+        context.push('/cost-calculator');
+        break;
+      case 'reminder':
+        context.push('/reminder');
+        break;
+      case 'travel':
+        context.push('/travel');
+        break;
+      case 'study':
+        context.push('/study');
+        break;
+      case 'jobs':
+        context.push('/jobs');
+        break;
+      case 'daily-card':
+        context.pushNamed('daily-card');
+        break;
+      case 'feedback':
+        context.push('/feedback');
+        break;
+    }
   }
 }
 
-class _CenterCard extends StatelessWidget {
-  final ServiceCenter center;
+class _ServiceCard extends StatelessWidget {
+  final String icon;
+  final String name;
+  final String description;
+  final Color color;
   final VoidCallback onTap;
 
-  const _CenterCard({required this.center, required this.onTap});
+  const _ServiceCard({
+    required this.icon,
+    required this.name,
+    required this.description,
+    required this.color,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: AppColors.cream,
           borderRadius: BorderRadius.circular(18),
@@ -271,19 +187,19 @@ class _CenterCard extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
-              width: 72,
-              height: 72,
+              width: 64,
+              height: 64,
               decoration: BoxDecoration(
-                color: AppColors.paper,
-                borderRadius: BorderRadius.circular(20),
+                color: color.withOpacity(0.15),
+                borderRadius: BorderRadius.circular(18),
               ),
               child: Center(
-                child: Text(center.icon, style: const TextStyle(fontSize: 32)),
+                child: Text(icon, style: const TextStyle(fontSize: 28)),
               ),
             ),
             const SizedBox(height: 12),
             Text(
-              center.name,
+              name,
               style: const TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.w700,
@@ -293,11 +209,14 @@ class _CenterCard extends StatelessWidget {
             ),
             const SizedBox(height: 4),
             Text(
-              '${center.services.length} خدمة',
+              description,
               style: const TextStyle(
-                fontSize: 12,
+                fontSize: 11,
                 color: AppColors.textSecondary,
               ),
+              textAlign: TextAlign.center,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
             ),
           ],
         ),

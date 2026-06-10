@@ -8,6 +8,13 @@ import '../features/more/presentation/screens/more_screen.dart';
 import '../features/daily_card/presentation/screens/daily_card_screen.dart';
 import '../features/account/presentation/screens/account_screen.dart';
 import '../features/settings/presentation/screens/settings_screen.dart';
+import '../features/goal_calculator/presentation/screens/goal_calculator_screen.dart';
+import '../features/cost_calculator/presentation/screens/cost_calculator_screen.dart';
+import '../features/reminder/presentation/screens/reminder_screen.dart';
+import '../features/travel/presentation/screens/travel_screen.dart';
+import '../features/study/presentation/screens/study_screen.dart';
+import '../features/jobs/presentation/screens/jobs_screen.dart';
+import '../features/feedback/presentation/screens/feedback_screen.dart';
 import '../core/widgets/main_scaffold.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
@@ -75,6 +82,41 @@ final appRouter = GoRouter(
       name: 'settings',
       builder: (context, state) => const SettingsScreen(),
     ),
+    GoRoute(
+      path: '/goal-calculator',
+      name: 'goal-calculator',
+      builder: (context, state) => const GoalCalculatorScreen(),
+    ),
+    GoRoute(
+      path: '/cost-calculator',
+      name: 'cost-calculator',
+      builder: (context, state) => const CostCalculatorScreen(),
+    ),
+    GoRoute(
+      path: '/reminder',
+      name: 'reminder',
+      builder: (context, state) => const ReminderScreen(),
+    ),
+    GoRoute(
+      path: '/travel',
+      name: 'travel',
+      builder: (context, state) => const TravelScreen(),
+    ),
+    GoRoute(
+      path: '/study',
+      name: 'study',
+      builder: (context, state) => const StudyScreen(),
+    ),
+    GoRoute(
+      path: '/jobs',
+      name: 'jobs',
+      builder: (context, state) => const JobsScreen(),
+    ),
+    GoRoute(
+      path: '/feedback',
+      name: 'feedback',
+      builder: (context, state) => const FeedbackScreen(),
+    ),
   ],
 );
 
@@ -88,4 +130,11 @@ class AppRoutes {
   static const String dailyCard = 'daily-card';
   static const String account = 'account';
   static const String settings = 'settings';
+  static const String goalCalculator = 'goal-calculator';
+  static const String costCalculator = 'cost-calculator';
+  static const String reminder = 'reminder';
+  static const String travel = 'travel';
+  static const String study = 'study';
+  static const String jobs = 'jobs';
+  static const String feedback = 'feedback';
 }

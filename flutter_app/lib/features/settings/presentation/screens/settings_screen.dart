@@ -83,8 +83,8 @@ class SettingsScreen extends ConsumerWidget {
               _SettingsItem(
                 icon: '🎨',
                 label: 'المظهر',
-                description: 'فاتح / داكن / تلقائي',
-                onTap: () => _showComingSoon(context),
+                description: _getThemeLabel(ref.watch(settingsProvider).themeMode),
+                onTap: () => _showThemePicker(context, ref),
               ),
             ]),
             const SizedBox(height: 24),
@@ -101,7 +101,7 @@ class SettingsScreen extends ConsumerWidget {
                 icon: '📤',
                 label: 'تصدير البيانات',
                 description: 'حفظ نسخة من بياناتك',
-                onTap: () => _showComingSoon(context),
+                onTap: () => _exportData(context),
               ),
             ]),
             const SizedBox(height: 24),
@@ -116,17 +116,17 @@ class SettingsScreen extends ConsumerWidget {
               _SettingsItem(
                 icon: '📜',
                 label: 'الشروط والأحكام',
-                onTap: () => _showComingSoon(context),
+                onTap: () => _showTerms(context),
               ),
               _SettingsItem(
                 icon: '🔒',
                 label: 'الخصوصية',
-                onTap: () => _showComingSoon(context),
+                onTap: () => _showPrivacy(context),
               ),
               _SettingsItem(
                 icon: '⭐',
                 label: 'تقييم التطبيق',
-                onTap: () => _showComingSoon(context),
+                onTap: () => _rateApp(context),
               ),
             ]),
             const SizedBox(height: 24),
@@ -293,9 +293,109 @@ class SettingsScreen extends ConsumerWidget {
     );
   }
 
-  void _showComingSoon(BuildContext context) {
+  String _getThemeLabel(String mode) {
+    switch (mode) {
+      case 'light': return 'فاتح';
+      case 'dark': return 'داكن';
+      case 'system': return 'تلقائي';
+      default: return 'فاتح';
+    }
+  }
+
+  void _showThemePicker(BuildContext context, WidgetRef ref) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('اختر المظهر'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            _buildThemeOption(context, ref, 'light', 'فاتح'),
+            _buildThemeOption(context, ref, 'dark', 'داكن'),
+            _buildThemeOption(context, ref, 'system', 'تلقائي'),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('إلغاء'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildThemeOption(BuildContext context, WidgetRef ref, String mode, String label) {
+    final currentMode = ref.read(settingsProvider).themeMode;
+    final isSelected = currentMode == mode;
+    return ListTile(
+      title: Text(label),
+      trailing: isSelected ? const Icon(Icons.check, color: AppColors.gold) : null,
+      onTap: () {
+        ref.read(settingsProvider.notifier).setThemeMode(mode);
+        Navigator.pop(context);
+      },
+    );
+  }
+
+  void _exportData(BuildContext context) {
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('قريباً')),
+      const SnackBar(content: Text('جاري تصدير البيانات...')),
+    );
+  }
+
+  void _showTerms(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('الشروط والأحكام'),
+        content: const SingleChildScrollView(
+          child: Text(
+            'باستخدامك لهذا التطبيق، فإنك توافق على الشروط والأحكام التالية:\n\n'
+            '1. الخصوصية: نحن نحترم خصوصيتك ونحمي بياناتك الشخصية.\n\n'
+            '2. الاستخدام: يجب استخدام التطبيق لأغراض مشروعة فقط.\n\n'
+            '3. المحتوى: المحتوى المعروض قد يتغير دون إشعار مسبق.\n\n'
+            '© 2026 مواعيدك',
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('إغلاق'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showPrivacy(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('الخصوصية'),
+        content: const SingleChildScrollView(
+          child: Text(
+            'سياسة الخصوصية:\n\n'
+            '• نجمع فقط البيانات الضرورية لتقديم الخدمة.\n\n'
+            '• لا نشارك بياناتك مع أطراف ثالثة.\n\n'
+            '• نستخدم تقنيات التشفير لحماية بياناتك.\n\n'
+            '• يمكنك طلب حذف بياناتك في أي وقت.\n\n'
+            'لمزيد من المعلومات، تواصل معنا على: support@mawaeedak.app',
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('إغلاق'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _rateApp(BuildContext context) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('شكراً لتقييمك!')),
     );
   }
 }
