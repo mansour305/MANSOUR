@@ -1,1 +1,8 @@
-ignore-build-step
+# Ignore these files/folders from deployment
+flutter_app/
+docs/
+*.md
+node_modules/
+.git/
+.env
+.env.local
