@@ -9,6 +9,7 @@
     "preview": "vite preview --host 0.0.0.0 --port 3000"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.87.0",
     "@workspace/api-client-react": "workspace:*",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
