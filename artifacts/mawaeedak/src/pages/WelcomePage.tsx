@@ -10,8 +10,8 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { ArrowRight, ArrowLeft } from "lucide-react";
-import { useListThemes } from "@workspace/api-client-react";
-import type { Theme } from "@workspace/api-client-react";
+import { useListThemes } from "@api-client";
+import type { Theme } from "@api-client";
 
 const CITIES = [
   "الرياض", "جدة", "مكة المكرمة", "المدينة المنورة", "الدمام", 

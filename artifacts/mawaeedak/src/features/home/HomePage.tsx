@@ -2,7 +2,7 @@ import { CalendarDays, Clock3, Home, Landmark, Moon, Sun, Sunrise, Users, Wallet
 import { Link } from "wouter";
 import desertHeroImg from "@assets/desert-hero.png";
 import { AppShell } from "@/components/layout/AppShell";
-import { useGetPrayerTimes } from "@workspace/api-client-react";
+import { useGetPrayerTimes } from "@api-client";
 import { useGatewayDailyMessages, useGatewayFinancialCountdown } from "@/hooks/useGatewayData";
 import { useStore } from "@/hooks/useStore";
 import { formatGregorianDate, formatHijriDate, getDayName } from "@/lib/utils";

@@ -14,7 +14,7 @@ import {
   useTestSocialPost,
   getGetSocialSettingsQueryKey,
   getListSocialLogsQueryKey,
-} from "@workspace/api-client-react";
+} from "@api-client";
 import { useQueryClient } from "@tanstack/react-query";
 import { Twitter, Loader2, Send, Eye, Save, AlertTriangle, CheckCircle2, Clock } from "lucide-react";
 import { format } from "date-fns";

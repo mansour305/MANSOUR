@@ -31,7 +31,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import {
   getListNewsQueryKey,
   getListJobsQueryKey,
-} from "@workspace/api-client-react";
+} from "@api-client";
 import { Plus, Edit2, Trash2, Loader2, Newspaper, Briefcase } from "lucide-react";
 import { useGatewayNews, useGatewayJobs, gwQueryKeys } from "@/hooks/useGatewayData";
 import {

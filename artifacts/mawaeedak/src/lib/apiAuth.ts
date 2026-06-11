@@ -9,7 +9,7 @@
  * لا يُخزَّن أي توكن — يُقرأ من Supabase عند كل طلب.
  */
 
-import { setAuthTokenGetter, setBaseUrl } from "@workspace/api-client-react";
+import { setAuthTokenGetter, setBaseUrl } from "./api-client";
 import { supabase } from "./supabase";
 
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;

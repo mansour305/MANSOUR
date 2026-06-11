@@ -43,7 +43,7 @@ import type {
   NewsItem,
   Job,
   Complaint,
-} from "@workspace/api-client-react";
+} from "./api-client";
 
 // ─────────────────────────────────────────────────────────
 // Helpers

@@ -7,7 +7,7 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { useOfficialPrayerTimes, useOfficialFinancialDates } from "@/hooks/useOfficialData";
-import { useGetPrayerTimes } from "@workspace/api-client-react";
+import { useGetPrayerTimes } from "@api-client";
 import { useGatewayFinancialCountdown } from "@/hooks/useGatewayData";
 import { useStore } from "@/hooks/useStore";
 import { formatHijriDate, formatGregorianDate, getDayName } from "@/lib/utils";

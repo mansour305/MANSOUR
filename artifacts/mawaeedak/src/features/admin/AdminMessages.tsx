@@ -20,7 +20,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { ConfirmDialog } from "@/components/layout/ConfirmDialog";
 import { useToast } from "@/hooks/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
-import { getListDailyMessagesQueryKey } from "@workspace/api-client-react";
+import { getListDailyMessagesQueryKey } from "@api-client";
 import { Plus, Edit2, Trash2, Loader2, Calendar as CalIcon } from "lucide-react";
 import { useGatewayDailyMessages, gwQueryKeys } from "@/hooks/useGatewayData";
 import {

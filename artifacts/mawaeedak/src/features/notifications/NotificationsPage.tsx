@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { useQueryClient } from "@tanstack/react-query";
 import {
   getGetUnreadNotificationsCountQueryKey,
-} from "@workspace/api-client-react";
+} from "@api-client";
 import {
   Bell,
   CheckCheck,

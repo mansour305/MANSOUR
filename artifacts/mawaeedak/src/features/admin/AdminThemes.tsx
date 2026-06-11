@@ -24,7 +24,7 @@ import { useTheme, setCachedGlobalDefault } from "@/hooks/useTheme";
 import { authedFetch } from "@/lib/apiAuth";
 import { DATA_SOURCE_MODE } from "@/lib/dataSourceMode";
 import { supabase } from "@/lib/supabase";
-import { getListThemesQueryKey } from "@workspace/api-client-react";
+import { getListThemesQueryKey } from "@api-client";
 import { Edit2, Loader2, Paintbrush, Check } from "lucide-react";
 import { useGatewayThemes, gwQueryKeys } from "@/hooks/useGatewayData";
 import { gwUpdateTheme } from "@/lib/dataGateway";

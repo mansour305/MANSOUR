@@ -20,7 +20,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { ConfirmDialog } from "@/components/layout/ConfirmDialog";
 import { useToast } from "@/hooks/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
-import { getListStoryTemplatesQueryKey } from "@workspace/api-client-react";
+import { getListStoryTemplatesQueryKey } from "@api-client";
 import { Plus, Edit2, Trash2, Loader2, Image } from "lucide-react";
 import { useGatewayStoryTemplates, gwQueryKeys } from "@/hooks/useGatewayData";
 import {

@@ -23,7 +23,7 @@ import { ConfirmDialog } from "@/components/layout/ConfirmDialog";
 import {
   getListAppointmentsQueryKey,
   getListUpcomingAppointmentsQueryKey,
-} from "@workspace/api-client-react";
+} from "@api-client";
 import { useQueryClient } from "@tanstack/react-query";
 import { Plus, Loader2, Calendar as CalIcon, Clock, Trash2, ChevronLeft, ChevronRight } from "lucide-react";
 import { useGatewayAppointments, gwQueryKeys } from "@/hooks/useGatewayData";
@@ -38,7 +38,7 @@ import {
   gwUpdateAppointment,
   gwDeleteAppointment,
 } from "@/lib/dataGateway";
-import type { Appointment } from "@workspace/api-client-react";
+import type { Appointment } from "@api-client";
 
 /* ─── helpers ─────────────────────────────────────────────── */
 const WEEKDAYS = ["أحد", "اثنين", "ثلاثاء", "أربع", "خميس", "جمعة", "سبت"];

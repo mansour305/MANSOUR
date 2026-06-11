@@ -61,7 +61,7 @@ import type {
   FinancialEvent,
   Notification,
   Complaint,
-} from "@workspace/api-client-react";
+} from "@api-client";
 
 // ─────────────────────────────────────────────────────────
 // Query Keys

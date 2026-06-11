@@ -15,7 +15,7 @@ import {
   useUpdatePublicEvent, 
   useDeletePublicEvent,
   getListPublicEventsQueryKey 
-} from "@workspace/api-client-react";
+} from "@api-client";
 import { Plus, Edit2, Trash2, Loader2, Calendar } from "lucide-react";
 
 export default function AdminEvents() {

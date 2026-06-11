@@ -24,7 +24,7 @@ import {
   useCreateNotification,
   getListNotificationsQueryKey,
   getGetUnreadNotificationsCountQueryKey,
-} from "@workspace/api-client-react";
+} from "@api-client";
 import { useQueryClient } from "@tanstack/react-query";
 import { Send, Loader2, Trash2 } from "lucide-react";
 import { useGatewayNotifications, gwQueryKeys } from "@/hooks/useGatewayData";

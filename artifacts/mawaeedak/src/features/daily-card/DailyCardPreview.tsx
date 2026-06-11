@@ -1,7 +1,7 @@
 import { useMemo, type ReactNode } from "react";
 import { useStore } from "@/hooks/useStore";
 import { useOfficialPrayerTimes, useOfficialFinancialDates } from "@/hooks/useOfficialData";
-import { useGetPrayerTimes } from "@workspace/api-client-react";
+import { useGetPrayerTimes } from "@api-client";
 import { useGatewayFinancialCountdown } from "@/hooks/useGatewayData";
 import { formatHijriDate, formatGregorianDate, getDayName } from "@/lib/utils";
 import { useTimeFormat } from "@/hooks/useTimeFormat";
