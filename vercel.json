@@ -1,12 +1,31 @@
 {
-  "version": 2,
-  "installCommand": "corepack enable && pnpm install --no-frozen-lockfile",
-  "buildCommand": "pnpm --dir artifacts/mawaeedak run build",
-  "outputDirectory": "artifacts/mawaeedak/dist/public",
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "buildCommand": "cd artifacts/mawaeedak && npm install --legacy-peer-deps && npm run build",
+  "outputDirectory": "artifacts/mawaeedak/dist",
+  "installCommand": "cd artifacts/mawaeedak && npm install --legacy-peer-deps",
+  "framework": null,
+  "packageManager": "npm",
   "rewrites": [
     {
-      "source": "/:path*",
+      "source": "/(.*)",
       "destination": "/index.html"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "X-Frame-Options", "value": "DENY" },
+        { "key": "X-XSS-Protection", "value": "1; mode=block" },
+        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" }
+      ]
+    },
+    {
+      "source": "/assets/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+      ]
     }
   ]
 }
