@@ -4,7 +4,6 @@
   "outputDirectory": "artifacts/mawaeedak/dist",
   "installCommand": "cd artifacts/mawaeedak && npm install --legacy-peer-deps",
   "framework": null,
-  "packageManager": "npm",
   "rewrites": [
     {
       "source": "/(.*)",
