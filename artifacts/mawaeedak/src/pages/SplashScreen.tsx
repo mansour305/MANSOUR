@@ -15,7 +15,7 @@ export default function SplashScreen() {
       } else {
         setLocation("/welcome");
       }
-    }, 2500);
+    }, 3500); // 3.5 seconds for splash duration (3-4 second range per spec)
 
     return () => clearTimeout(timer);
   }, [setLocation, user]);
