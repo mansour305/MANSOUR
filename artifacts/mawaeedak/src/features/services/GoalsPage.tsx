@@ -1,20 +1,17 @@
 /**
- * GoalsPage — Phase 14 P0-3
+ * GoalsPage — Phase 16 Production Hardening
  * 
- * Goals service: Create, edit, delete goals with:
- * - Goal name
- * - Goal type: financial / non-financial
- * - Target amount or requirements text
- * - Current progress
- * - Deadline
- * - Remaining amount
- * - Required daily/weekly progress
- * - Mark complete
- * - Validation
- * - Empty/Loading/Error/Success states
+ * Goals service with real Supabase sync for logged-in users.
+ * Local fallback for guests with clear indicator.
+ * 
+ * Storage behavior:
+ * - Logged in + Supabase: reads/writes from Supabase
+ * - Not logged in or Supabase unavailable: localStorage fallback
+ * 
+ * Schema: supabase/migrations/20250612000002_create_services_tables.sql
  */
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { AppShell } from "@/components/layout/AppShell";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -25,54 +22,12 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Progress } from "@/components/ui/progress";
 import { ConfirmDialog } from "@/components/layout/ConfirmDialog";
 import { useToast } from "@/hooks/use-toast";
-import { Plus, Loader2, Target, Edit2, Trash2, Check, Calendar, Coins, AlertCircle, TrendingUp } from "lucide-react";
-
-export type GoalType = "financial" | "non-financial";
-
-export type Goal = {
-  id: string;
-  name: string;
-  type: GoalType;
-  targetAmount: number | null;
-  requirements: string;
-  currentProgress: number;
-  deadline: string | null;
-  createdAt: string;
-  completedAt: string | null;
-};
-
-const GOALS_STORAGE_KEY = "mawaeedak_goals_v1";
-
-// Default goals for demo (when no Supabase)
-const DEFAULT_GOALS: Goal[] = [];
-
-function loadGoals(): Goal[] {
-  try {
-    const stored = localStorage.getItem(GOALS_STORAGE_KEY);
-    if (stored) {
-      return JSON.parse(stored);
-    }
-  } catch {
-    // Ignore
-  }
-  return DEFAULT_GOALS;
-}
-
-function saveGoals(goals: Goal[]): void {
-  try {
-    localStorage.setItem(GOALS_STORAGE_KEY, JSON.stringify(goals));
-  } catch {
-    // Ignore
-  }
-}
-
-function generateId(): string {
-  return `goal_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-}
+import { Plus, Loader2, Target, Edit2, Trash2, Check, Calendar, Coins, AlertCircle, TrendingUp, Cloud } from "lucide-react";
+import { useGoalsGateway, type Goal, type GoalType } from "@/lib/gateways/goalsGateway";
 
 function computeStats(goal: Goal) {
   const remaining = goal.targetAmount ? goal.targetAmount - goal.currentProgress : null;
-  const progressPercent = goal.targetAmount 
+  const progressPercent = goal.targetAmount
     ? Math.min(100, Math.round((goal.currentProgress / goal.targetAmount) * 100))
     : 0;
   
@@ -95,11 +50,7 @@ function computeStats(goal: Goal) {
 
 export default function GoalsPage() {
   const { toast } = useToast();
-  
-  // State
-  const [goals, setGoals] = useState<Goal[]>(loadGoals);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isError, setIsError] = useState(false);
+  const { goals, isLoading, isError, isSynced, add, update, delete: deleteGoal, complete, updateProgress } = useGoalsGateway();
   
   // Form state
   const [isAddOpen, setIsAddOpen] = useState(false);
@@ -121,12 +72,6 @@ export default function GoalsPage() {
   
   const [isSaving, setIsSaving] = useState(false);
   
-  // Persist goals to localStorage
-  useEffect(() => {
-    saveGoals(goals);
-  }, [goals]);
-  
-  // Reset form
   const resetForm = () => {
     setFormName("");
     setFormType("financial");
@@ -136,7 +81,6 @@ export default function GoalsPage() {
     setFormDeadline("");
   };
   
-  // Open edit dialog
   const openEdit = (goal: Goal) => {
     setEditingGoal(goal);
     setFormName(goal.name);
@@ -148,8 +92,7 @@ export default function GoalsPage() {
     setIsEditOpen(true);
   };
   
-  // Handle add
-  const handleAdd = () => {
+  const handleAdd = async () => {
     if (!formName.trim()) {
       toast({ title: "خطأ", description: "الرجاء إدخال اسم الهدف", variant: "destructive" });
       return;
@@ -163,19 +106,15 @@ export default function GoalsPage() {
     setIsSaving(true);
     
     try {
-      const newGoal: Goal = {
-        id: generateId(),
+      await add({
         name: formName.trim(),
         type: formType,
         targetAmount: formType === "financial" ? parseFloat(formTargetAmount) || 0 : null,
         requirements: formRequirements,
         currentProgress: parseFloat(formCurrentProgress) || 0,
         deadline: formDeadline || null,
-        createdAt: new Date().toISOString(),
-        completedAt: null,
-      };
+      });
       
-      setGoals(prev => [newGoal, ...prev]);
       toast({ title: "تم إضافة الهدف" });
       setIsAddOpen(false);
       resetForm();
@@ -186,8 +125,7 @@ export default function GoalsPage() {
     }
   };
   
-  // Handle edit
-  const handleEdit = () => {
+  const handleEdit = async () => {
     if (!editingGoal) return;
     
     if (!formName.trim()) {
@@ -195,15 +133,10 @@ export default function GoalsPage() {
       return;
     }
     
-    if (formType === "financial" && !formTargetAmount) {
-      toast({ title: "خطأ", description: "الرجاء إدخال المبلغ المستهدف", variant: "destructive" });
-      return;
-    }
-    
     setIsSaving(true);
     
     try {
-      const updatedGoal: Goal = {
+      await update({
         ...editingGoal,
         name: formName.trim(),
         type: formType,
@@ -211,9 +144,8 @@ export default function GoalsPage() {
         requirements: formRequirements,
         currentProgress: parseFloat(formCurrentProgress) || 0,
         deadline: formDeadline || null,
-      };
+      });
       
-      setGoals(prev => prev.map(g => g.id === updatedGoal.id ? updatedGoal : g));
       toast({ title: "تم تحديث الهدف" });
       setIsEditOpen(false);
       setEditingGoal(null);
@@ -225,45 +157,50 @@ export default function GoalsPage() {
     }
   };
   
-  // Handle delete
-  const handleDelete = () => {
+  const handleDelete = async () => {
     if (!deletingGoalId) return;
     
-    setGoals(prev => prev.filter(g => g.id !== deletingGoalId));
-    toast({ title: "تم حذف الهدف" });
-    setIsDeleteOpen(false);
-    setDeletingGoalId(null);
+    try {
+      await deleteGoal(deletingGoalId);
+      toast({ title: "تم حذف الهدف" });
+      setIsDeleteOpen(false);
+      setDeletingGoalId(null);
+    } catch {
+      toast({ title: "خطأ", description: "حدث خطأ أثناء الحذف", variant: "destructive" });
+    }
   };
   
-  // Handle mark complete
-  const handleComplete = () => {
+  const handleComplete = async () => {
     if (!completingGoalId) return;
     
-    setGoals(prev => prev.map(g => 
-      g.id === completingGoalId 
-        ? { ...g, completedAt: new Date().toISOString() }
-        : g
-    ));
-    toast({ title: "تم إكمال الهدف! 🎉" });
-    setIsCompleteOpen(false);
-    setCompletingGoalId(null);
+    try {
+      await complete(completingGoalId);
+      toast({ title: "تم إكمال الهدف! 🎉" });
+      setIsCompleteOpen(false);
+      setCompletingGoalId(null);
+    } catch {
+      toast({ title: "خطأ", description: "حدث خطأ", variant: "destructive" });
+    }
   };
   
-  // Handle update progress
-  const handleUpdateProgress = (goalId: string, newProgress: number) => {
-    setGoals(prev => prev.map(g => 
-      g.id === goalId ? { ...g, currentProgress: newProgress } : g
-    ));
-    toast({ title: "تم تحديث التقدم" });
-  };
-  
-  // Filter active/completed goals
-  const activeGoals = useMemo(() => goals.filter(g => !g.completedAt), [goals]);
-  const completedGoals = useMemo(() => goals.filter(g => g.completedAt), [goals]);
+  const activeGoals = goals.filter(g => !g.completedAt);
+  const completedGoals = goals.filter(g => g.completedAt);
   
   return (
     <AppShell title="احسب هدفك" showBack>
       <div className="space-y-5 pb-6">
+        
+        {/* Sync status indicator */}
+        {isSynced ? (
+          <div className="flex items-center gap-2 text-xs text-green-600">
+            <Cloud className="w-4 h-4" />
+            <span>متزامن مع السحابة</span>
+          </div>
+        ) : (
+          <div className="rounded-xl border border-amber-200 bg-amber-50/50 px-4 py-2 text-xs" style={{ color: "#92400e" }}>
+            <span className="font-semibold">💾 ملاحظة:</span> محفوظ على هذا الجهاز فقط. سجّل الدخول لمزامنة بياناتك.
+          </div>
+        )}
         
         {/* Add Button */}
         <div className="flex justify-center">

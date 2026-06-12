@@ -2,7 +2,11 @@ import { useEffect } from "react";
 import { useLocation } from "wouter";
 import { useStore } from "@/hooks/useStore";
 
-export default function SplashScreen() {
+interface SplashScreenProps {
+  onComplete?: () => void;
+}
+
+export default function SplashScreen({ onComplete }: SplashScreenProps = {}) {
   const [, setLocation] = useLocation();
   const { user } = useStore();
 
@@ -10,15 +14,23 @@ export default function SplashScreen() {
     const timer = setTimeout(() => {
       // Check if user has completed onboarding
       const hasOnboarded = localStorage.getItem("mawaeedak_onboarded");
+      
+      // Call onComplete if provided (for FirstEntryWrapper)
+      if (onComplete) {
+        onComplete();
+        return;
+      }
+      
+      // Default behavior: navigate based on onboarding status
       if (hasOnboarded || user?.onboardingComplete) {
         setLocation("/");
       } else {
         setLocation("/welcome");
       }
-    }, 3500); // 3.5 seconds for splash duration (3-4 second range per spec)
+    }, 3500); // 3.5 seconds for splash duration (3-4 second range)
 
     return () => clearTimeout(timer);
-  }, [setLocation, user]);
+  }, [setLocation, user, onComplete]);
 
   return (
     <div

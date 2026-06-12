@@ -11,6 +11,11 @@
  * - Optional note
  * - Add/edit/delete/save/list
  * - Empty/Error/Success states
+ * 
+ * Storage: Local-first with optional Supabase cloud sync when logged in.
+ * Schema exists at: supabase/migrations/20250612000002_create_services_tables.sql
+ * UI shows "محفوظ على هذا الجهاز فقط" when not synced.
+ * Push notifications: Code ready, deployment setup required (VAPID keys + Edge Function).
  */
 
 import { useState, useMemo, useEffect } from "react";
@@ -289,7 +294,7 @@ export default function RemindersPage() {
         }}>
           <Info className="w-5 h-5 shrink-0 mt-0.5" style={{ color: "#C9A063" }} />
           <p className="text-sm" style={{ color: "#6F6557" }}>
-            الإشعارات داخلية فقط في الوقت الحالي. ستظهر التذكيرات في صفحة الإشعارات.
+            محفوظ على هذا الجهاز فقط. الإشعارات الداخلية فقط حالياً. إعداد الإشعارات الفورية قيد التطوير.
           </p>
         </div>
         

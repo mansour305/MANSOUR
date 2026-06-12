@@ -1,4 +1,4 @@
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useState, useEffect } from "react";
 import { Switch, Route, Router as WouterRouter } from "wouter";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
@@ -97,10 +97,53 @@ function AuthRoute({ mode }: { mode: "login" | "signup" | "forgot" }) {
   return <AuthPage mode={mode} />;
 }
 
+/**
+ * FirstEntryWrapper — Phase 15
+ * 
+ * Shows Splash screen for 3-4 seconds on first entry to / only.
+ * Deep links to other pages bypass the splash.
+ * Uses sessionStorage to track first entry per session.
+ * Login is optional - does not force onboarding.
+ */
+function FirstEntryWrapper({ children }: { children: React.ReactNode }) {
+  const [showSplash, setShowSplash] = useState(false);
+  const [splashComplete, setSplashComplete] = useState(false);
+
+  useEffect(() => {
+    // Check if this is first entry to root in this session
+    const hasSeenSplash = sessionStorage.getItem("mawaeedak_splash_shown");
+    if (!hasSeenSplash) {
+      setShowSplash(true);
+    } else {
+      setSplashComplete(true);
+    }
+  }, []);
+
+  const handleSplashComplete = () => {
+    sessionStorage.setItem("mawaeedak_splash_shown", "true");
+    setShowSplash(false);
+    setSplashComplete(true);
+  };
+
+  if (showSplash) {
+    return (
+      <Suspense fallback={<RouteFallback />}>
+        <SplashScreen onComplete={handleSplashComplete} />
+      </Suspense>
+    );
+  }
+
+  return <>{children}</>;
+}
+
 function MainApp() {
   return (
     <Switch>
-      <Route path="/" component={HomePage} />
+      <Route path="/">
+        <FirstEntryWrapper>
+          <HomePage />
+        </FirstEntryWrapper>
+      </Route>
       <Route path="/calendar" component={CalendarPage} />
       <Route path="/finance" component={FinancePage} />
       <Route path="/salaries" component={FinancePage} />
@@ -179,7 +222,7 @@ function AdminRouter() {
 function Router() {
   return (
     <Switch>
-      <Route path="/splash" component={SplashScreen} />
+      <Route path="/splash">{() => <SplashScreen onComplete={() => {}} />}</Route>
       <Route path="/welcome" component={WelcomePage} />
       <Route path="/admin" component={AdminRouter} />
       <Route path="/admin/:rest*" component={AdminRouter} />
