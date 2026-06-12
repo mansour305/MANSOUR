@@ -1,4 +1,4 @@
-import { CalendarDays, Clock3, Landmark, Moon, Sun, Sunrise, Users, Wallet } from "lucide-react";
+import { CalendarDays, Clock3, Landmark, Moon, Sun, Sunrise, Users, Wallet, MapPin, ChevronLeft } from "lucide-react";
 import { Link } from "wouter";
 import desertHeroImg from "@assets/desert-hero.png";
 import { AppShell } from "@/components/layout/AppShell";
@@ -11,6 +11,9 @@ import { useMemo } from "react";
 import { useTimeFormat } from "@/hooks/useTimeFormat";
 import { normalizeFinancialEvents } from "@/lib/financialEngine";
 import { getRiyadhDateParts, getRiyadhTodayKey } from "@/lib/riyadhTime";
+import { useLocationPrefs } from "@/hooks/useLocationPrefs";
+import { useState } from "react";
+import { showTopNotification } from "@/components/layout/TopNotificationBanner";
 
 const GOLD = "#C9A063";
 const BROWN = "#8A6B3D";
@@ -41,6 +44,11 @@ function PrayerIcon({ keyName }: { keyName: string }) {
 export default function HomePage() {
   const { user } = useStore();
   const { formatTime } = useTimeFormat();
+  const { prefs, requestGPS } = useLocationPrefs();
+  const [showLocationPrompt, setShowLocationPrompt] = useState(false);
+  
+  // Check if we should show location prompt
+  const hasLocationCoords = typeof prefs.lat === "number" && typeof prefs.lng === "number";
   
   // Use prayer engine hook - handles official, AlAdhan, cache, location
   const { 
@@ -51,6 +59,37 @@ export default function HomePage() {
     nextPrayer, 
     countdown 
   } = usePrayerEngine();
+  
+  // Show location prompt on mount if no coordinates and hasn't been prompted
+  useMemo(() => {
+    const prompted = sessionStorage.getItem("mawaeedak_location_prompted");
+    if (!hasLocationCoords && !prompted) {
+      // Delay to let the page render first
+      setTimeout(() => setShowLocationPrompt(true), 500);
+    }
+  }, [hasLocationCoords]);
+  
+  const handleUseMyLocation = async () => {
+    sessionStorage.setItem("mawaeedak_location_prompted", "1");
+    setShowLocationPrompt(false);
+    try {
+      await requestGPS();
+      showTopNotification("تم تحديد موقعك بنجاح", "success");
+    } catch {
+      showTopNotification("تم استخدام الرياض كافتراضي، ويمكنك تغيير الموقع من حسابك", "info");
+    }
+  };
+  
+  const handleUseRiyadh = () => {
+    sessionStorage.setItem("mawaeedak_location_prompted", "1");
+    setShowLocationPrompt(false);
+    showTopNotification("تم استخدام الرياض كافتراضي، ويمكنك تغيير الموقع من حسابك", "info");
+  };
+  
+  const dismissLocationPrompt = () => {
+    sessionStorage.setItem("mawaeedak_location_prompted", "1");
+    setShowLocationPrompt(false);
+  };
   
   const todayIso = getRiyadhTodayKey();
   
@@ -100,6 +139,65 @@ export default function HomePage() {
   return (
     <AppShell>
       <section className="space-y-5">
+        {/* Location Permission Prompt */}
+        {showLocationPrompt && (
+          <div 
+            className="relative overflow-hidden rounded-[24px] border p-5"
+            style={{ 
+              borderColor: "rgba(201,160,99,0.30)",
+              background: "linear-gradient(145deg, #FFFCF7 0%, #FFF8EE 100%)",
+              boxShadow: "0 12px 36px rgba(138,107,61,0.15)",
+            }}
+          >
+            <button
+              onClick={dismissLocationPrompt}
+              className="absolute left-4 top-4 text-sm font-bold"
+              style={{ color: "#8A8175" }}
+            >
+              ✕
+            </button>
+            <div className="text-center">
+              <div 
+                className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full"
+                style={{ background: "linear-gradient(135deg, #C9A063, #A78042)" }}
+              >
+                <MapPin className="h-8 w-8 text-white" />
+              </div>
+              <h3 className="text-[22px] font-extrabold" style={{ color: "#2F2B25" }}>
+                تفعيل الموقع
+              </h3>
+              <p className="mt-2 text-[15px] font-semibold leading-7" style={{ color: "#6F6557" }}>
+                نستخدم موقعك لحساب مواقيت الصلاة بدقة حسب مدينتك.
+              </p>
+              <div className="mt-5 flex flex-col gap-3">
+                <button
+                  onClick={handleUseMyLocation}
+                  className="w-full rounded-[18px] border py-4 text-[17px] font-bold transition active:scale-[0.98]"
+                  style={{ 
+                    background: "linear-gradient(135deg, #C9A063, #A78042)",
+                    color: "white",
+                    borderColor: "#A78042",
+                    boxShadow: "0 6px 20px rgba(167,128,66,0.30)",
+                  }}
+                >
+                  استخدام موقعي
+                </button>
+                <button
+                  onClick={handleUseRiyadh}
+                  className="w-full rounded-[18px] border py-4 text-[17px] font-bold transition active:scale-[0.98]"
+                  style={{ 
+                    background: "white",
+                    color: "#8A6B3D",
+                    borderColor: "rgba(201,160,99,0.30)",
+                  }}
+                >
+                  الرياض كافتراضي
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
         <div className="text-center">
           <h2 className="text-[30px] font-extrabold leading-tight" style={{ color: INK }}>
             {getDayName()}
@@ -218,7 +316,7 @@ export default function HomePage() {
               <Wallet className="mx-auto h-7 w-7" style={{ color: GOLD }} />
               <h4 className="mt-3 text-[16px] font-extrabold" style={{ color: INK }}>لا توجد مواعيد مالية مؤكدة</h4>
               <p className="mt-2 text-sm font-semibold leading-7" style={{ color: "#6F6557" }}>
-                اربط قاعدة البيانات أو أضف المواعيد من لوحة المالك لعرضها هنا.
+                أضف مواعيدك المالية من لوحة المالك.
               </p>
             </div>
           ) : (

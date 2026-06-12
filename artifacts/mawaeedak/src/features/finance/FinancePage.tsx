@@ -117,7 +117,7 @@ export default function FinancePage() {
             <Wallet className="mx-auto h-9 w-9" style={{ color: GOLD }} />
             <h3 className="mt-3 text-xl font-extrabold" style={{ color: INK }}>لا توجد مواعيد مالية متاحة</h3>
             <p className="mt-2 text-sm font-semibold leading-7" style={{ color: "#6F6557" }}>
-              أضف المواعيد من لوحة المالك أو اربط مصدر البيانات.
+              أضف المواعيد من لوحة المالك.
             </p>
           </div>
         ) : (

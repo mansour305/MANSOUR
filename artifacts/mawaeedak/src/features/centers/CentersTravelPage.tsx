@@ -185,23 +185,34 @@ export default function CentersTravelPage() {
   const checkedCount = checklistItems.filter(i => checked[i]).length;
 
   return (
-    <AppShell title="مركز السفر" showBack>
+    <AppShell title="السفر" showBack>
       <div className="space-y-6 pb-6">
+        {/* Header with icon */}
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-full bg-sky-500/10 flex items-center justify-center text-sky-500">
-              <Plane className="w-6 h-6" />
+            <div 
+              className="w-12 h-12 rounded-full flex items-center justify-center"
+              style={{ background: "linear-gradient(135deg, #C9A063, #A78042)" }}
+            >
+              <Plane className="w-6 h-6 text-white" />
             </div>
             <div>
-              <h2 className="text-xl font-bold">رحلاتي القادمة</h2>
-              <p className="text-sm text-muted-foreground">{trips.length} رحلة مسجلة</p>
+              <h2 className="text-xl font-extrabold" style={{ color: "#2F2B25" }}>رحلاتي القادمة</h2>
+              <p className="text-sm font-medium" style={{ color: "#6F6557" }}>{trips.length} رحلة مسجلة</p>
             </div>
           </div>
           <Dialog open={isOpen} onOpenChange={v => { setIsOpen(v); if (!v) resetForm(); }}>
             <DialogTrigger asChild>
-              <Button size="sm" className="font-bold rounded-xl gap-1">
+              <button 
+                className="h-10 px-4 rounded-[16px] text-[14px] font-bold flex items-center gap-2 transition active:scale-[0.98]"
+                style={{ 
+                  background: "linear-gradient(135deg, #C9A063, #A78042)",
+                  color: "white",
+                  boxShadow: "0 4px 14px rgba(167,128,66,0.25)",
+                }}
+              >
                 <Plus className="w-4 h-4" /> رحلة جديدة
-              </Button>
+              </button>
             </DialogTrigger>
             <DialogContent className="rtl max-w-[400px] rounded-xl">
               <DialogHeader>
@@ -257,128 +268,192 @@ export default function CentersTravelPage() {
             {[...trips]
               .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
               .map(trip => (
-                <Card key={trip.id} className="border-border shadow-sm border-r-4 border-r-sky-500">
-                  <CardContent className="p-4">
+                <div 
+                  key={trip.id} 
+                  className="rounded-[22px] border overflow-hidden"
+                  style={{ 
+                    borderColor: "rgba(201,160,99,0.22)",
+                    background: "linear-gradient(145deg, #FFFCF7 0%, #FFF8EE 100%)",
+                    boxShadow: "0 8px 24px rgba(138,107,61,0.08)",
+                    borderRight: "4px solid #C9A063",
+                  }}
+                >
+                  <div className="p-4">
                     <div className="flex justify-between items-start mb-3">
                       <div className="flex items-center gap-2">
-                        <Plane className="w-5 h-5 text-sky-500" />
-                        <h3 className="font-bold">{trip.from} ← {trip.to}</h3>
+                        <Plane className="w-5 h-5" style={{ color: "#C9A063" }} />
+                        <h3 className="font-extrabold text-[16px]" style={{ color: "#2F2B25" }}>{trip.from} ← {trip.to}</h3>
                       </div>
                       <div className="flex items-center gap-2">
-                        <span className={`text-xs px-2 py-1 rounded-md font-medium ${statusColor[trip.status]}`}>
+                        <span 
+                          className="text-[10px] px-2 py-1 rounded-full font-bold"
+                          style={{
+                            background: trip.status === "مؤكد" ? "rgba(16,185,129,0.12)" : trip.status === "في الانتظار" ? "rgba(245,158,11,0.12)" : "rgba(239,68,68,0.12)",
+                            color: trip.status === "مؤكد" ? "#059669" : trip.status === "في الانتظار" ? "#D97706" : "#DC2626",
+                          }}
+                        >
                           {trip.status}
                         </span>
-                        <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => openEdit(trip)}>
-                          <Edit2 className="w-3.5 h-3.5" />
-                        </Button>
-                        <Button variant="ghost" size="icon" className="h-7 w-7 text-destructive" onClick={() => setDeleteId(trip.id)}>
-                          <Trash2 className="w-3.5 h-3.5" />
-                        </Button>
+                        <button 
+                          onClick={() => openEdit(trip)} 
+                          className="w-7 h-7 rounded-lg flex items-center justify-center transition hover:scale-110"
+                          style={{ background: "rgba(201,160,99,0.10)" }}
+                        >
+                          <Edit2 className="w-3.5 h-3.5" style={{ color: "#8A6B3D" }} />
+                        </button>
+                        <button 
+                          onClick={() => setDeleteId(trip.id)}
+                          className="w-7 h-7 rounded-lg flex items-center justify-center transition hover:scale-110"
+                          style={{ background: "rgba(185,72,63,0.10)" }}
+                        >
+                          <Trash2 className="w-3.5 h-3.5" style={{ color: "#B9483F" }} />
+                        </button>
                       </div>
                     </div>
-                    <div className="grid grid-cols-2 gap-2 text-sm text-muted-foreground bg-muted/30 p-3 rounded-lg">
+                    <div 
+                      className="grid grid-cols-2 gap-2 text-sm p-3 rounded-[14px]"
+                      style={{ background: "rgba(201,160,99,0.06)" }}
+                    >
                       <div className="flex items-center gap-2">
-                        <Calendar className="w-4 h-4" />
-                        <span>{trip.date}</span>
+                        <Calendar className="w-4 h-4" style={{ color: "#A78042" }} />
+                        <span style={{ color: "#6F6557" }}>{trip.date}</span>
                       </div>
-                      <div className="flex items-center gap-2 font-medium text-sky-600">
+                      <div className="flex items-center gap-2 font-bold" style={{ color: "#C9A063" }}>
                         <span>{daysUntil(trip.date)}</span>
                       </div>
                       {trip.flightNo && (
                         <div className="flex items-center gap-2">
-                          <Plane className="w-4 h-4" />
-                          <span>{trip.flightNo}</span>
+                          <Plane className="w-4 h-4" style={{ color: "#A78042" }} />
+                          <span style={{ color: "#6F6557" }}>{trip.flightNo}</span>
                         </div>
                       )}
                       {trip.hotel && (
                         <div className="flex items-center gap-2 col-span-2">
-                          <MapPin className="w-4 h-4" />
-                          <span>{trip.hotel}</span>
+                          <MapPin className="w-4 h-4" style={{ color: "#A78042" }} />
+                          <span style={{ color: "#6F6557" }}>{trip.hotel}</span>
                         </div>
                       )}
                     </div>
-                  </CardContent>
-                </Card>
+                  </div>
+                </div>
               ))}
           </div>
         ) : (
-          <Card className="border-dashed border-2 border-border">
-            <CardContent className="p-8 text-center">
-              <Plane className="w-10 h-10 mx-auto mb-3 text-muted-foreground opacity-40" />
-              <p className="font-bold text-muted-foreground">لا توجد رحلات مسجلة</p>
-              <p className="text-sm text-muted-foreground mt-1">اضغط "رحلة جديدة" لإضافة أول رحلة</p>
-            </CardContent>
-          </Card>
+          <div 
+            className="rounded-[22px] border border-dashed p-8 text-center"
+            style={{ borderColor: "rgba(201,160,99,0.30)", background: "rgba(255,252,247,0.6)" }}
+          >
+            <Plane className="w-10 h-10 mx-auto mb-3 opacity-40" style={{ color: "#C9A063" }} />
+            <p className="font-extrabold" style={{ color: "#2F2B25" }}>لا توجد رحلات مسجلة</p>
+            <p className="text-sm mt-1" style={{ color: "#6F6557" }}>اضغط "رحلة جديدة" لإضافة أول رحلة</p>
+          </div>
         )}
 
         <div>
           <div className="flex items-center justify-between mb-3">
-            <h3 className="font-bold text-lg flex items-center gap-2">
-              <CheckSquare className="w-5 h-5 text-primary" />
+            <h3 className="font-extrabold text-lg flex items-center gap-2" style={{ color: "#2F2B25" }}>
+              <CheckSquare className="w-5 h-5" style={{ color: "#C9A063" }} />
               قائمة التجهيز
             </h3>
-            <span className="text-sm font-medium text-primary">
+            <span 
+              className="text-sm font-bold px-3 py-1 rounded-full"
+              style={{ 
+                background: "rgba(201,160,99,0.12)", 
+                color: "#8A6B3D" 
+              }}
+            >
               {checkedCount} / {checklistItems.length}
             </span>
           </div>
 
-          <Card className="border-border shadow-sm mb-3">
-            <CardContent className="p-3">
-              <div className="flex gap-2">
-                <Input
-                  value={customItem}
-                  onChange={(event) => setCustomItem(event.target.value)}
-                  placeholder="أضف بند مخصص مثل: رخصة دولية"
-                  onKeyDown={(event) => {
-                    if (event.key === "Enter") addCustomChecklistItem();
-                  }}
-                />
-                <Button className="shrink-0 font-bold" onClick={addCustomChecklistItem}>
-                  <Plus className="w-4 h-4 ml-1" /> إضافة
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
+          {/* Custom item input */}
+          <div 
+            className="rounded-[18px] border p-3 mb-3"
+            style={{ 
+              borderColor: "rgba(201,160,99,0.22)",
+              background: "linear-gradient(145deg, #FFFCF7 0%, #FFF8EE 100%)",
+              boxShadow: "0 4px 14px rgba(138,107,61,0.08)",
+            }}
+          >
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={customItem}
+                onChange={(event) => setCustomItem(event.target.value)}
+                placeholder="أضف بند مخصص مثل: رخصة دولية"
+                className="flex-1 h-11 rounded-[14px] border px-4 text-[14px] font-medium bg-white"
+                style={{ borderColor: "rgba(201,160,99,0.20)" }}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter") addCustomChecklistItem();
+                }}
+              />
+              <button 
+                onClick={addCustomChecklistItem}
+                className="h-11 px-4 rounded-[14px] text-[14px] font-bold flex items-center gap-2 transition active:scale-[0.98]"
+                style={{ 
+                  background: "linear-gradient(135deg, #C9A063, #A78042)",
+                  color: "white",
+                  boxShadow: "0 4px 12px rgba(167,128,66,0.25)",
+                }}
+              >
+                <Plus className="w-4 h-4" /> إضافة
+              </button>
+            </div>
+          </div>
 
-          <Card className="border-border shadow-sm">
-            <CardContent className="p-0">
-              <div className="divide-y divide-border">
-                {checklistItems.map((item) => {
-                  const isCustom = customChecklist.includes(item);
-                  return (
-                    <label
-                      key={item}
-                      className="flex items-center gap-3 p-4 cursor-pointer hover:bg-muted/50 transition-colors"
+          {/* Checklist items */}
+          <div 
+            className="rounded-[20px] border overflow-hidden"
+            style={{ 
+              borderColor: "rgba(201,160,99,0.22)",
+              background: "linear-gradient(145deg, #FFFCF7 0%, #FFF8EE 100%)",
+              boxShadow: "0 8px 24px rgba(138,107,61,0.08)",
+            }}
+          >
+            <div className="divide-y divide-[rgba(201,160,99,0.15)]" style={{ borderColor: "rgba(201,160,99,0.15)" }}>
+              {checklistItems.map((item) => {
+                const isCustom = customChecklist.includes(item);
+                return (
+                  <label
+                    key={item}
+                    className="flex items-center gap-3 p-4 cursor-pointer transition hover:bg-[rgba(201,160,99,0.05)]"
+                  >
+                    <input
+                      type="checkbox"
+                      checked={!!checked[item]}
+                      onChange={() => toggleCheck(item)}
+                      className="w-5 h-5 rounded border-2"
+                      style={{ 
+                        accentColor: "#C9A063",
+                        borderColor: checked[item] ? "#C9A063" : "rgba(201,160,99,0.30)",
+                      }}
+                    />
+                    <span 
+                      className={`flex-1 font-medium ${checked[item] ? "line-through opacity-60" : ""}`}
+                      style={{ color: "#2F2B25" }}
                     >
-                      <input
-                        type="checkbox"
-                        checked={!!checked[item]}
-                        onChange={() => toggleCheck(item)}
-                        className="w-5 h-5 rounded border-border accent-[hsl(var(--primary))] focus:ring-0"
-                      />
-                      <span className={`flex-1 font-medium ${checked[item] ? "line-through text-muted-foreground" : "text-foreground"}`}>
-                        {item}
-                      </span>
-                      {isCustom && (
-                        <button
-                          type="button"
-                          className="rounded-lg p-1 text-destructive"
-                          onClick={(event) => {
-                            event.preventDefault();
-                            event.stopPropagation();
-                            deleteCustomChecklistItem(item);
-                          }}
-                          aria-label="حذف البند المخصص"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
-                      )}
-                    </label>
-                  );
-                })}
-              </div>
-            </CardContent>
-          </Card>
+                      {item}
+                    </span>
+                    {isCustom && (
+                      <button
+                        type="button"
+                        onClick={(event) => {
+                          event.preventDefault();
+                          event.stopPropagation();
+                          deleteCustomChecklistItem(item);
+                        }}
+                        className="w-8 h-8 rounded-lg flex items-center justify-center transition hover:scale-110"
+                        style={{ background: "rgba(185,72,63,0.10)" }}
+                        aria-label="حذف البند المخصص"
+                      >
+                        <Trash2 className="w-4 h-4" style={{ color: "#B9483F" }} />
+                      </button>
+                    )}
+                  </label>
+                );
+              })}
+            </div>
+          </div>
           {checkedCount === checklistItems.length && checklistItems.length > 0 && (
             <div className="mt-3 text-center text-sm font-bold text-emerald-600 bg-emerald-500/10 p-3 rounded-xl">
               جهّزت كل شيء — رحلة سعيدة!

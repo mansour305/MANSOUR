@@ -27,6 +27,8 @@ import {
   MessageSquare,
   Coins,
   ExternalLink,
+  BellRing,
+  Info,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useTimeFormat } from "@/hooks/useTimeFormat";
@@ -36,6 +38,7 @@ import {
   gwMarkAllNotificationsRead,
   gwDeleteNotification,
 } from "@/lib/dataGateway";
+import { useNotificationPermission } from "@/hooks/useNotificationPermission";
 
 const TYPE_CONFIG: Record<string, { icon: React.ElementType; label: string; accent: string }> = {
   system:      { icon: Shield,        label: "نظام",          accent: "hsl(210 70% 52%)" },
@@ -96,6 +99,15 @@ export default function NotificationsPage() {
   const { format: timeFormat } = useTimeFormat();
   const [, setLocation] = useLocation();
   const queryClient = useQueryClient();
+
+  const { 
+    status, 
+    statusLabel, 
+    isRequesting, 
+    isSupported, 
+    iPhoneGuidance, 
+    requestPermission 
+  } = useNotificationPermission();
 
   const { data: notifications, isLoading, isError, refetch } = useGatewayNotifications();
   const [filter, setFilter] = useState<TabFilter>("all");
@@ -180,6 +192,83 @@ export default function NotificationsPage() {
   return (
     <AppShell title="الإشعارات" showBack>
       <div className="space-y-4">
+
+        {/* ─── Notification Permission Card ────────────────────── */}
+        {isSupported !== false && status !== "granted" && (
+          <div 
+            className="relative overflow-hidden rounded-[22px] border p-4"
+            style={{ 
+              borderColor: "rgba(201,160,99,0.25)",
+              background: "linear-gradient(145deg, #FFFCF7 0%, #FFF8EE 100%)",
+              boxShadow: "0 8px 24px rgba(138,107,61,0.10)",
+            }}
+          >
+            <div className="flex items-start gap-4">
+              <div 
+                className="grid h-14 w-14 shrink-0 place-items-center rounded-[18px]"
+                style={{ background: "linear-gradient(135deg, #C9A063, #A78042)" }}
+              >
+                {isRequesting ? (
+                  <Loader2 className="h-6 w-6 animate-spin text-white" />
+                ) : (
+                  <BellRing className="h-6 w-6 text-white" />
+                )}
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 mb-1">
+                  <h3 className="text-[18px] font-extrabold" style={{ color: "#2F2B25" }}>
+                    تفعيل الإشعارات
+                  </h3>
+                  <span 
+                    className="text-[11px] font-bold px-2 py-0.5 rounded-full"
+                    style={{ 
+                      background: status === "denied" ? "rgba(185,72,63,0.12)" : "rgba(138,107,61,0.10)",
+                      color: status === "denied" ? "#B9483F" : "#8A6B3D",
+                    }}
+                  >
+                    {statusLabel}
+                  </span>
+                </div>
+                <p className="text-[13px] font-medium leading-6" style={{ color: "#6F6557" }}>
+                  فعّل الإشعارات لتصلك تنبيهات الرواتب والمواعيد.
+                </p>
+                {iPhoneGuidance && (
+                  <div 
+                    className="mt-2 flex items-start gap-2 rounded-[14px] border p-3"
+                    style={{ 
+                      borderColor: "rgba(201,160,99,0.20)",
+                      background: "rgba(255,255,255,0.6)",
+                    }}
+                  >
+                    <Info className="h-4 w-4 shrink-0 mt-0.5" style={{ color: "#C9A063" }} />
+                    <p className="text-[12px] font-medium" style={{ color: "#6F6557" }}>
+                      {iPhoneGuidance}
+                    </p>
+                  </div>
+                )}
+                <button
+                  onClick={async () => {
+                    const result = await requestPermission();
+                    toast({ 
+                      title: result.success ? "تم تفعيل الإشعارات" : result.message,
+                      variant: result.success ? "default" : "destructive"
+                    });
+                  }}
+                  disabled={isRequesting}
+                  className="mt-3 w-full rounded-[16px] border py-3 text-[15px] font-bold transition active:scale-[0.98] disabled:opacity-60"
+                  style={{ 
+                    background: "linear-gradient(135deg, #C9A063, #A78042)",
+                    color: "white",
+                    borderColor: "#A78042",
+                    boxShadow: "0 4px 14px rgba(167,128,66,0.25)",
+                  }}
+                >
+                  {isRequesting ? "جاري التفعيل..." : "تفعيل الإشعارات"}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* ─── Segmented Tabs ────────────────────────────────── */}
         <div 
