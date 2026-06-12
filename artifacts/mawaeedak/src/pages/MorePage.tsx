@@ -75,9 +75,21 @@ function DailyCardRow({ onClick }: { onClick: () => void }) {
   );
 }
 
+const GUEST_USER = {
+  id: "",
+  name: "",
+  email: "",
+  city: "الرياض",
+  cityKey: "riyadh",
+  timezone: "Asia/Riyadh",
+  role: "user",
+  onboardingComplete: true,
+  interests: [],
+};
+
 export default function MorePage() {
   const [, setLocation] = useLocation();
-  const { user, isAdmin, setUser } = useStore();
+  const { user, isAdmin, setUser, setAdmin } = useStore();
   const [isLogoutOpen, setIsLogoutOpen] = useState(false);
   const isLoggedIn = Boolean(user?.email);
   const displayName = (user?.name && user.name.length > 0) ? user.name : null;
@@ -105,24 +117,17 @@ export default function MorePage() {
   const logout = async () => {
     await authSignOut().catch(() => {});
 
-    localStorage.removeItem("app-user");
-    localStorage.removeItem("mawaeedak_onboarded");
     sessionStorage.removeItem("mawaeedak_demo_session");
+    sessionStorage.setItem("mawaeedak_splash_shown", "true");
+    localStorage.setItem("mawaeedak_onboarded", "true");
+    localStorage.setItem("app-user", JSON.stringify(GUEST_USER));
 
-    setUser({
-      id: "",
-      name: "",
-      email: "",
-      city: "",
-      cityKey: "",
-      timezone: "Asia/Riyadh",
-      role: "user",
-      onboardingComplete: false,
-      interests: [],
-    });
+    setUser(GUEST_USER);
+    setAdmin(false);
+    showTopNotification("تم تسجيل الخروج والعودة للرئيسية", "success");
 
-    showTopNotification("تم تسجيل الخروج", "success");
     setLocation("/");
+    window.history.replaceState(null, "", "/");
   };
 
   return (
@@ -177,7 +182,7 @@ export default function MorePage() {
         open={isLogoutOpen}
         onOpenChange={setIsLogoutOpen}
         title="تسجيل الخروج"
-        description="هل تريد تسجيل الخروج من حسابك؟"
+        description="هل تريد تسجيل الخروج من حسابك؟ سيتم إعادتك إلى الصفحة الرئيسية."
         confirmText="تسجيل الخروج"
         onConfirm={logout}
       />
