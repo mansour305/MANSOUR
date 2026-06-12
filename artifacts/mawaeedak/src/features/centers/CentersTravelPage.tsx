@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { AppShell } from "@/components/layout/AppShell";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -11,6 +11,7 @@ import { toast } from "@/hooks/use-toast";
 
 const STORAGE_KEY = "mawaeedak_travel_v1";
 const CHECKLIST_KEY = "mawaeedak_travel_checklist_v1";
+const CUSTOM_CHECKLIST_KEY = "mawaeedak_travel_custom_checklist_v1";
 
 const DEFAULT_CHECKLIST = [
   "جواز السفر / الهوية الوطنية",
@@ -49,9 +50,20 @@ function loadChecked(): Record<string, boolean> {
   }
 }
 
+function loadCustomChecklist(): string[] {
+  try {
+    const parsed = JSON.parse(localStorage.getItem(CUSTOM_CHECKLIST_KEY) || "[]");
+    return Array.isArray(parsed) ? parsed.filter((item) => typeof item === "string" && item.trim()) : [];
+  } catch {
+    return [];
+  }
+}
+
 export default function CentersTravelPage() {
   const [trips, setTrips] = useState<Trip[]>(loadTrips);
   const [checked, setChecked] = useState<Record<string, boolean>>(loadChecked);
+  const [customChecklist, setCustomChecklist] = useState<string[]>(loadCustomChecklist);
+  const [customItem, setCustomItem] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [editId, setEditId] = useState<string | null>(null);
@@ -63,6 +75,10 @@ export default function CentersTravelPage() {
   const [hotel, setHotel] = useState("");
   const [status, setStatus] = useState<Trip["status"]>("مؤكد");
 
+  const checklistItems = useMemo(() => {
+    return [...DEFAULT_CHECKLIST, ...customChecklist];
+  }, [customChecklist]);
+
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(trips));
   }, [trips]);
@@ -71,8 +87,18 @@ export default function CentersTravelPage() {
     localStorage.setItem(CHECKLIST_KEY, JSON.stringify(checked));
   }, [checked]);
 
+  useEffect(() => {
+    localStorage.setItem(CUSTOM_CHECKLIST_KEY, JSON.stringify(customChecklist));
+  }, [customChecklist]);
+
   const resetForm = () => {
-    setFrom("الرياض"); setTo(""); setDate(""); setFlightNo(""); setHotel(""); setStatus("مؤكد"); setEditId(null);
+    setFrom("الرياض");
+    setTo("");
+    setDate("");
+    setFlightNo("");
+    setHotel("");
+    setStatus("مؤكد");
+    setEditId(null);
   };
 
   const handleSave = () => {
@@ -80,6 +106,7 @@ export default function CentersTravelPage() {
       toast({ title: "يرجى تعبئة الوجهة والتاريخ", variant: "destructive" });
       return;
     }
+
     if (editId) {
       setTrips(prev => prev.map(t => t.id === editId ? { ...t, from, to, date, flightNo, hotel, status } : t));
       toast({ title: "تم تحديث الرحلة" });
@@ -88,13 +115,18 @@ export default function CentersTravelPage() {
       setTrips(prev => [...prev, trip]);
       toast({ title: "تمت إضافة الرحلة" });
     }
+
     resetForm();
     setIsOpen(false);
   };
 
   const openEdit = (trip: Trip) => {
-    setFrom(trip.from); setTo(trip.to); setDate(trip.date);
-    setFlightNo(trip.flightNo); setHotel(trip.hotel); setStatus(trip.status);
+    setFrom(trip.from);
+    setTo(trip.to);
+    setDate(trip.date);
+    setFlightNo(trip.flightNo);
+    setHotel(trip.hotel);
+    setStatus(trip.status);
     setEditId(trip.id);
     setIsOpen(true);
   };
@@ -110,6 +142,33 @@ export default function CentersTravelPage() {
     setChecked(prev => ({ ...prev, [item]: !prev[item] }));
   };
 
+  const addCustomChecklistItem = () => {
+    const value = customItem.trim();
+    if (!value) {
+      toast({ title: "اكتب البند المخصص أولاً", variant: "destructive" });
+      return;
+    }
+
+    if (checklistItems.includes(value)) {
+      toast({ title: "هذا البند موجود مسبقًا", variant: "destructive" });
+      return;
+    }
+
+    setCustomChecklist(prev => [...prev, value]);
+    setCustomItem("");
+    toast({ title: "تمت إضافة بند مخصص" });
+  };
+
+  const deleteCustomChecklistItem = (item: string) => {
+    setCustomChecklist(prev => prev.filter(existing => existing !== item));
+    setChecked(prev => {
+      const next = { ...prev };
+      delete next[item];
+      return next;
+    });
+    toast({ title: "تم حذف البند المخصص" });
+  };
+
   const statusColor: Record<string, string> = {
     "مؤكد": "bg-emerald-500/10 text-emerald-600",
     "في الانتظار": "bg-yellow-500/10 text-yellow-600",
@@ -123,11 +182,11 @@ export default function CentersTravelPage() {
     return `منذ ${Math.abs(diff)} يوم`;
   };
 
-  const checkedCount = DEFAULT_CHECKLIST.filter(i => checked[i]).length;
+  const checkedCount = checklistItems.filter(i => checked[i]).length;
 
   return (
     <AppShell title="مركز السفر" showBack>
-      <div className="space-y-6">
+      <div className="space-y-6 pb-6">
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 rounded-full bg-sky-500/10 flex items-center justify-center text-sky-500">
@@ -195,7 +254,7 @@ export default function CentersTravelPage() {
 
         {trips.length > 0 ? (
           <div className="space-y-3">
-            {trips
+            {[...trips]
               .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
               .map(trip => (
                 <Card key={trip.id} className="border-border shadow-sm border-r-4 border-r-sky-500">
@@ -259,32 +318,68 @@ export default function CentersTravelPage() {
               قائمة التجهيز
             </h3>
             <span className="text-sm font-medium text-primary">
-              {checkedCount} / {DEFAULT_CHECKLIST.length}
+              {checkedCount} / {checklistItems.length}
             </span>
           </div>
-          <Card className="border-border shadow-sm">
-            <CardContent className="p-0">
-              <div className="divide-y divide-border">
-                {DEFAULT_CHECKLIST.map((item) => (
-                  <label
-                    key={item}
-                    className="flex items-center gap-3 p-4 cursor-pointer hover:bg-muted/50 transition-colors"
-                  >
-                    <input
-                      type="checkbox"
-                      checked={!!checked[item]}
-                      onChange={() => toggleCheck(item)}
-                      className="w-5 h-5 rounded border-border accent-[hsl(var(--primary))] focus:ring-0"
-                    />
-                    <span className={`font-medium ${checked[item] ? "line-through text-muted-foreground" : "text-foreground"}`}>
-                      {item}
-                    </span>
-                  </label>
-                ))}
+
+          <Card className="border-border shadow-sm mb-3">
+            <CardContent className="p-3">
+              <div className="flex gap-2">
+                <Input
+                  value={customItem}
+                  onChange={(event) => setCustomItem(event.target.value)}
+                  placeholder="أضف بند مخصص مثل: رخصة دولية"
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter") addCustomChecklistItem();
+                  }}
+                />
+                <Button className="shrink-0 font-bold" onClick={addCustomChecklistItem}>
+                  <Plus className="w-4 h-4 ml-1" /> إضافة
+                </Button>
               </div>
             </CardContent>
           </Card>
-          {checkedCount === DEFAULT_CHECKLIST.length && (
+
+          <Card className="border-border shadow-sm">
+            <CardContent className="p-0">
+              <div className="divide-y divide-border">
+                {checklistItems.map((item) => {
+                  const isCustom = customChecklist.includes(item);
+                  return (
+                    <label
+                      key={item}
+                      className="flex items-center gap-3 p-4 cursor-pointer hover:bg-muted/50 transition-colors"
+                    >
+                      <input
+                        type="checkbox"
+                        checked={!!checked[item]}
+                        onChange={() => toggleCheck(item)}
+                        className="w-5 h-5 rounded border-border accent-[hsl(var(--primary))] focus:ring-0"
+                      />
+                      <span className={`flex-1 font-medium ${checked[item] ? "line-through text-muted-foreground" : "text-foreground"}`}>
+                        {item}
+                      </span>
+                      {isCustom && (
+                        <button
+                          type="button"
+                          className="rounded-lg p-1 text-destructive"
+                          onClick={(event) => {
+                            event.preventDefault();
+                            event.stopPropagation();
+                            deleteCustomChecklistItem(item);
+                          }}
+                          aria-label="حذف البند المخصص"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      )}
+                    </label>
+                  );
+                })}
+              </div>
+            </CardContent>
+          </Card>
+          {checkedCount === checklistItems.length && checklistItems.length > 0 && (
             <div className="mt-3 text-center text-sm font-bold text-emerald-600 bg-emerald-500/10 p-3 rounded-xl">
               جهّزت كل شيء — رحلة سعيدة!
             </div>
