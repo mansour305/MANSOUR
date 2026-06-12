@@ -7,7 +7,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { Search, Loader2, Users as UsersIcon, Ban, CheckCircle, MoreHorizontal } from "lucide-react";
-import { useStore } from "@/hooks/useStore";
 import { supabase, isSupabaseEnabled } from "@/lib/supabase";
 
 interface User {
@@ -33,9 +32,10 @@ const STATUS_OPTIONS = [
   { value: "pending", label: "قيد الانتظار", color: "bg-amber-500/10 text-amber-600" },
 ];
 
+const MEMBER_ADMIN_ENDPOINT_REQUIRED = "إدارة الأدوار والحظر تتطلب endpoint إداري server-side ولا تُنفّذ من المتصفح.";
+
 export default function AdminMembers() {
   const { toast } = useToast();
-  const { user: currentUser } = useStore();
 
   const [search, setSearch] = useState("");
   const [roleFilter, setRoleFilter] = useState("all");
@@ -45,7 +45,6 @@ export default function AdminMembers() {
   const [detail, setDetail] = useState<User | null>(null);
   const [editRole, setEditRole] = useState("user");
   const [editStatus, setEditStatus] = useState("active");
-  const [saving, setSaving] = useState(false);
 
   // Load users from Supabase
   useEffect(() => {
@@ -122,69 +121,12 @@ export default function AdminMembers() {
     setEditStatus(u.status);
   };
 
-  const handleSave = async () => {
-    if (!detail) return;
-    setSaving(true);
-
-    try {
-      if (!isSupabaseEnabled) {
-        toast({ title: "خطأ", description: "Supabase غير مفعّل", variant: "destructive" });
-        setSaving(false);
-        return;
-      }
-
-      // Update profile role
-      const { error: roleError } = await supabase!
-        .from("user_profiles")
-        .update({ role: editRole, updated_at: new Date().toISOString() })
-        .eq("id", detail.id);
-
-      if (roleError) throw roleError;
-
-      // Update auth metadata for role - skip if fails, it's not critical
-      try {
-        await supabase!.auth.updateUser({
-          data: { role: editRole }
-        });
-      } catch (e) {
-        console.warn("[AdminMembers] Could not update auth metadata:", e);
-      }
-
-      toast({ title: "تم تحديث بيانات المستخدم" });
-      setUsers(prev => prev.map(u => u.id === detail.id ? { ...u, role: editRole, status: editStatus as User["status"] } : u));
-      setDetail(null);
-    } catch (err: any) {
-      toast({ title: "خطأ", description: err.message || "فشل تحديث البيانات", variant: "destructive" });
-    } finally {
-      setSaving(false);
-    }
+  const handleSave = () => {
+    toast({ title: "غير متاح من المتصفح", description: MEMBER_ADMIN_ENDPOINT_REQUIRED, variant: "destructive" });
   };
 
-  const handleToggleBan = async (u: User) => {
-    const newStatus = u.status === "banned" ? "active" : "banned";
-
-    try {
-      if (!isSupabaseEnabled) {
-        toast({ title: "خطأ", description: "Supabase غير مفعّل", variant: "destructive" });
-        return;
-      }
-
-      // Update banned status in user_profiles
-      const { error } = await supabase!
-        .from("user_profiles")
-        .update({ 
-          banned: newStatus === "banned",
-          updated_at: new Date().toISOString(),
-        })
-        .eq("id", u.id);
-
-      if (error) throw error;
-
-      setUsers(prev => prev.map(x => x.id === u.id ? { ...x, status: newStatus } : x));
-      toast({ title: newStatus === "banned" ? "تم حظر المستخدم" : "تم فك حظر المستخدم" });
-    } catch (err: any) {
-      toast({ title: "خطأ", description: err.message || "فشل تحديث الحالة", variant: "destructive" });
-    }
+  const handleToggleBan = () => {
+    toast({ title: "غير متاح من المتصفح", description: MEMBER_ADMIN_ENDPOINT_REQUIRED, variant: "destructive" });
   };
 
   const statusMeta = (status: string) => STATUS_OPTIONS.find(s => s.value === status) ?? STATUS_OPTIONS[0];
@@ -290,7 +232,7 @@ export default function AdminMembers() {
                         <td className="px-4 py-3 text-muted-foreground">{u.created_at}</td>
                         <td className="px-4 py-3">
                           <div className="flex items-center gap-1">
-                            <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => handleToggleBan(u)} title={u.status === "banned" ? "فك الحظر" : "حظر"}>
+                            <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => handleToggleBan()} disabled title={MEMBER_ADMIN_ENDPOINT_REQUIRED}>
                               {u.status === "banned" ? <CheckCircle className="w-4 h-4 text-emerald-500" /> : <Ban className="w-4 h-4 text-red-500" />}
                             </Button>
                             <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => openDetail(u)}>
@@ -323,7 +265,7 @@ export default function AdminMembers() {
               </div>
               <div className="space-y-2">
                 <Label>الدور</Label>
-                <Select value={editRole} onValueChange={setEditRole}>
+                <Select value={editRole} onValueChange={setEditRole} disabled>
                   <SelectTrigger><SelectValue /></SelectTrigger>
                   <SelectContent className="rtl">
                     {ROLES.map(r => <SelectItem key={r.value} value={r.value}>{r.label}</SelectItem>)}
@@ -332,15 +274,18 @@ export default function AdminMembers() {
               </div>
               <div className="space-y-2">
                 <Label>الحالة</Label>
-                <Select value={editStatus} onValueChange={setEditStatus}>
+                <Select value={editStatus} onValueChange={setEditStatus} disabled>
                   <SelectTrigger><SelectValue /></SelectTrigger>
                   <SelectContent className="rtl">
                     {STATUS_OPTIONS.map(s => <SelectItem key={s.value} value={s.value}>{s.label}</SelectItem>)}
                   </SelectContent>
                 </Select>
               </div>
-              <Button className="w-full" onClick={handleSave} disabled={saving}>
-                {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : "حفظ التعديلات"}
+              <p className="rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-800">
+                {MEMBER_ADMIN_ENDPOINT_REQUIRED}
+              </p>
+              <Button className="w-full" onClick={handleSave} disabled>
+                حفظ التعديلات
               </Button>
             </div>
           )}

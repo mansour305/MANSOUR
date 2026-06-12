@@ -4,7 +4,7 @@
  * Reminders service: Create, edit, delete reminders with:
  * - Reminder title
  * - Fixed type: مخصص
- * - Date type: Hijri / Gregorian
+ * - Date type: Gregorian only
  * - Date
  * - Time
  * - Remind before by minutes/hours/days
@@ -30,7 +30,7 @@ import { ConfirmDialog } from "@/components/layout/ConfirmDialog";
 import { useToast } from "@/hooks/use-toast";
 import { Plus, Loader2, Bell, Edit2, Trash2, Calendar, Clock, AlertCircle, Info } from "lucide-react";
 
-export type ReminderDateType = "hijri" | "gregorian";
+export type ReminderDateType = "gregorian";
 
 export type RemindBeforeUnit = "minutes" | "hours" | "days";
 
@@ -53,7 +53,10 @@ function loadReminders(): Reminder[] {
   try {
     const stored = localStorage.getItem(REMINDERS_STORAGE_KEY);
     if (stored) {
-      return JSON.parse(stored);
+      const parsed = JSON.parse(stored);
+      return Array.isArray(parsed)
+        ? parsed.map((reminder) => ({ ...reminder, dateType: "gregorian" as const }))
+        : [];
     }
   } catch {
     // Ignore
@@ -91,14 +94,7 @@ function isReminderPast(reminder: Reminder): boolean {
     const [year, month, day] = reminder.date.split("-").map(Number);
     const [hours, minutes] = reminder.time.split(":").map(Number);
     
-    let targetDate: Date;
-    if (reminder.dateType === "hijri") {
-      // Convert Hijri to Gregorian for comparison
-      // Approximate conversion (for accurate conversion, use hijri-converter library)
-      targetDate = new Date(year + 600, month - 1, day, hours, minutes);
-    } else {
-      targetDate = new Date(year, month - 1, day, hours, minutes);
-    }
+    const targetDate = new Date(year, month - 1, day, hours, minutes);
     
     // Calculate reminder time (subtract remind before)
     const remindBeforeMs = {
@@ -134,7 +130,6 @@ export default function RemindersPage() {
   
   // Form fields
   const [formTitle, setFormTitle] = useState("");
-  const [formDateType, setFormDateType] = useState<ReminderDateType>("gregorian");
   const [formDate, setFormDate] = useState("");
   const [formTime, setFormTime] = useState("");
   const [formRemindBeforeValue, setFormRemindBeforeValue] = useState("30");
@@ -151,7 +146,6 @@ export default function RemindersPage() {
   // Reset form
   const resetForm = () => {
     setFormTitle("");
-    setFormDateType("gregorian");
     setFormDate("");
     setFormTime("");
     setFormRemindBeforeValue("30");
@@ -163,7 +157,6 @@ export default function RemindersPage() {
   const openEdit = (reminder: Reminder) => {
     setEditingReminder(reminder);
     setFormTitle(reminder.title);
-    setFormDateType(reminder.dateType);
     setFormDate(reminder.date);
     setFormTime(reminder.time);
     setFormRemindBeforeValue(reminder.remindBeforeValue.toString());
@@ -195,7 +188,7 @@ export default function RemindersPage() {
       const newReminder: Reminder = {
         id: generateId(),
         title: formTitle.trim(),
-        dateType: formDateType,
+        dateType: "gregorian",
         date: formDate,
         time: formTime,
         remindBeforeValue: parseInt(formRemindBeforeValue) || 30,
@@ -236,7 +229,7 @@ export default function RemindersPage() {
       const updatedReminder: Reminder = {
         ...editingReminder,
         title: formTitle.trim(),
-        dateType: formDateType,
+        dateType: "gregorian",
         date: formDate,
         time: formTime,
         remindBeforeValue: parseInt(formRemindBeforeValue) || 30,
@@ -280,7 +273,7 @@ export default function RemindersPage() {
   // Format date based on type
   const formatDate = (reminder: Reminder) => {
     const dateStr = new Date(reminder.date).toLocaleDateString("ar-SA");
-    return `${dateStr} (${reminder.dateType === "hijri" ? "هجري" : "ميلادي"})`;
+    return `${dateStr} (ميلادي)`;
   };
   
   return (
@@ -321,19 +314,6 @@ export default function RemindersPage() {
                     onChange={e => setFormTitle(e.target.value)} 
                     placeholder="مثال: موعد الطبيب"
                   />
-                </div>
-                
-                <div className="space-y-2">
-                  <Label>نوع التاريخ</Label>
-                  <Select value={formDateType} onValueChange={(v) => setFormDateType(v as ReminderDateType)}>
-                    <SelectTrigger className="h-11">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent className="rtl">
-                      <SelectItem value="gregorian">ميلادي</SelectItem>
-                      <SelectItem value="hijri">هجري</SelectItem>
-                    </SelectContent>
-                  </Select>
                 </div>
                 
                 <div className="grid grid-cols-2 gap-4">
@@ -549,17 +529,6 @@ export default function RemindersPage() {
               <div className="space-y-2">
                 <Label>عنوان التذكير *</Label>
                 <Input value={formTitle} onChange={e => setFormTitle(e.target.value)} />
-              </div>
-              
-              <div className="space-y-2">
-                <Label>نوع التاريخ</Label>
-                <Select value={formDateType} onValueChange={(v) => setFormDateType(v as ReminderDateType)}>
-                  <SelectTrigger className="h-11"><SelectValue /></SelectTrigger>
-                  <SelectContent className="rtl">
-                    <SelectItem value="gregorian">ميلادي</SelectItem>
-                    <SelectItem value="hijri">هجري</SelectItem>
-                  </SelectContent>
-                </Select>
               </div>
               
               <div className="grid grid-cols-2 gap-4">

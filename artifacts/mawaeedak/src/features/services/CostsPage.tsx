@@ -20,14 +20,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Progress } from "@/components/ui/progress";
 import { ConfirmDialog } from "@/components/layout/ConfirmDialog";
 import { useToast } from "@/hooks/use-toast";
 import { 
   Plus, Loader2, Calculator, Edit2, Trash2, Check, 
   Calendar, Coins, AlertCircle, ChevronDown, ChevronUp,
-  Share2, Download, CalendarPlus, X
+  Share2
 } from "lucide-react";
 
 export type CostItemStatus = "partial" | "fully_paid" | "scheduled";
@@ -242,11 +241,13 @@ export default function CostsPage() {
       return;
     }
     
+    const values = validateItemForm();
+    if (!values) return;
+
     setIsSaving(true);
     
     try {
-      const amount = parseFloat(formItemAmount) || 0;
-      const paidAmount = parseFloat(formItemPaidAmount) || 0;
+      const { amount, paidAmount } = values;
       
       const newItem: CostItem = {
         id: generateId(),
@@ -284,11 +285,13 @@ export default function CostsPage() {
       return;
     }
     
+    const values = validateItemForm();
+    if (!values) return;
+
     setIsSaving(true);
     
     try {
-      const amount = parseFloat(formItemAmount) || 0;
-      const paidAmount = parseFloat(formItemPaidAmount) || 0;
+      const { amount, paidAmount } = values;
       
       setProjects(prev => prev.map(p => 
         p.id === selectedProjectId 
@@ -391,6 +394,33 @@ export default function CostsPage() {
     setFormItemNotes(item.notes);
     setFormItemScheduledDate(item.scheduledDate || "");
     setIsEditItemOpen(true);
+  };
+
+  const validateItemForm = (): { amount: number; paidAmount: number } | null => {
+    const amount = Number(formItemAmount);
+    const paidAmount = formItemPaidAmount.trim() ? Number(formItemPaidAmount) : 0;
+
+    if (!Number.isFinite(amount) || amount <= 0) {
+      toast({ title: "خطأ", description: "المبلغ الإجمالي يجب أن يكون أكبر من صفر", variant: "destructive" });
+      return null;
+    }
+
+    if (!Number.isFinite(paidAmount) || paidAmount < 0) {
+      toast({ title: "خطأ", description: "المبلغ المدفوع يجب أن يكون رقماً صحيحاً لا يقل عن صفر", variant: "destructive" });
+      return null;
+    }
+
+    if (paidAmount > amount) {
+      toast({ title: "خطأ", description: "المبلغ المدفوع لا يمكن أن يتجاوز المبلغ الإجمالي", variant: "destructive" });
+      return null;
+    }
+
+    if (formItemScheduledDate && Number.isNaN(new Date(`${formItemScheduledDate}T00:00:00`).getTime())) {
+      toast({ title: "خطأ", description: "تاريخ الجدولة غير صالح", variant: "destructive" });
+      return null;
+    }
+
+    return { amount, paidAmount };
   };
   
   // Toggle expand project

@@ -7,6 +7,20 @@ import { CreateDailyMessageBody, UpdateDailyMessageBody } from "@workspace/api-z
 
 const router = Router();
 
+function riyadhTodayKey(): string {
+  return new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Asia/Riyadh",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(new Date());
+}
+
+function parseDateKeyUtc(dateKey: string): Date {
+  const [year, month, day] = dateKey.split("-").map(Number);
+  return new Date(Date.UTC(year, month - 1, day, 0, 0, 0, 0));
+}
+
 async function logAudit(actor: string | null, action: string, entityType: string, entityId: number | null, entityName: string, description: string) {
   await db.insert(auditLogsTable).values({ 
     action, 
@@ -25,12 +39,14 @@ router.get("/daily-messages", async (req, res) => {
 });
 
 router.get("/daily-messages/today", async (req, res) => {
-  const today = new Date().toISOString().split("T")[0];
+  const today = riyadhTodayKey();
   const rows = await db.select().from(dailyMessagesTable).where(eq(dailyMessagesTable.is_active, true)).orderBy(desc(dailyMessagesTable.created_at));
   const todayMsg = rows.find(r => r.display_date === today);
   if (todayMsg) return res.json(todayMsg);
   if (rows.length > 0) {
-    const dayOfYear = Math.floor((new Date().getTime() - new Date(new Date().getFullYear(), 0, 0).getTime()) / 86400000);
+    const todayDate = parseDateKeyUtc(today);
+    const startOfYear = Date.UTC(todayDate.getUTCFullYear(), 0, 0);
+    const dayOfYear = Math.floor((todayDate.getTime() - startOfYear) / 86400000);
     return res.json(rows[dayOfYear % rows.length]);
   }
   return res.status(404).json({ error: "لا توجد رسالة اليوم" });

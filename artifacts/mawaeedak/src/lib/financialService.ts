@@ -5,7 +5,7 @@
  */
 
 import { supabase, isSupabaseEnabled } from "./supabase";
-import { getRiyadhNow, calculateDaysRemaining } from "./riyadhTime";
+import { calculateDaysRemaining, getRiyadhTodayKey } from "./riyadhTime";
 
 export type FinancialProgram = 
   | "salary" 
@@ -113,7 +113,7 @@ export async function getOfficialFinancialDates(): Promise<FinancialDateRecord[]
  */
 export async function getUpcomingFinancialDates(limit = 5): Promise<FinancialDateRecord[]> {
   const all = await getOfficialFinancialDates();
-  const today = getRiyadhNow().toISOString().split("T")[0];
+  const today = getRiyadhTodayKey();
   return all.filter(d => d.occurrence_date_gregorian >= today).slice(0, limit);
 }
 

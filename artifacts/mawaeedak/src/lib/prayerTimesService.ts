@@ -7,7 +7,7 @@
  */
 
 import { supabase, isSupabaseEnabled } from "./supabase";
-import { getRiyadhNow, parseTimeToDateToday, formatTimeByPreference } from "./riyadhTime";
+import { getRiyadhNow, getRiyadhTodayKey, parseTimeToDateToday, formatTimeByPreference } from "./riyadhTime";
 
 export type PrayerTimes = {
   fajr: string;
@@ -77,11 +77,57 @@ export const SAUDI_CITIES: Record<string, string> = {
   bisha: "بيشة",
   rafha: "رفحة",
   hofuf: "الهفوف",
-  Buraydah: "بريدة",
-  Unaizah: "عنيزة",
-  Arar: "عرعر",
-  Sakaka: "سكاكا",
+  buraydah: "بريدة",
+  unaizah: "عنيزة",
+  arar: "عرعر",
+  sakaka: "سكاكا",
 };
+
+const CITY_KEY_ALIASES: Record<string, string> = {
+  alkobar: "khobar",
+  alkhobar: "khobar",
+  al_hasa: "alhasa",
+  alahsa: "alhasa",
+  ahsa: "alhasa",
+  "الأحساء": "alhasa",
+  "الاحساء": "alhasa",
+  "الخبر": "khobar",
+  "الرياض": "riyadh",
+  "جدة": "jeddah",
+  "مكة المكرمة": "makkah",
+  "مكة": "makkah",
+  "المدينة المنورة": "madinah",
+  "المدينة": "madinah",
+  "الدمام": "dammam",
+  "الظهران": "dhahran",
+  "الطائف": "taif",
+  "القطيف": "qatif",
+  "الجبيل": "jubail",
+  "نجران": "najran",
+  "جازان": "jazan",
+  "أبها": "abha",
+  "ابها": "abha",
+  "حائل": "hail",
+  "تبوك": "tabuk",
+  "بيشة": "bisha",
+  "رفحاء": "rafha",
+  "الهفوف": "hofuf",
+  "بريدة": "buraydah",
+  "عنيزة": "unaizah",
+  "عرعر": "arar",
+  "سكاكا": "sakaka",
+};
+
+export function normalizeCityKey(cityKey: string | null | undefined): string | null {
+  if (!cityKey) return null;
+
+  const trimmed = cityKey.trim();
+  if (!trimmed) return null;
+
+  const canonical = trimmed.toLowerCase().replace(/\s+/g, "_");
+  const alias = CITY_KEY_ALIASES[trimmed] || CITY_KEY_ALIASES[canonical] || canonical;
+  return SAUDI_CITIES[alias] ? alias : null;
+}
 
 /**
  * getPrayerTimesForCity — جلب مواقيت الصلاة للمدينة
@@ -89,12 +135,15 @@ export const SAUDI_CITIES: Record<string, string> = {
 export async function getPrayerTimesForCity(cityKey: string): Promise<PrayerTimeRecord | null> {
   if (!isSupabaseEnabled || !supabase) return null;
   
-  const today = getRiyadhNow().toISOString().split("T")[0];
+  const normalizedCityKey = normalizeCityKey(cityKey);
+  if (!normalizedCityKey) return null;
+
+  const today = getRiyadhTodayKey();
   
   const { data, error } = await supabase
     .from("official_prayer_times")
     .select("*")
-    .eq("city_key", cityKey)
+    .eq("city_key", normalizedCityKey)
     .eq("date_gregorian", today)
     .eq("is_confirmed", true)
     .single();
@@ -226,7 +275,8 @@ export function getAllCities(): { key: string; name: string }[] {
  * getCityName — الحصول على اسم المدينة من key
  */
 export function getCityName(cityKey: string): string {
-  return SAUDI_CITIES[cityKey] || cityKey;
+  const normalizedCityKey = normalizeCityKey(cityKey);
+  return normalizedCityKey ? SAUDI_CITIES[normalizedCityKey] : cityKey;
 }
 
 /**

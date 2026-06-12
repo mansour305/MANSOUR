@@ -38,6 +38,7 @@ import {
   gwUpdateAppointment,
   gwDeleteAppointment,
 } from "@/lib/dataGateway";
+import { getRiyadhTodayKey, parseRiyadhDateKey } from "@/lib/riyadhTime";
 import type { Appointment } from "@api-client";
 
 /* ─── helpers ─────────────────────────────────────────────── */
@@ -60,8 +61,6 @@ function arMonthYear(d: Date) {
   return d.toLocaleDateString("ar-SA-u-ca-gregory", { year: "numeric", month: "long" });
 }
 
-const today = new Date().toISOString().split("T")[0]!;
-
 /* ─── GoldDiamond ornament ─────────────────────────────────── */
 const Dia = () => (
   <svg viewBox="0 0 10 10" style={{ width: 7, height: 7 }} fill="hsl(var(--gold-muted))">
@@ -75,7 +74,8 @@ export default function CalendarPage() {
   const queryClient = useQueryClient();
 
   /* ── Month navigation ── */
-  const now = new Date();
+  const today = getRiyadhTodayKey();
+  const now = parseRiyadhDateKey(today);
   const [viewYear, setViewYear] = useState(now.getFullYear());
   const [viewMonth, setViewMonth] = useState(now.getMonth());
   const [selectedDate, setSelectedDate] = useState<string>(today);

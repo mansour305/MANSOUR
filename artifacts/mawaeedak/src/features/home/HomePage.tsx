@@ -9,6 +9,8 @@ import { formatGregorianDate, formatHijriDate, getDayName } from "@/lib/utils";
 import { useOfficialFinancialDates } from "@/hooks/useOfficialData";
 import { useMemo } from "react";
 import { useTimeFormat } from "@/hooks/useTimeFormat";
+import { normalizeFinancialEvents } from "@/lib/financialEngine";
+import { getRiyadhDateParts, getRiyadhTodayKey } from "@/lib/riyadhTime";
 
 const GOLD = "#C9A063";
 const BROWN = "#8A6B3D";
@@ -17,7 +19,7 @@ const PAPER = "#FAF7F2";
 const DEFAULT_DAILY_MESSAGE = "ابدأ يومك بنية طيبة، وتوكل على الله في كل خطوة.";
 
 function currentGreeting() {
-  const hour = new Date().getHours();
+  const hour = getRiyadhDateParts().hour;
   return hour < 12 ? "صباح الخير" : "مساء الخير";
 }
 
@@ -50,7 +52,7 @@ export default function HomePage() {
     countdown 
   } = usePrayerEngine();
   
-  const todayIso = new Date().toISOString().split("T")[0];
+  const todayIso = getRiyadhTodayKey();
   
   // Fetch daily messages and financial events
   const { data: dailyMessages } = useGatewayDailyMessages();
@@ -85,27 +87,11 @@ export default function HomePage() {
 
   // Compute financial items: prefer official records
   const finance = useMemo(() => {
-    // helper to compute days remaining
-    const computeDays = (dateStr: string) => {
-      const today = new Date();
-      const target = new Date(`${dateStr}T12:00:00`);
-      const diffMs = target.getTime() - today.getTime();
-      const days = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-      return days >= 0 ? days : 0;
-    };
-    if (Array.isArray(officialFinancial) && officialFinancial.length > 0) {
-      return officialFinancial.map((record: any) => {
-        const nextDate = record.occurrence_date_gregorian as string;
-        return {
-          id: record.id ?? record.event_key,
-          name: record.event_name_ar ?? record.event_key,
-          type: record.event_key ?? "",
-          next_date: nextDate,
-          days_remaining: computeDays(nextDate),
-        };
-      }).slice(0, 4);
-    }
-    return Array.isArray(gatewayFinancial) ? gatewayFinancial.slice(0, 4) : [];
+    return normalizeFinancialEvents({
+      official: officialFinancial,
+      gateway: gatewayFinancial,
+      limit: 4,
+    });
   }, [officialFinancial, gatewayFinancial]);
 
   // Get user's display name or empty if not logged in - no hardcoded names
@@ -248,6 +234,7 @@ export default function HomePage() {
                     <div className="min-w-0 flex-1 text-right">
                       <p className="truncate text-[15px] font-extrabold leading-tight" style={{ color: INK }}>{item.name}</p>
                       <p className="mt-1 text-[13px] font-bold" style={{ color: BROWN }}>{item.days_remaining} يوم</p>
+                      <p className="mt-1 text-[11px] font-bold" style={{ color: "#6F6557" }}>{item.statusLabel}</p>
                     </div>
                   </div>
                 );

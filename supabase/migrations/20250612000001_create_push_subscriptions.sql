@@ -4,7 +4,7 @@
 -- Security: RLS enabled, users can only manage their own subscriptions
 
 -- Create push_subscriptions table
-CREATE TABLE IF NOT EXISTS push_subscriptions (
+CREATE TABLE IF NOT EXISTS public.push_subscriptions (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
     endpoint TEXT NOT NULL,
@@ -17,11 +17,12 @@ CREATE TABLE IF NOT EXISTS push_subscriptions (
 );
 
 -- Create index for user lookups
-CREATE INDEX IF NOT EXISTS idx_push_subscriptions_user_id ON push_subscriptions(user_id);
-CREATE INDEX IF NOT EXISTS idx_push_subscriptions_endpoint ON push_subscriptions(endpoint);
+CREATE INDEX IF NOT EXISTS idx_push_subscriptions_user_id ON public.push_subscriptions(user_id);
+CREATE INDEX IF NOT EXISTS idx_push_subscriptions_endpoint ON public.push_subscriptions(endpoint);
 
 -- Enable RLS
-ALTER TABLE push_subscriptions ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.push_subscriptions ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.push_subscriptions FORCE ROW LEVEL SECURITY;
 
 -- RLS Policies:
 -- 1. Users can INSERT their own subscriptions
@@ -40,7 +41,8 @@ CREATE POLICY "Users can select their own push subscriptions"
 CREATE POLICY "Users can update their own push subscriptions"
     ON push_subscriptions
     FOR UPDATE
-    USING (auth.uid() = user_id);
+    USING (auth.uid() = user_id)
+    WITH CHECK (auth.uid() = user_id);
 
 -- 4. Users can DELETE their own subscriptions
 CREATE POLICY "Users can delete their own push subscriptions"
@@ -48,15 +50,11 @@ CREATE POLICY "Users can delete their own push subscriptions"
     FOR DELETE
     USING (auth.uid() = user_id);
 
--- 5. Admins can view all subscriptions (for sending notifications)
--- This is handled via service_role or a specific admin function
--- Not exposing full admin access via RLS for security
-
 -- Add comment for documentation
-COMMENT ON TABLE push_subscriptions IS 'Web Push notification subscriptions for users. Stores VAPID subscription data for sending push notifications when app is closed.';
-COMMENT ON COLUMN push_subscriptions.endpoint IS 'Push subscription endpoint URL from browser';
-COMMENT ON COLUMN push_subscriptions.p256dh IS 'Public key for push encryption (p256dh)';
-COMMENT ON COLUMN push_subscriptions.auth IS 'Authentication secret for push encryption';
+COMMENT ON TABLE public.push_subscriptions IS 'Web Push notification subscriptions for users. Stores VAPID subscription data for sending push notifications when app is closed.';
+COMMENT ON COLUMN public.push_subscriptions.endpoint IS 'Push subscription endpoint URL from browser';
+COMMENT ON COLUMN public.push_subscriptions.p256dh IS 'Public key for push encryption (p256dh)';
+COMMENT ON COLUMN public.push_subscriptions.auth IS 'Authentication secret for push encryption';
 
 -- Function to clean up old subscriptions (optional maintenance)
 CREATE OR REPLACE FUNCTION cleanup_old_push_subscriptions(days_old INTEGER DEFAULT 30)
@@ -64,18 +62,18 @@ RETURNS INTEGER AS $$
 DECLARE
     deleted_count INTEGER;
 BEGIN
-    DELETE FROM push_subscriptions
+    DELETE FROM public.push_subscriptions
     WHERE created_at < NOW() - (days_old || ' days')::INTERVAL
     AND endpoint NOT IN (
-        SELECT DISTINCT endpoint FROM push_subscriptions
+        SELECT DISTINCT endpoint FROM public.push_subscriptions
         WHERE created_at >= NOW() - (days_old || ' days')::INTERVAL
     );
     
     GET DIAGNOSTICS deleted_count = ROW_COUNT;
     RETURN deleted_count;
 END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+$$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = public;
 
--- Only admin should be able to run cleanup
--- Comment out until admin role is properly defined
--- GRANT EXECUTE ON FUNCTION cleanup_old_push_subscriptions TO authenticated;
+REVOKE ALL ON FUNCTION cleanup_old_push_subscriptions(INTEGER) FROM PUBLIC;
+REVOKE EXECUTE ON FUNCTION cleanup_old_push_subscriptions(INTEGER) FROM anon;
+REVOKE EXECUTE ON FUNCTION cleanup_old_push_subscriptions(INTEGER) FROM authenticated;

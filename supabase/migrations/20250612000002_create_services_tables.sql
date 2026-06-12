@@ -23,7 +23,7 @@ BEGIN
     
     RETURN user_role IN ('admin', 'super_admin', 'owner');
 END;
-$$ LANGUAGE plpgsql SECURITY DEFINER STABLE;
+$$ LANGUAGE plpgsql SECURITY DEFINER STABLE SET search_path = public;
 
 COMMENT ON FUNCTION public.has_admin_role() IS 
 'Check if the authenticated user has an admin role (admin, super_admin, or owner)';
@@ -50,11 +50,13 @@ CREATE INDEX IF NOT EXISTS idx_goals_user_id ON public.goals(user_id);
 CREATE INDEX IF NOT EXISTS idx_goals_completed ON public.goals(completed_at) WHERE completed_at IS NULL;
 
 ALTER TABLE public.goals ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.goals FORCE ROW LEVEL SECURITY;
 
 -- Users can only manage their own goals
 CREATE POLICY "Users manage own goals"
     ON public.goals FOR ALL
-    USING (auth.uid() = user_id);
+    USING (auth.uid() = user_id)
+    WITH CHECK (auth.uid() = user_id);
 
 COMMENT ON TABLE public.goals IS 'User goals (financial or non-financial) for tracking progress';
 
@@ -73,11 +75,13 @@ CREATE TABLE IF NOT EXISTS public.cost_projects (
 CREATE INDEX IF NOT EXISTS idx_cost_projects_user_id ON public.cost_projects(user_id);
 
 ALTER TABLE public.cost_projects ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.cost_projects FORCE ROW LEVEL SECURITY;
 
 -- Users can only manage their own cost projects
 CREATE POLICY "Users manage own cost projects"
     ON public.cost_projects FOR ALL
-    USING (auth.uid() = user_id);
+    USING (auth.uid() = user_id)
+    WITH CHECK (auth.uid() = user_id);
 
 COMMENT ON TABLE public.cost_projects IS 'Cost tracking projects (e.g., wedding, car repair, travel)';
 
@@ -105,11 +109,29 @@ CREATE INDEX IF NOT EXISTS idx_cost_items_project_id ON public.cost_items(projec
 CREATE INDEX IF NOT EXISTS idx_cost_items_user_id ON public.cost_items(user_id);
 
 ALTER TABLE public.cost_items ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.cost_items FORCE ROW LEVEL SECURITY;
 
 -- Users can only manage their own cost items
 CREATE POLICY "Users manage own cost items"
     ON public.cost_items FOR ALL
-    USING (auth.uid() = user_id);
+    USING (
+        auth.uid() = user_id
+        AND EXISTS (
+            SELECT 1
+            FROM public.cost_projects p
+            WHERE p.id = project_id
+            AND p.user_id = auth.uid()
+        )
+    )
+    WITH CHECK (
+        auth.uid() = user_id
+        AND EXISTS (
+            SELECT 1
+            FROM public.cost_projects p
+            WHERE p.id = project_id
+            AND p.user_id = auth.uid()
+        )
+    );
 
 COMMENT ON TABLE public.cost_items IS 'Individual items within a cost project';
 
@@ -121,7 +143,7 @@ CREATE TABLE IF NOT EXISTS public.reminders (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
     title TEXT NOT NULL,
-    date_type TEXT NOT NULL DEFAULT 'gregorian' CHECK (date_type IN ('hijri', 'gregorian')),
+    date_type TEXT NOT NULL DEFAULT 'gregorian' CHECK (date_type IN ('gregorian')),
     reminder_date DATE NOT NULL,
     reminder_time TIME,
     remind_before_value INTEGER DEFAULT 0 CHECK (remind_before_value >= 0),
@@ -139,13 +161,15 @@ CREATE INDEX IF NOT EXISTS idx_reminders_active ON public.reminders(is_active) W
 CREATE INDEX IF NOT EXISTS idx_reminders_scheduled ON public.reminders(scheduled_at) WHERE scheduled_at IS NOT NULL;
 
 ALTER TABLE public.reminders ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.reminders FORCE ROW LEVEL SECURITY;
 
 -- Users can only manage their own reminders
 CREATE POLICY "Users manage own reminders"
     ON public.reminders FOR ALL
-    USING (auth.uid() = user_id);
+    USING (auth.uid() = user_id)
+    WITH CHECK (auth.uid() = user_id);
 
-COMMENT ON TABLE public.reminders IS 'User reminders with Hijri/Gregorian date support';
+COMMENT ON TABLE public.reminders IS 'User reminders with Gregorian date support only until a verified Hijri converter is added';
 
 -- =============================================================================
 -- SECTION 5: SYSTEM HEALTH LOGS TABLE
@@ -168,6 +192,7 @@ CREATE INDEX IF NOT EXISTS idx_system_health_status ON public.system_health_logs
 CREATE INDEX IF NOT EXISTS idx_system_health_detected ON public.system_health_logs(detected_at);
 
 ALTER TABLE public.system_health_logs ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.system_health_logs FORCE ROW LEVEL SECURITY;
 
 -- Admin-only read (for admin dashboard display)
 CREATE POLICY "Admins can view system health logs"
@@ -182,7 +207,8 @@ CREATE POLICY "Admins can insert system health logs"
 -- Only admins can update/delete health logs
 CREATE POLICY "Admins can manage system health logs"
     ON public.system_health_logs FOR UPDATE
-    USING (public.has_admin_role());
+    USING (public.has_admin_role())
+    WITH CHECK (public.has_admin_role());
 
 CREATE POLICY "Admins can delete system health logs"
     ON public.system_health_logs FOR DELETE
@@ -210,6 +236,7 @@ CREATE INDEX IF NOT EXISTS idx_app_versions_version ON public.app_versions(versi
 CREATE INDEX IF NOT EXISTS idx_app_versions_published ON public.app_versions(published_at DESC);
 
 ALTER TABLE public.app_versions ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.app_versions FORCE ROW LEVEL SECURITY;
 
 -- Public can read app versions (for PWA update check)
 CREATE POLICY "Anyone can view app versions"
@@ -219,7 +246,8 @@ CREATE POLICY "Anyone can view app versions"
 -- Only admins can insert/update app versions
 CREATE POLICY "Admins can manage app versions"
     ON public.app_versions FOR ALL
-    USING (public.has_admin_role());
+    USING (public.has_admin_role())
+    WITH CHECK (public.has_admin_role());
 
 COMMENT ON TABLE public.app_versions IS 'App version registry for update notifications';
 
@@ -246,6 +274,7 @@ CREATE INDEX IF NOT EXISTS idx_feature_health_status ON public.feature_health_lo
 CREATE INDEX IF NOT EXISTS idx_feature_health_detected ON public.feature_health_logs(detected_at);
 
 ALTER TABLE public.feature_health_logs ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.feature_health_logs FORCE ROW LEVEL SECURITY;
 
 -- Admin-only read (for admin dashboard)
 CREATE POLICY "Admins can view feature health logs"
@@ -260,7 +289,8 @@ CREATE POLICY "Admins can insert feature health logs"
 -- Only admins can update/delete health logs
 CREATE POLICY "Admins can manage feature health logs"
     ON public.feature_health_logs FOR UPDATE
-    USING (public.has_admin_role());
+    USING (public.has_admin_role())
+    WITH CHECK (public.has_admin_role());
 
 CREATE POLICY "Admins can delete feature health logs"
     ON public.feature_health_logs FOR DELETE

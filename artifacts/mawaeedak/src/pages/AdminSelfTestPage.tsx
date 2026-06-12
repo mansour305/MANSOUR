@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { supabase, isSupabaseEnabled } from "@/lib/supabase";
 
-type TestResult = "pending" | "running" | "pass" | "fail" | "skip";
+type TestResult = "queued" | "running" | "pass" | "fail" | "skip";
 
 interface Test {
   id: string;
@@ -11,20 +11,20 @@ interface Test {
 }
 
 const INIT: Test[] = [
-  { id: "supabase_client", label: "Supabase client ready", result: "pending", detail: "" },
-  { id: "invalid_login", label: "Invalid login returns error within 8s", result: "pending", detail: "" },
-  { id: "localstorage_clear", label: "localStorage clear works", result: "pending", detail: "" },
-  { id: "sessionstorage_clear", label: "sessionStorage clear works", result: "pending", detail: "" },
-  { id: "form_submit_event", label: "Form submit event fires (dispatchEvent)", result: "pending", detail: "" },
-  { id: "reset_button_event", label: "Reset button click event fires (dispatchEvent)", result: "pending", detail: "" },
-  { id: "url_reset", label: "/admin?reset=1 triggers auto-reset (console log check)", result: "pending", detail: "" },
-  { id: "no_infinite_loading", label: "No infinite loading state (AdminLayout resolves in <4s)", result: "pending", detail: "" },
-  { id: "api_healthz", label: "API /api/healthz returns 200", result: "pending", detail: "" },
+  { id: "supabase_client", label: "Supabase client ready", result: "queued", detail: "" },
+  { id: "invalid_login", label: "Invalid login returns error within 8s", result: "queued", detail: "" },
+  { id: "localstorage_clear", label: "localStorage clear works", result: "queued", detail: "" },
+  { id: "sessionstorage_clear", label: "sessionStorage clear works", result: "queued", detail: "" },
+  { id: "form_submit_event", label: "Form submit event fires (dispatchEvent)", result: "queued", detail: "" },
+  { id: "reset_button_event", label: "Reset button click event fires (dispatchEvent)", result: "queued", detail: "" },
+  { id: "url_reset", label: "/admin?reset=1 triggers auto-reset (console log check)", result: "queued", detail: "" },
+  { id: "no_infinite_loading", label: "No infinite loading state (AdminLayout resolves in <4s)", result: "queued", detail: "" },
+  { id: "api_healthz", label: "API /api/healthz returns 200", result: "queued", detail: "" },
 ];
 
 function badge(result: TestResult) {
   const map: Record<TestResult, { label: string; bg: string; color: string }> = {
-    pending: { label: "PENDING", bg: "hsl(38 30% 90%)", color: "hsl(38 20% 50%)" },
+    queued: { label: "QUEUED", bg: "hsl(38 30% 90%)", color: "hsl(38 20% 50%)" },
     running: { label: "RUNNING…", bg: "hsl(200 50% 88%)", color: "hsl(200 60% 35%)" },
     pass:    { label: "PASS ✓", bg: "hsl(120 45% 88%)", color: "hsl(120 55% 28%)" },
     fail:    { label: "FAIL ✗", bg: "hsl(10 55% 88%)", color: "hsl(10 55% 35%)" },
@@ -63,7 +63,7 @@ export default function AdminSelfTestPage() {
     if (running) return;
     setRunning(true);
     setDone(false);
-    setTests(INIT.map(t => ({ ...t, result: "pending", detail: "" })));
+    setTests(INIT.map(t => ({ ...t, result: "queued", detail: "" })));
 
     // ── T1: Supabase client ready ─────────────────────────────────────────
     update("supabase_client", "running", "");

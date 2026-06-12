@@ -5,6 +5,7 @@ import { useStore } from "@/hooks/useStore";
 import { formatHijriDate, formatGregorianDate, getDayName } from "@/lib/utils";
 import { Copy, Share2, Download } from "lucide-react";
 import { showTopNotification } from "@/components/layout/TopNotificationBanner";
+import { getRiyadhTodayKey } from "@/lib/riyadhTime";
 
 // Saudi-based daily messages pool
 const DAILY_MESSAGES = [
@@ -115,7 +116,7 @@ export default function DailyCardPage() {
       });
       
       const link = document.createElement("a");
-      link.download = `mawaeedak-card-${new Date().toISOString().split("T")[0]}.png`;
+      link.download = `mawaeedak-card-${getRiyadhTodayKey()}.png`;
       link.href = canvas.toDataURL("image/png");
       link.click();
       

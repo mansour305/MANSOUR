@@ -20,6 +20,12 @@ export default function SplashScreen({ onComplete }: SplashScreenProps = {}) {
         onComplete();
         return;
       }
+
+      try {
+        sessionStorage.setItem("mawaeedak_splash_shown", "true");
+      } catch {
+        // Session storage is best effort.
+      }
       
       // Default behavior: navigate based on onboarding status
       if (hasOnboarded || user?.onboardingComplete) {

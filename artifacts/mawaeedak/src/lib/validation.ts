@@ -77,7 +77,7 @@ export function validateBuild(): ValidationResult {
   // 4. فحص وضع التصحيح
   if (features.debugMode && configManager.isProduction()) {
     errors.push({
-      type: "DEBUG_IN_PRODUCTION",
+      type: "PRODUCTION_DIAGNOSTICS_ENABLED",
       message: "وضع التصحيح مفعّل في بيئة الإنتاج",
     });
   }

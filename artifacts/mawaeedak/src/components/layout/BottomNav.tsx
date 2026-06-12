@@ -5,10 +5,10 @@ const GOLD = "#C9A063";
 const BROWN = "#8A6B3D";
 
 const tabs = [
-  { href: "/", label: "الرئيسية", icon: Home, match: (path: string) => path === "/" },
-  { href: "/salaries", label: "الرواتب", icon: Wallet, match: (path: string) => path.startsWith("/salaries") || path.startsWith("/finance") },
-  { href: "/services", label: "الخدمات", icon: Grid2X2, match: (path: string) => path.startsWith("/services") || path.startsWith("/centers") },
   { href: "/calendar", label: "التقويم", icon: CalendarDays, match: (path: string) => path.startsWith("/calendar") },
+  { href: "/salaries", label: "الرواتب", icon: Wallet, match: (path: string) => path.startsWith("/salaries") || path.startsWith("/finance") },
+  { href: "/", label: "الرئيسية", icon: Home, match: (path: string) => path === "/" },
+  { href: "/services", label: "الخدمات", icon: Grid2X2, match: (path: string) => path.startsWith("/services") || path.startsWith("/centers") },
   { href: "/more", label: "المزيد", icon: MoreHorizontal, match: (path: string) => path.startsWith("/more") || path.startsWith("/account") },
 ];
 

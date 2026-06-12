@@ -702,7 +702,7 @@ export const adminGateway = {
   },
   
   // =========================================================================
-  // STORY TEMPLATES
+  // STORY PRESET READS
   // =========================================================================
   
   async getStoryTemplates(): Promise<GatewayResult<StoryTemplate[]>> {

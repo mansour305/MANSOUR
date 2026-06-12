@@ -6,6 +6,8 @@ import { useGatewayFinancialCountdown } from "@/hooks/useGatewayData";
 import { formatHijriDate, formatGregorianDate, getDayName } from "@/lib/utils";
 import { useTimeFormat } from "@/hooks/useTimeFormat";
 import dailyCardBg from "@assets/daily-card.png";
+import { getRiyadhDateParts, getRiyadhTodayKey } from "@/lib/riyadhTime";
+import { getCityName, normalizeCityKey } from "@/lib/prayerTimesService";
 
 const GOLD = "#C9A063";
 const BROWN = "#8A6B3D";
@@ -119,9 +121,9 @@ function getNextPrayer(prayers: Record<string, string>, formatTime: (t: string) 
 export default function DailyCardPreview({ message }: DailyCardPreviewProps) {
   const { user } = useStore();
   const { formatTime } = useTimeFormat();
-  const todayIso = new Date().toISOString().split("T")[0];
-  const cityName = user.city || "الرياض";
-  const cityKey = cityName.trim().toLowerCase().replace(/\s+/g, "_");
+  const todayIso = getRiyadhTodayKey();
+  const cityKey = normalizeCityKey(user.city) ?? "riyadh";
+  const cityName = getCityName(cityKey);
 
   const { data: officialPrayer } = useOfficialPrayerTimes(cityKey, todayIso);
   const { data: officialFinancial } = useOfficialFinancialDates();
@@ -130,7 +132,7 @@ export default function DailyCardPreview({ message }: DailyCardPreviewProps) {
 
   // Greeting based on time
   const greeting = useMemo(() => {
-    const saudiHour = new Date(new Date().toLocaleString("en-US", { timeZone: "Asia/Riyadh" })).getHours();
+    const saudiHour = getRiyadhDateParts().hour;
     return saudiHour < 12 ? "صباح الخير" : "مساء الخير";
   }, []);
 

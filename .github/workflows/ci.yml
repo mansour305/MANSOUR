@@ -35,11 +35,26 @@ jobs:
         with:
           node-version: 22
 
+      - name: Enable Corepack
+        run: corepack enable
+
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+
+      - name: Launch gate checks
+        run: pnpm run check:launch-gate
 
       - name: Typecheck
         run: pnpm run typecheck
 
       - name: Build
         run: pnpm run build
+
+      - name: Lint
+        run: pnpm -r --if-present run lint
+
+      - name: Test
+        run: pnpm -r --if-present run test
+
+      - name: Smoke
+        run: pnpm -r --if-present run smoke

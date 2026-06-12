@@ -62,9 +62,26 @@ function resolveCity(raw: string): string {
   return ARABIC_TO_KEY[trimmed] ?? trimmed.toLowerCase();
 }
 
+function riyadhDateParts(): { dateKey: string; hour: number; minute: number } {
+  const parts = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Asia/Riyadh",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+    hourCycle: "h23",
+  }).formatToParts(new Date());
+  const read = (type: Intl.DateTimeFormatPartTypes) => Number(parts.find((part) => part.type === type)?.value ?? 0);
+  const dateKey = `${String(read("year")).padStart(4, "0")}-${String(read("month")).padStart(2, "0")}-${String(read("day")).padStart(2, "0")}`;
+  const hour = read("hour");
+  return { dateKey, hour: hour === 24 ? 0 : hour, minute: read("minute") };
+}
+
 function getNextPrayer(times: { fajr: string; sunrise: string; dhuhr: string; asr: string; maghrib: string; isha: string }): { next_prayer: string; time_remaining: string } {
-  const now = new Date();
-  const currentTime = now.getHours() * 60 + now.getMinutes();
+  const now = riyadhDateParts();
+  const currentTime = now.hour * 60 + now.minute;
   const prayers = [
     { name: "الفجر", time: times.fajr },
     { name: "الشروق", time: times.sunrise },
@@ -101,7 +118,7 @@ router.get("/prayer-times/cities", (_req, res) => {
 router.get("/prayer-times", async (req, res) => {
   const rawCity = (req.query.city as string) ?? "riyadh";
   const city = resolveCity(rawCity);
-  const today = new Date().toISOString().split("T")[0];
+  const today = riyadhDateParts().dateKey;
   
   // Query official prayer times for today from DB
   const dbRows = await db.select().from(prayerTimesTable).where(
@@ -113,7 +130,7 @@ router.get("/prayer-times", async (req, res) => {
   
   const dbRow = dbRows[0];
   
-  // No hardcoded fallback - return error if no official data
+  // No built-in fallback values: return error if no official data.
   if (!dbRow) {
     return res.status(404).json({
       error: "لا تتوفر مواقيت الصلاة الرسمية لهذا اليوم والمدينة",

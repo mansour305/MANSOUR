@@ -8,6 +8,15 @@ import { auditLogsTable } from "@workspace/db";
 
 const router = Router();
 
+function riyadhTodayKey(): string {
+  return new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Asia/Riyadh",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(new Date());
+}
+
 async function logAudit(actor: string | null, action: string, entityType: string, entityId: number | null, entityName: string, description: string) {
   await db.insert(auditLogsTable).values({ 
     action, 
@@ -32,7 +41,7 @@ router.get("/appointments", async (req, res) => {
 
 router.get("/appointments/upcoming", async (req, res) => {
   const limit = parseInt((req.query.limit as string) ?? "10");
-  const today = new Date().toISOString().split("T")[0];
+  const today = riyadhTodayKey();
   // Only return upcoming public appointments
   const rows = await db.select().from(appointmentsTable)
     .where(and(eq(appointmentsTable.is_public, true), gte(appointmentsTable.date, today)))

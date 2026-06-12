@@ -20,8 +20,8 @@ import {
   type AlAdhanTimings,
   type PrayerCacheEntry,
 } from "@/lib/aladhanService";
-import { getRiyadhNow, parseTimeToDateToday } from "@/lib/riyadhTime";
-import { getCityName } from "@/lib/prayerTimesService";
+import { getRiyadhNow, getRiyadhTodayKey, parseTimeToDateToday } from "@/lib/riyadhTime";
+import { getCityName, normalizeCityKey } from "@/lib/prayerTimesService";
 
 export type PrayerTimes = {
   fajr: string;
@@ -125,9 +125,15 @@ function computeNextPrayer(timings: PrayerTimes): NextPrayer | null {
  */
 export function usePrayerEngine(): UsePrayerEngineResult {
   const { prefs, requestGPS, setManual } = useLocationPrefs();
-  const cityKey = prefs.city;
-  const cityName = getCityName(cityKey);
-  const todayIso = getRiyadhNow().toISOString().split("T")[0];
+  const cityKey = normalizeCityKey(prefs.city) ?? "";
+  const cityName = cityKey ? getCityName(cityKey) : prefs.city;
+  const todayIso = getRiyadhTodayKey();
+  const coords = useMemo(() => {
+    if (typeof prefs.lat === "number" && typeof prefs.lng === "number") {
+      return { lat: prefs.lat, lng: prefs.lng };
+    }
+    return null;
+  }, [prefs.lat, prefs.lng]);
 
   // Local state for AlAdhan fallback
   const [aladhanTimings, setAladhanTimings] = useState<AlAdhanTimings | null>(null);
@@ -149,7 +155,12 @@ export function usePrayerEngine(): UsePrayerEngineResult {
   // Fetch AlAdhan if official not available
   const fetchAlAdhan = useCallback(async () => {
     // Check cache first
-    const cached = getCachedPrayerTimes(cityKey);
+    if (!cityKey && !coords) {
+      setAladhanError("اختر مدينة مدعومة أو فعّل الموقع لتحميل مواقيت الصلاة.");
+      return;
+    }
+
+    const cached = getCachedPrayerTimes(cityKey, todayIso, coords);
     if (cached) {
       setAladhanTimings(cached.timings);
       return;
@@ -159,7 +170,7 @@ export function usePrayerEngine(): UsePrayerEngineResult {
     setAladhanError(null);
 
     try {
-      const timings = await fetchAlAdhanPrayerTimes(cityKey, todayIso);
+      const timings = await fetchAlAdhanPrayerTimes(cityKey, todayIso, coords);
       if (timings) {
         setAladhanTimings(timings);
 
@@ -167,8 +178,8 @@ export function usePrayerEngine(): UsePrayerEngineResult {
         const cacheEntry: PrayerCacheEntry = {
           date: todayIso,
           cityKey,
-          lat: prefs.lat,
-          lng: prefs.lng,
+          lat: coords?.lat ?? null,
+          lng: coords?.lng ?? null,
           timings,
           fetchedAt: new Date().toISOString(),
           sourceType: "aladhan",
@@ -183,7 +194,7 @@ export function usePrayerEngine(): UsePrayerEngineResult {
     } finally {
       setAladhanLoading(false);
     }
-  }, [cityKey, todayIso, prefs.lat, prefs.lng]);
+  }, [cityKey, todayIso, coords]);
 
   // Determine final timings
   const timings = useMemo<PrayerTimes | null>(() => {

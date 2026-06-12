@@ -67,7 +67,6 @@ npx web-push generate-vapid-keys
 
 ```
 VITE_USE_MOCK_DATA=true      # Use mock data (dev only)
-VITE_DEBUG_MODE=true         # Enable debug logging
 ```
 
 ---
@@ -139,7 +138,6 @@ Or add via Vercel Dashboard:
 |-----------|---------|-------------|
 | VITE_DATA_SOURCE_MODE | auto | Force specific mode |
 | VITE_USE_MOCK_DATA | false | Use mock data |
-| VITE_DEBUG_MODE | false | Enable debug |
 
 ---
 

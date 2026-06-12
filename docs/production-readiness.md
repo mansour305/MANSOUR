@@ -54,8 +54,8 @@ The Mawaeedak Web/PWA application has been comprehensively hardened for producti
 - `artifacts/mawaeedak/src/lib/aladhanService.ts`
 
 - Official prayer times from Supabase used first
-- AlAdhan fallback with method=4 (Umm Al-Qura University, Makkah)
-- No method=3 used
+- AlAdhan fallback uses Umm Al-Qura calculation method only
+- Legacy AlAdhan calculation methods are blocked by static checks
 - GPS coordinates used when available
 - City coordinates only when GPS unavailable
 - 6-hour cache with Riyadh date validation
@@ -229,20 +229,20 @@ npx web-push generate-vapid-keys
 
 | Command | Status |
 |---------|--------|
-| `pnpm install --frozen-lockfile` | ✅ PASS |
-| `pnpm run typecheck` | ✅ PASS |
-| `pnpm run build` | ✅ PASS |
-| CI/build-and-test | ✅ PASS |
-| CI/Phase 4 Gate | ✅ PASS |
+| `pnpm install --frozen-lockfile` | Run during PR verification |
+| `pnpm run typecheck` | Run during PR verification |
+| `pnpm run build` | Run during PR verification |
+| CI/build-and-test | GitHub Actions result required on PR |
+| CI/Phase 4 Gate | GitHub Actions result required on PR |
 
 ### Security Checks
 | Check | Status |
 |-------|--------|
-| No package-lock.json | ✅ PASS |
+| NPM lockfile absent | Static check enforced |
 | No real VAPID private keys | ✅ PASS |
 | No Supabase service role keys | ✅ PASS |
-| No hardcoded prayer times | ✅ PASS |
-| No AlAdhan method=3 | ✅ PASS |
+| No built-in prayer time literals | Static check enforced |
+| Legacy AlAdhan calculation method absent | Static check enforced |
 
 ---
 
@@ -282,7 +282,7 @@ The codebase is production-ready in terms of:
 - ✅ Mobile-first design (360px-430px)
 - ✅ PWA manifest and service worker
 - ✅ Supabase schema with strict RLS (has_admin_role helper)
-- ✅ Prayer engine with AlAdhan method=4 (no method=3)
+- ✅ Prayer engine uses the approved Umm Al-Qura calculation method only
 - ✅ No secrets committed
 - ✅ Production data mode safety (error mode)
 - ✅ Splash first-entry behavior

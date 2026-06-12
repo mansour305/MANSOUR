@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
-import { Shield, Check, Loader2, Edit2 } from "lucide-react";
+import { Shield, Edit2 } from "lucide-react";
 
 interface Role {
   id: string;
@@ -78,10 +78,9 @@ const ROLES: Role[] = [
 
 export default function AdminPermissions() {
   const { toast } = useToast();
-  const [roles, setRoles] = useState<Role[]>(ROLES);
+  const roles = ROLES;
   const [editRole, setEditRole] = useState<Role | null>(null);
   const [editPerms, setEditPerms] = useState<string[]>([]);
-  const [saving, setSaving] = useState(false);
 
   const openEdit = (role: Role) => {
     setEditRole(role);
@@ -94,13 +93,11 @@ export default function AdminPermissions() {
 
   const handleSave = () => {
     if (!editRole) return;
-    setSaving(true);
-    setTimeout(() => {
-      setRoles(prev => prev.map(r => r.id === editRole!.id ? { ...r, permissions: editPerms } : r));
-      toast({ title: "تم حفظ الصلاحيات" });
-      setEditRole(null);
-      setSaving(false);
-    }, 500);
+    toast({
+      title: "تعديل الصلاحيات غير متاح من المتصفح",
+      description: "إدارة الصلاحيات تتطلب endpoint إداري server-side وسياسات RLS مطبّقة.",
+      variant: "destructive",
+    });
   };
 
   const getPermGroups = () => {
@@ -175,11 +172,15 @@ export default function AdminPermissions() {
                   id={perm}
                   checked={editPerms.includes(perm)}
                   onCheckedChange={() => togglePerm(perm)}
+                  disabled
                 />
               </div>
             ))}
-            <Button className="w-full mt-4" onClick={handleSave} disabled={saving}>
-              {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <><Check className="w-4 h-4 ml-1" /> حفظ الصلاحيات</>}
+            <p className="rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-800">
+              إدارة الصلاحيات للقراءة فقط داخل المتصفح. أي تعديل يتطلب endpoint إداري server-side.
+            </p>
+            <Button className="w-full mt-4" onClick={handleSave} disabled>
+              حفظ الصلاحيات
             </Button>
           </div>
         </DialogContent>

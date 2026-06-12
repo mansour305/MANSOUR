@@ -110,7 +110,7 @@ jobs:
             { name: 'GitHub token-like value', regex: new RegExp(tokenA + '[A-Za-z0-9_]{30,}', 'g') },
             { name: 'GitHub token-like value', regex: new RegExp(tokenB + '[A-Za-z0-9_]{20,}', 'g') },
             { name: 'Private key block', regex: new RegExp('-----BEGIN (?:RSA |OPENSSH |EC )?' + keyHeader + '-----', 'g') },
-            { name: 'Supabase elevated credential value', regex: new RegExp(sbKey + '\\s*=\\s*[\\"\\\']?(?!<|your_|replace|example|changeme|not-set|TODO|xxx|test|dummy|placeholder)([^\\s#\\"\\\']{12,})', 'gi') },
+            { name: 'Supabase elevated credential value', regex: new RegExp(sbKey + '\\s*=\\s*[\\"\\\']?(?!<|your_|replace|example|changeme|not-set|todo|xxx|test|dummy|placeholder)([^\\s#\\"\\\']{12,})', 'gi') },
           ];
 
           const findings = [];

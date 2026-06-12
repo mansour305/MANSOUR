@@ -4,6 +4,8 @@
   "license": "MIT",
   "scripts": {
     "build": "pnpm run typecheck && pnpm -r --if-present run build",
+    "check:launch-gate": "node scripts/launch-gate-checks.cjs && node scripts/route-smoke.cjs",
+    "smoke": "pnpm run check:launch-gate",
     "typecheck:libs": "tsc --build",
     "typecheck": "pnpm run typecheck:libs && pnpm -r --filter \"./artifacts/**\" --if-present run typecheck"
   },

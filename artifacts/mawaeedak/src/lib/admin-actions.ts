@@ -14,6 +14,12 @@
 
 import { adminGateway, type AdminUser, type FinancialEvent, type OfficialPrayerTime, type OfficialFinancialDate, type DailyMessage, type StoryTemplate, type Theme, type AdminNotification, type NewsItem, type JobItem, type ReportLog } from "./admin-gateway";
 import { showTopNotification } from "@/components/layout/TopNotificationBanner";
+import {
+  updateComplaintStatus as updateComplaintStatusInSupabase,
+  deleteComplaint as deleteComplaintInSupabase,
+  type ComplaintStatus,
+} from "./complaintService";
+import { getRiyadhTodayKey } from "./riyadhTime";
 
 // Generic result type
 export type ActionResult<T = void> = {
@@ -147,7 +153,7 @@ export async function setTodayMessage(messageId: string): Promise<ActionResult<D
 }
 
 // ============================================
-// STORY TEMPLATES ACTIONS
+// STORY PRESET ACTIONS
 // ============================================
 
 export async function fetchStoryTemplates(): Promise<ActionResult<StoryTemplate[]>> {
@@ -219,18 +225,17 @@ export async function fetchComplaints(): Promise<ActionResult<any[]>> {
 }
 
 export async function replyToComplaint(id: string, reply: string): Promise<ActionResult<any>> {
-  // TODO: Implement reply endpoint in adminGateway
-  return { success: false, error: "غير مطبق بعد" };
+  const result = await updateComplaintStatusInSupabase(id, "in_progress", reply);
+  return { success: result.success, error: result.error };
 }
 
 export async function updateComplaintStatus(id: string, status: string): Promise<ActionResult<any>> {
-  // TODO: Implement status update endpoint in adminGateway
-  return { success: false, error: "غير مطبق بعد" };
+  const result = await updateComplaintStatusInSupabase(id, status as ComplaintStatus);
+  return { success: result.success, error: result.error };
 }
 
 export async function deleteComplaint(id: string): Promise<ActionResult> {
-  // TODO: Implement delete endpoint in adminGateway
-  return { success: false, error: "غير مطبق بعد" };
+  return deleteComplaintInSupabase(id);
 }
 
 // ============================================
@@ -313,32 +318,35 @@ export function exportReportsToCSV(logs: ReportLog[]): void {
   const blob = new Blob(["\ufeff" + csvContent], { type: "text/csv;charset=utf-8;" });
   const link = document.createElement("a");
   link.href = URL.createObjectURL(blob);
-  link.download = `reports_${new Date().toISOString().split("T")[0]}.csv`;
+  link.download = `reports_${getRiyadhTodayKey()}.csv`;
   link.click();
 }
 
 // ============================================
-// USERS ACTIONS (placeholders - requires user_roles table)
+// USERS ACTIONS (server admin endpoint required)
 // ============================================
 
+const USER_ADMIN_ENDPOINT_REQUIRED = "إدارة المستخدمين تتطلب endpoint إداري server-side مع صلاحيات service role ولا تُنفّذ من المتصفح.";
+
 export async function fetchUsers(): Promise<ActionResult<AdminUser[]>> {
-  // TODO: Implement after user_roles table is set up
-  return { success: true, data: [] };
+  return { success: false, error: USER_ADMIN_ENDPOINT_REQUIRED };
 }
 
 export async function updateUserRole(userId: string, role: AdminUser["role"]): Promise<ActionResult<AdminUser>> {
-  // TODO: Implement after user_roles table is set up
-  return { success: false, error: "غير مطبق بعد - يحتاج جدول user_roles" };
+  void userId;
+  void role;
+  return { success: false, error: USER_ADMIN_ENDPOINT_REQUIRED };
 }
 
 export async function toggleUserBan(userId: string, banned: boolean): Promise<ActionResult<AdminUser>> {
-  // TODO: Implement after user_roles table is set up
-  return { success: false, error: "غير مطبق بعد - يحتاج جدول user_roles" };
+  void userId;
+  void banned;
+  return { success: false, error: USER_ADMIN_ENDPOINT_REQUIRED };
 }
 
 export async function deleteUser(userId: string): Promise<ActionResult> {
-  // TODO: Implement after user_roles table is set up
-  return { success: false, error: "غير مطبق بعد - يحتاج جدول user_roles" };
+  void userId;
+  return { success: false, error: USER_ADMIN_ENDPOINT_REQUIRED };
 }
 
 // ============================================

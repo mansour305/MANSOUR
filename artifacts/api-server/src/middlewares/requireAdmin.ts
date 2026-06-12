@@ -1,6 +1,6 @@
 import type { Request, RequestHandler } from "express";
 
-const ADMIN_ROLES = new Set(["admin", "super_admin"]);
+const ADMIN_ROLES = new Set(["admin", "super_admin", "owner"]);
 
 type SupabaseUser = {
   id: string;
@@ -33,7 +33,7 @@ function extractRole(user: SupabaseUser): string {
  *
  * - يطلب Authorization: Bearer <supabase_access_token>
  * - يتحقق من التوكن عبر Supabase Auth API (/auth/v1/user) باستخدام anon key
- * - يسمح فقط للأدوار: admin, super_admin
+ * - يسمح فقط للأدوار: admin, super_admin, owner
  * - لا يثق بأي علم محلي (localStorage) — التحقق من جانب الخادم حصراً
  */
 export const requireAdmin: RequestHandler = async (req, res, next) => {

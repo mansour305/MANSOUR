@@ -14,6 +14,8 @@ import { formatHijriDate, formatGregorianDate, getDayName } from "@/lib/utils";
 import { Copy, Share2, Save, CheckCircle2, Loader2, Landmark } from "lucide-react";
 import { useTimeFormat } from "@/hooks/useTimeFormat";
 import desertHeroImg from "@assets/desert-hero.png";
+import { getRiyadhTodayKey } from "@/lib/riyadhTime";
+import { getCityName, normalizeCityKey } from "@/lib/prayerTimesService";
 
 const BG_CREAM = "hsl(36 38% 96%)";
 const BG_CARD = "#FAF7F2";
@@ -45,9 +47,9 @@ export default function StoryPage() {
   const { toast } = useToast();
   const { user } = useStore();
   const { formatTime } = useTimeFormat();
-  const todayIso = new Date().toISOString().split("T")[0];
-  const cityName = user.city || "الرياض";
-  const cityKey = cityName.trim().toLowerCase().replace(/\s+/g, "_");
+  const todayIso = getRiyadhTodayKey();
+  const cityKey = normalizeCityKey(user.city) ?? "riyadh";
+  const cityName = getCityName(cityKey);
 
   const { data: officialPrayer } = useOfficialPrayerTimes(cityKey, todayIso);
   const { data: officialFinancial } = useOfficialFinancialDates();

@@ -3,6 +3,8 @@ import { ChevronLeft, Home, ShieldCheck, Users, Wallet, Zap } from "lucide-react
 import { AppShell } from "@/components/layout/AppShell";
 import { useGatewayFinancialCountdown } from "@/hooks/useGatewayData";
 import { useOfficialFinancialDates } from "@/hooks/useOfficialData";
+import { normalizeFinancialEvents } from "@/lib/financialEngine";
+import { parseRiyadhDateKey } from "@/lib/riyadhTime";
 
 const GOLD = "#C9A063";
 const BROWN = "#8A6B3D";
@@ -17,7 +19,7 @@ function iconFor(type: string, name: string) {
 }
 
 function dateLabel(date: string) {
-  const parsed = new Date(`${date}T12:00:00`);
+  const parsed = parseRiyadhDateKey(date);
   if (Number.isNaN(parsed.getTime())) return date;
   return parsed.toLocaleDateString("ar-SA", { month: "long", day: "numeric", year: "numeric" });
 }
@@ -44,36 +46,21 @@ export default function FinancePage() {
 
   // Compute items by selecting official data if present, else gateway data
   const computedItems = useMemo(() => {
-    // Helper to compute difference in days from today to target date
-    const computeDaysRemaining = (dateStr: string): number => {
-      const today = new Date();
-      const target = new Date(`${dateStr}T12:00:00`);
-      const diffMs = target.getTime() - today.getTime();
-      const days = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-      return days >= 0 ? days : 0;
-    };
-    // Use official if exists
-    if (Array.isArray(officialData) && officialData.length > 0) {
-      return officialData.map((record: any) => {
-        const nextDate = record.occurrence_date_gregorian as string;
-        return {
-          id: record.id ?? record.event_key,
-          name: record.event_name_ar ?? record.event_key,
-          type: record.event_key ?? "",
-          next_date: nextDate,
-          days_remaining: computeDaysRemaining(nextDate),
-        };
-      });
-    }
-    // Otherwise fallback to gateway data
-    return Array.isArray(gatewayData) ? gatewayData : [];
+    return normalizeFinancialEvents({
+      official: officialData,
+      gateway: gatewayData,
+      includePast: true,
+    });
   }, [officialData, gatewayData]);
 
   // Determine loading state: loading if official still loading,
   // or if no official records and gateway is loading
   const isLoading = isOfficialLoading || (Array.isArray(officialData) && officialData.length === 0 && isGatewayLoading);
 
-  const items = tab === "upcoming" ? computedItems.slice(0, 6) : [];
+  const items = (tab === "upcoming"
+    ? computedItems.filter((item) => !item.isPast)
+    : computedItems.filter((item) => item.isPast).reverse()
+  ).slice(0, 6);
 
   return (
     <AppShell title="الرواتب والدعم" showBack>
@@ -166,7 +153,7 @@ export default function FinancePage() {
                     <div className="mt-4 h-1.5 overflow-hidden rounded-full bg-[#F3E8D6]">
                       <span className="block h-full rounded-full" style={{ width: progress, background: "linear-gradient(90deg, #C9A063, #E3C383)" }} />
                     </div>
-                    <p className="mt-2 text-sm font-bold" style={{ color: BROWN }}>موعد مالي مهم</p>
+                    <p className="mt-2 text-sm font-bold" style={{ color: BROWN }}>{item.statusLabel}</p>
                   </div>
 
                   <div className="flex flex-col items-center gap-5">

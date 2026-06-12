@@ -25,7 +25,7 @@ export interface LocationPrefs {
 const LOCATION_KEY = "mawaeedak_location_prefs_v1";
 
 const DEFAULT_PREFS: LocationPrefs = {
-  city: "الرياض",
+  city: "riyadh",
   timezone: "Asia/Riyadh",
   lat: null,
   lng: null,
@@ -35,27 +35,24 @@ const DEFAULT_PREFS: LocationPrefs = {
 };
 
 /* Saudi city coordinates for nearest-city lookup */
-const SAUDI_CITIES_COORDS: Array<{ name: string; lat: number; lng: number }> = [
-  { name: "الرياض",         lat: 24.7136, lng: 46.6753 },
-  { name: "جدة",            lat: 21.2854, lng: 39.2376 },
-  { name: "مكة المكرمة",    lat: 21.3891, lng: 39.8579 },
-  { name: "المدينة المنورة",lat: 24.5247, lng: 39.5692 },
-  { name: "الدمام",         lat: 26.4207, lng: 50.0888 },
-  { name: "الخبر",          lat: 26.2172, lng: 50.1971 },
-  { name: "الطائف",         lat: 21.2854, lng: 40.4149 },
-  { name: "تبوك",           lat: 28.3998, lng: 36.5717 },
-  { name: "بريدة",          lat: 26.3260, lng: 43.9750 },
-  { name: "خميس مشيط",     lat: 18.3030, lng: 42.7286 },
-  { name: "الأحساء",        lat: 25.3798, lng: 49.5896 },
-  { name: "نجران",          lat: 17.4927, lng: 44.1322 },
-  { name: "جيزان",          lat: 16.8892, lng: 42.5511 },
-  { name: "أبها",           lat: 18.2164, lng: 42.5053 },
-  { name: "ينبع",           lat: 24.0894, lng: 38.0618 },
-  { name: "حائل",           lat: 27.5114, lng: 41.7208 },
-  { name: "عرعر",           lat: 30.9753, lng: 41.0381 },
-  { name: "سكاكا",          lat: 29.9697, lng: 40.2093 },
-  { name: "الباحة",         lat: 20.0129, lng: 41.4677 },
-  { name: "الجبيل",         lat: 27.0046, lng: 49.6587 },
+const SAUDI_CITIES_COORDS: Array<{ key: string; lat: number; lng: number }> = [
+  { key: "riyadh", lat: 24.7136, lng: 46.6753 },
+  { key: "jeddah", lat: 21.2854, lng: 39.2376 },
+  { key: "makkah", lat: 21.3891, lng: 39.8579 },
+  { key: "madinah", lat: 24.5247, lng: 39.5692 },
+  { key: "dammam", lat: 26.4207, lng: 50.0888 },
+  { key: "khobar", lat: 26.2172, lng: 50.1971 },
+  { key: "taif", lat: 21.2854, lng: 40.4149 },
+  { key: "tabuk", lat: 28.3998, lng: 36.5717 },
+  { key: "buraydah", lat: 26.326, lng: 43.975 },
+  { key: "alhasa", lat: 25.3798, lng: 49.5896 },
+  { key: "najran", lat: 17.4927, lng: 44.1322 },
+  { key: "jazan", lat: 16.8892, lng: 42.5511 },
+  { key: "abha", lat: 18.2164, lng: 42.5053 },
+  { key: "hail", lat: 27.5114, lng: 41.7208 },
+  { key: "arar", lat: 30.9753, lng: 41.0381 },
+  { key: "sakaka", lat: 29.9697, lng: 40.2093 },
+  { key: "jubail", lat: 27.0046, lng: 49.6587 },
 ];
 
 function deg2rad(d: number): number {
@@ -79,7 +76,7 @@ export function nearestSaudiCity(lat: number, lng: number): string {
     const d = haversineKm(lat, lng, city.lat, city.lng);
     if (d < bestDist) { bestDist = d; best = city; }
   }
-  return best.name;
+  return best.key;
 }
 
 export function detectTimezone(): string {

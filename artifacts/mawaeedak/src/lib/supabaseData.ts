@@ -44,6 +44,7 @@ import type {
   Job,
   Complaint,
 } from "./api-client";
+import { calculateDaysRemaining, getRiyadhTodayKey } from "./riyadhTime";
 
 // ─────────────────────────────────────────────────────────
 // Helpers
@@ -61,37 +62,6 @@ async function getCurrentUserId(): Promise<string | null> {
   } catch {
     return null;
   }
-}
-
-// Asia/Riyadh "today" as a local-midnight Date (date boundaries follow KSA).
-function riyadhToday(): Date {
-  const s = new Intl.DateTimeFormat("en-CA", {
-    timeZone: "Asia/Riyadh", year: "numeric", month: "2-digit", day: "2-digit",
-  }).format(new Date());
-  const [y, m, d] = s.split("-").map(Number);
-  return new Date(y, m - 1, d);
-}
-
-// Roll a recurring monthly event forward to its next occurrence relative to
-// today. Past-due dates advance by whole months (day-of-month preserved and
-// clamped to month length) until >= today; future dates are returned unchanged.
-// Kept identical to the API server's source-of-truth implementation.
-function nextRecurringOccurrence(storedDate: string, today: Date): string {
-  const parts = String(storedDate).slice(0, 10).split("-").map(Number);
-  if (parts.length !== 3 || parts.some(Number.isNaN)) return String(storedDate).slice(0, 10);
-  let [y, m] = parts;
-  const d = parts[2];
-  const clampDay = (yy: number, mm: number, dd: number) =>
-    Math.min(dd, new Date(yy, mm, 0).getDate());
-  let candidate = new Date(y, m - 1, clampDay(y, m, d));
-  while (candidate.getTime() < today.getTime()) {
-    m += 1;
-    if (m > 12) { m = 1; y += 1; }
-    candidate = new Date(y, m - 1, clampDay(y, m, d));
-  }
-  const mm = String(candidate.getMonth() + 1).padStart(2, "0");
-  const dd = String(candidate.getDate()).padStart(2, "0");
-  return `${candidate.getFullYear()}-${mm}-${dd}`;
 }
 
 // ─────────────────────────────────────────────────────────
@@ -288,7 +258,7 @@ export async function getUpcomingAppointmentsFromSupabase(limit = 5): Promise<Ap
   if (!isConnected()) return null;
   try {
     const userId = await getCurrentUserId();
-    const today = new Date().toISOString().split("T")[0];
+    const today = getRiyadhTodayKey();
     let query = supabase!
       .from("appointments")
       .select("id, legacy_id, title, description, date, time, category, color, priority, reminder_enabled, created_at")
@@ -419,18 +389,16 @@ export async function getFinancialCountdownFromSupabase(): Promise<Array<{
       .from("financial_events")
       .select("id, legacy_id, name, type, next_date, amount, is_active")
       .eq("is_active", true)
+      .gte("next_date", getRiyadhTodayKey())
       .order("next_date", { ascending: true });
     if (userId) {
       query = query.eq("user_id", userId);
     }
     const { data, error } = await query;
     if (error) return null;
-    const today = riyadhToday();
     const items = (data ?? []).map((row) => {
-      const nextDate = nextRecurringOccurrence(row.next_date as string, today);
-      const daysRemaining = Math.round(
-        (new Date(nextDate + "T00:00:00").getTime() - today.getTime()) / (1000 * 60 * 60 * 24)
-      );
+      const nextDate = String(row.next_date).slice(0, 10);
+      const daysRemaining = calculateDaysRemaining(nextDate);
       return {
         id: (row.legacy_id ?? row.id) as number,
         name: row.name as string,

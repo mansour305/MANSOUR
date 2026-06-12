@@ -27,42 +27,27 @@ router.get("/financial-events", async (req, res) => {
   return res.json(rows);
 });
 
-// Asia/Riyadh "today" as a local-midnight Date (date boundaries follow KSA).
-function riyadhToday(): Date {
-  const s = new Intl.DateTimeFormat("en-CA", {
-    timeZone: "Asia/Riyadh", year: "numeric", month: "2-digit", day: "2-digit",
+function riyadhTodayKey(): string {
+  return new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Asia/Riyadh",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
   }).format(new Date());
-  const [y, m, d] = s.split("-").map(Number);
-  return new Date(y, m - 1, d);
 }
 
-// Roll a recurring monthly event forward to its next occurrence relative to
-// today. Past-due dates advance by whole months (day-of-month preserved and
-// clamped to month length) until >= today; future dates are returned unchanged.
-function nextRecurringOccurrence(storedDate: string, today: Date): string {
-  const parts = String(storedDate).slice(0, 10).split("-").map(Number);
-  if (parts.length !== 3 || parts.some(Number.isNaN)) return String(storedDate).slice(0, 10);
-  let [y, m] = parts;
-  const d = parts[2];
-  const clampDay = (yy: number, mm: number, dd: number) =>
-    Math.min(dd, new Date(yy, mm, 0).getDate());
-  let candidate = new Date(y, m - 1, clampDay(y, m, d));
-  while (candidate.getTime() < today.getTime()) {
-    m += 1;
-    if (m > 12) { m = 1; y += 1; }
-    candidate = new Date(y, m - 1, clampDay(y, m, d));
-  }
-  const mm = String(candidate.getMonth() + 1).padStart(2, "0");
-  const dd = String(candidate.getDate()).padStart(2, "0");
-  return `${candidate.getFullYear()}-${mm}-${dd}`;
+function parseDateKeyUtc(dateKey: string): Date {
+  const [year, month, day] = dateKey.slice(0, 10).split("-").map(Number);
+  return new Date(Date.UTC(year, month - 1, day, 0, 0, 0, 0));
 }
 
 router.get("/financial-events/countdown", async (req, res) => {
   const rows = await db.select().from(financialEventsTable).where(eq(financialEventsTable.is_active, true)).orderBy(financialEventsTable.next_date);
-  const today = riyadhToday();
-  const countdown = rows.map(r => {
-    const nextDate = nextRecurringOccurrence(r.next_date, today);
-    const diffMs = new Date(nextDate + "T00:00:00").getTime() - today.getTime();
+  const todayKey = riyadhTodayKey();
+  const today = parseDateKeyUtc(todayKey);
+  const countdown = rows.filter(r => String(r.next_date).slice(0, 10) >= todayKey).map(r => {
+    const nextDate = String(r.next_date).slice(0, 10);
+    const diffMs = parseDateKeyUtc(nextDate).getTime() - today.getTime();
     const daysRemaining = Math.round(diffMs / (1000 * 60 * 60 * 24));
     return { id: r.id, name: r.name, type: r.type, next_date: nextDate, days_remaining: daysRemaining, amount: r.amount ? parseFloat(r.amount) : null };
   });

@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -15,7 +15,6 @@ import {
   type Complaint,
   type ComplaintStatus,
 } from "@/lib/complaintService";
-import { useQueryClient } from "@tanstack/react-query";
 import { Search, Loader2, MessageSquare, Trash2, Reply, Inbox } from "lucide-react";
 import { format } from "date-fns";
 
@@ -31,7 +30,6 @@ function statusMeta(value: string) {
 }
 
 export default function AdminComplaints() {
-  const queryClient = useQueryClient();
   const [complaints, setComplaints] = useState<Complaint[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [search, setSearch] = useState("");
@@ -44,15 +42,15 @@ export default function AdminComplaints() {
   const [isUpdating, setIsUpdating] = useState(false);
 
   // Load complaints on mount
-  useState(() => {
+  useEffect(() => {
     const load = async () => {
       setIsLoading(true);
       const data = await getAllComplaints();
       setComplaints(data);
       setIsLoading(false);
     };
-    load();
-  });
+    void load();
+  }, []);
 
   const invalidate = () => {
     const load = async () => {

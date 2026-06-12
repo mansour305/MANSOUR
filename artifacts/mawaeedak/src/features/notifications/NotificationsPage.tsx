@@ -5,6 +5,7 @@
  */
 
 import { useState } from "react";
+import { useLocation } from "wouter";
 import { AppShell } from "@/components/layout/AppShell";
 import { Button } from "@/components/ui/button";
 import { useQueryClient } from "@tanstack/react-query";
@@ -25,6 +26,7 @@ import {
   BookOpen,
   MessageSquare,
   Coins,
+  ExternalLink,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useTimeFormat } from "@/hooks/useTimeFormat";
@@ -67,9 +69,30 @@ function formatDateTime(iso: string, fmt: "12h" | "24h" = "12h"): string {
   }
 }
 
+function routeForNotification(type: string): string {
+  const routes: Record<string, string> = {
+    financial: "/salaries",
+    salary: "/salaries",
+    bill: "/salaries",
+    event: "/calendar",
+    appointment: "/calendar",
+    reminder: "/services/reminders",
+    story: "/story",
+    news: "/centers/news",
+    job: "/centers/jobs",
+    support: "/support",
+    owner: "/more",
+    system: "/more",
+    general: "/notifications",
+  };
+
+  return routes[type] ?? "/notifications";
+}
+
 export default function NotificationsPage() {
   const { toast } = useToast();
   const { format: timeFormat } = useTimeFormat();
+  const [, setLocation] = useLocation();
   const queryClient = useQueryClient();
 
   const { data: notifications, isLoading, isError, refetch } = useGatewayNotifications();
@@ -126,6 +149,13 @@ export default function NotificationsPage() {
     } finally {
       setPendingDelete(null);
     }
+  };
+
+  const handleOpenNotification = async (id: number, type: string, isRead: boolean) => {
+    if (!isRead) {
+      await handleMarkRead(id);
+    }
+    setLocation(routeForNotification(type));
   };
 
   const unreadCount = (notifications ?? []).filter(n => !n.is_read).length;
@@ -306,6 +336,19 @@ export default function NotificationsPage() {
 
                         {/* Actions */}
                         <div className="flex items-center gap-1">
+                          <button
+                            onClick={() => handleOpenNotification(notif.id, notif.type, notif.is_read)}
+                            disabled={isMarkingRead || pendingMarkAll}
+                            className="w-7 h-7 rounded-lg flex items-center justify-center transition-all hover:scale-110"
+                            style={{
+                              background: "hsl(210 70% 52% / 0.10)",
+                              border: "1px solid hsl(210 70% 52% / 0.22)",
+                              color: "hsl(210 60% 42%)",
+                            }}
+                            title="فتح"
+                          >
+                            <ExternalLink className="w-3.5 h-3.5" />
+                          </button>
                           {!notif.is_read && (
                             <button
                               onClick={() => handleMarkRead(notif.id)}

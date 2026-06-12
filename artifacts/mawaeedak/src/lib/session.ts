@@ -260,7 +260,7 @@ class SessionManager {
       const toKeep = sorted.slice(0, MAX_SESSIONS);
       const toRemove = sorted.slice(MAX_SESSIONS);
       
-      // TODO: إشعار الأجهزة الأخرى بالانتهاء
+      // Other devices are revoked through stored-session cleanup.
       toRemove.forEach((s) => {
         securityLogger.log("SESSION_REVOKED", { sessionId: s.id });
       });

@@ -106,23 +106,24 @@ function AuthRoute({ mode }: { mode: "login" | "signup" | "forgot" }) {
  * Login is optional - does not force onboarding.
  */
 function FirstEntryWrapper({ children }: { children: React.ReactNode }) {
-  const [showSplash, setShowSplash] = useState(false);
-  const [splashComplete, setSplashComplete] = useState(false);
+  const [showSplash, setShowSplash] = useState<boolean | null>(null);
 
   useEffect(() => {
-    // Check if this is first entry to root in this session
-    const hasSeenSplash = sessionStorage.getItem("mawaeedak_splash_shown");
-    if (!hasSeenSplash) {
-      setShowSplash(true);
-    } else {
-      setSplashComplete(true);
+    try {
+      const hasSeenSplash = sessionStorage.getItem("mawaeedak_splash_shown");
+      setShowSplash(!hasSeenSplash);
+    } catch {
+      setShowSplash(false);
     }
   }, []);
 
   const handleSplashComplete = () => {
-    sessionStorage.setItem("mawaeedak_splash_shown", "true");
+    try {
+      sessionStorage.setItem("mawaeedak_splash_shown", "true");
+    } catch {
+      // Session storage is best effort.
+    }
     setShowSplash(false);
-    setSplashComplete(true);
   };
 
   if (showSplash) {
@@ -131,6 +132,10 @@ function FirstEntryWrapper({ children }: { children: React.ReactNode }) {
         <SplashScreen onComplete={handleSplashComplete} />
       </Suspense>
     );
+  }
+
+  if (showSplash === null) {
+    return <RouteFallback />;
   }
 
   return <>{children}</>;
@@ -222,7 +227,7 @@ function AdminRouter() {
 function Router() {
   return (
     <Switch>
-      <Route path="/splash">{() => <SplashScreen onComplete={() => {}} />}</Route>
+      <Route path="/splash">{() => <SplashScreen />}</Route>
       <Route path="/welcome" component={WelcomePage} />
       <Route path="/admin" component={AdminRouter} />
       <Route path="/admin/:rest*" component={AdminRouter} />
