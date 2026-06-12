@@ -1,105 +1,147 @@
-# AGENTS.md
+# AGENTS.md — Mawaeedak OpenHands Instructions
 
 ## Project Identity
 
 This repository is `DANGERMANS/mawaeedak`.
 
-The active Codex work branch for controlled setup work is:
+Mawaeedak is a **React/Vite/TypeScript Web/PWA mobile-first app**. It must feel like a mobile app on iPhone and Android browsers while remaining one Web/PWA codebase.
 
-`codex/setup-control-files`
+## Product Direction
 
-This project is a **WEB-ONLY** production scheduling/events application. All mobile/Flutter artifacts have been removed.
+Work only on the existing Web/PWA app.
 
-## Repository Architecture
+Strictly forbidden unless the user explicitly requests otherwise:
 
-Core areas:
+- Flutter
+- Dart
+- React Native
+- Separate mobile app folders
+- `android/appwidget`
+- `ios/Runner`
+- `main.dart`
+- Any new native mobile project
 
-- `artifacts/mawaeedak/` - Main web application (Vite + React)
-- `artifacts/api-server/` - Backend API server
-- `lib/` - Shared libraries (API client, DB schemas, utilities)
-- Root workspace and package control files.
+## Required Reading Before Editing
 
-## Absolute Forbidden Actions
+Before editing code, read:
 
-Never do any of the following unless the user explicitly requests that exact action:
+- `OPENHANDS_EXECUTION_LOCK.md`
+- `package.json`
+- `pnpm-workspace.yaml`
+- `artifacts/mawaeedak/package.json`
+- `artifacts/mawaeedak/tsconfig.json`
+- `artifacts/mawaeedak/vite.config.ts`
+- `artifacts/mawaeedak/src/App.tsx`
+- `artifacts/mawaeedak/src/features/centers/CentersPage.tsx`
 
-- Push to GitHub.
-- Commit changes.
-- Work directly on `main`.
-- Delete files or folders.
-- Restore files or reset branches.
-- Run broad repository scans repeatedly.
-- Run `pnpm install`, build, typecheck, migrations, seed scripts, or deployment commands.
-- Modify application source code during documentation/control-file tasks.
-- Claim the project is production ready before evidence-based QA and security checks are complete.
-- Expose secrets, tokens, service keys, or admin credentials.
-- Add mobile/Flutter/React Native code or dependencies.
+## Current Priority Task
 
-## Security/Auth/Admin Rules
+The current priority is to finish the missing Web/PWA service wiring and fix verification so false READY reports are impossible.
 
-- Treat auth, admin access, password reset, and privileged routes as high risk.
-- Admin-only behavior must be enforced server-side, not only in the UI.
-- Never rely on client-side role checks as the source of truth.
-- Any security change requires explicit verification steps and a rollback-aware summary.
-- Never log secrets, JWTs, refresh tokens, reset tokens, or private Supabase keys.
+Required physical files:
 
-## Supabase/RLS Rules
+- `artifacts/mawaeedak/src/features/services/GoalsPage.tsx`
+- `artifacts/mawaeedak/src/features/services/CostsPage.tsx`
+- `artifacts/mawaeedak/src/features/services/RemindersPage.tsx`
+- `artifacts/mawaeedak/src/lib/aladhanService.ts`
+- `artifacts/mawaeedak/src/hooks/usePrayerEngine.ts`
 
-- Supabase Row Level Security must be considered mandatory for user-owned or privileged data.
-- Do not disable RLS as a workaround.
-- Policies must be least-privilege and tied to authenticated user identity or admin role.
-- Service-role keys must never be exposed to frontend code.
-- Any RLS change must include policy intent, affected tables, and verification queries or smoke checks.
+Required routes in `artifacts/mawaeedak/src/App.tsx`:
 
-## Data Source Rules
+- `/services/goals`
+- `/services/costs`
+- `/services/reminders`
 
-- Identify the source of truth before changing data flows.
-- Do not create duplicate competing data sources.
-- Mock, seed, local, and production data must be clearly separated.
-- Frontend views must not silently fall back to fake data in production paths.
-- Any migration or data-shape change requires an explicit verification plan.
+Required service links in `artifacts/mawaeedak/src/features/centers/CentersPage.tsx`:
 
-## Frontend RTL/Web Rules
+- `احسب هدفك` -> `/services/goals`
+- `حساب التكاليف` -> `/services/costs`
+- `ذكرني` -> `/services/reminders`
 
-- Arabic and RTL behavior must be treated as first-class requirements.
-- Responsive layout must be verified for primary flows.
-- Text must not overlap, truncate critical meaning, or break controls on small screens.
-- Forms, navigation, dialogs, and admin screens must be usable in RTL.
-- Visual-reference work must be isolated and verified separately from functional fixes.
+These must not route to `/centers/work`.
 
-## API/Backend Rules
+## Known Verification Blockers To Fix First
 
-- API routes must validate input and return predictable error responses.
-- Authenticated and admin endpoints must enforce authorization on the server.
-- Backend code must not trust client-submitted role or ownership fields.
-- Error handling must avoid leaking internals or secrets.
-- API changes require focused smoke checks for success and failure paths.
+1. `artifacts/mawaeedak/package.json` must have a real web typecheck script:
 
-## Verification Rules
+```json
+"typecheck": "tsc -p tsconfig.json --noEmit"
+```
 
-- Verification must match the scope of the task.
-- Do not run expensive commands unless the task explicitly calls for them.
-- Prefer focused checks over broad repeated scans.
-- If a command is not run, report that honestly.
-- Do not claim a fix is verified unless the verification actually ran and passed.
+2. `artifacts/mawaeedak/tsconfig.json` must include TypeScript paths matching Vite aliases:
+
+```json
+"paths": {
+  "@/*": ["./src/*"],
+  "@assets/*": ["./src/assets/*"],
+  "@api-client": ["./src/lib/api-client/index.ts"],
+  "@api-client/*": ["./src/lib/api-client/*"]
+}
+```
+
+## Commands Are Explicitly Allowed For This Task
+
+For this task, the agent is explicitly allowed and required to run:
+
+```bash
+corepack enable
+pnpm install --frozen-lockfile
+pnpm run typecheck
+pnpm run build
+pnpm -r --if-present run lint
+pnpm -r --if-present run test
+pnpm -r --if-present run smoke
+```
+
+If a command fails, fix the root cause and rerun it. Do not mark typecheck or build as non-blocking.
+
+## Verification Proof Required Before READY
+
+Before writing READY, provide proof:
+
+```bash
+git status --short
+git diff --stat
+test -f artifacts/mawaeedak/src/features/services/GoalsPage.tsx
+test -f artifacts/mawaeedak/src/features/services/CostsPage.tsx
+test -f artifacts/mawaeedak/src/features/services/RemindersPage.tsx
+test -f artifacts/mawaeedak/src/lib/aladhanService.ts
+test -f artifacts/mawaeedak/src/hooks/usePrayerEngine.ts
+grep -n "/services/goals" artifacts/mawaeedak/src/App.tsx
+grep -n "/services/costs" artifacts/mawaeedak/src/App.tsx
+grep -n "/services/reminders" artifacts/mawaeedak/src/App.tsx
+grep -n "/services/goals" artifacts/mawaeedak/src/features/centers/CentersPage.tsx
+grep -n "/services/costs" artifacts/mawaeedak/src/features/centers/CentersPage.tsx
+grep -n "/services/reminders" artifacts/mawaeedak/src/features/centers/CentersPage.tsx
+```
+
+## READY Is Forbidden If
+
+- Required files are missing.
+- Required routes are missing.
+- `CentersPage.tsx` still routes Goals, Costs, or Reminders to `/centers/work`.
+- Web typecheck is skipped.
+- TypeScript errors remain.
+- Build fails.
+- Flutter/Dart/mobile app files are added.
+- A feature is claimed as implemented without actual git changes.
 
 ## Final Report Format
 
-Every task report should include:
+Every completion report must include:
 
-- Files changed.
-- Files read.
-- Commands run.
-- Verification performed.
-- Risks or gaps.
-- Next recommended task.
-- Final verdict.
+- Branch name
+- Commit SHA
+- PR URL if created
+- Files changed
+- Files physically created
+- Route proof grep output
+- Commands run
+- Verification results
+- Risks or gaps
+- Final verdict
 
-## Allowed Final Verdicts
+Allowed final verdicts for this task:
 
-Use only task-specific verdicts requested by the user.
-
-If no task-specific verdict is provided, use one of:
-
-- `TASK COMPLETE`
-- `TASK NEEDS FIXES`
+- `READY`
+- `NOT READY`
