@@ -1,6 +1,22 @@
 # Mawaeedak Design Guidelines
 
-This guide summarizes the key visual principles extracted from the approved mockups for the Mawaeedak platform.  Adhering to these guidelines will ensure a consistent and polished user experience across all pages.
+This guide summarizes the key visual principles extracted from the approved mockups for the Mawaeedak platform. Adhering to these guidelines will ensure a consistent and polished user experience across all pages.
+
+## Current Visual Source of Truth
+
+**All UI implementation must follow the design references in `docs/design-reference/final-2026/`.**
+
+## Design Language: Saudi Premium Minimal
+
+- Warm ivory background (#FAF7F2)
+- Soft sand texture with muted gold accents (#A78042)
+- Premium Arabic typography with Noto Sans Arabic
+- Rounded cards with subtle shadows
+- Thin gold dividers and ornamental separators
+- Palm/desert/lantern motifs
+- Soft low-contrast background imagery
+- Clear RTL alignment
+- Balanced text hierarchy
 
 ## Color Palette
 
@@ -8,47 +24,60 @@ The primary theme uses a combination of warm neutrals and rich gold accents:
 
 | Color | Hex | Usage |
 | --- | --- | --- |
-| Primary | `#C8AA6E` | Buttons, highlights, icons |
-| Secondary | `#F5F0E1` | Page backgrounds, panels |
-| Accent | `#816341` | Headers, active states |
-| Neutral | `#333333` | Primary text |
-| Muted | `#777777` | Secondary text, borders |
-
-Use the Tailwind config (`tailwind.config.ts`) to define these colors as variables so they can be referenced consistently.
+| Background | `#FAF7F2` | Warm ivory background |
+| Surface | `#FFFCF7` | Card surface |
+| Card | `#FFFFFF / #FFFDF8` | Cards and containers |
+| Primary Text | `#2F2B25` | Primary text (avoid overly heavy black) |
+| Secondary Text | `#6F6557` | Secondary text |
+| Muted Text | `#8A8175` | Muted labels |
+| Gold | `#A78042` | Gold accents |
+| Gold Light | `#C9A063` | Light gold highlights |
+| Brown | `#4A2413` | Deep brown accents |
+| Border | `rgba(201,160,99,0.22)` | Subtle gold borders |
 
 ## Typography
 
-* **Headings** should use a bold weight with moderate tracking to convey structure (e.g. `font-extrabold` for page titles).
-* **Body text** should use a medium weight (e.g. `font-medium`) with comfortable line height for readability.
-* Arabic typography needs careful alignment; ensure that line heights and margins accommodate diacritics.
-* Use consistent font sizes: e.g. 1.25rem for section titles, 1rem for body text, 0.875rem for captions.
+Use one clean Arabic font system:
+
+- **Primary**: Noto Sans Arabic
+- **Fallback**: IBM Plex Sans Arabic, Tajawal, Arial, sans-serif
+
+Weights:
+- Page title: 700–800
+- Section title: 700
+- Card title: 700
+- Body: 400–500
+- Buttons: 600–700
+
+Do not use overly heavy black text. Do not let labels and values float on different baselines.
 
 ## Layout and Components
 
-* **Spacing**: Maintain generous padding around cards and sections (e.g. `p-4` or `p-6`) to avoid overcrowding.
-* **Cards**: Use rounded corners (`rounded-xl`) with a subtle shadow (`shadow-sm`) for depth.  On hover, increase the shadow to indicate interactivity.
-* **Buttons**: Primary actions should use the gold primary color with white text; secondary actions use a ghost or muted style.  Maintain a minimum touch target size of 40×40px.
-* **Forms**: Inputs should have rounded corners and light backgrounds; incorporate icons inside inputs where helpful.  Provide clear error states in red with descriptive messages.
-* **Navigation**: Use a bottom tab bar on mobile with icons and labels; on larger screens, provide a sidebar or top navigation as appropriate.
+- **Spacing**: Maintain generous padding around cards and sections (e.g., `p-4` or `p-6`) to avoid overcrowding.
+- **Cards**: Use rounded corners (`rounded-xl` to `rounded-[28px]`) with subtle shadows. On hover, increase the shadow to indicate interactivity.
+- **Buttons**: Primary actions should use the gold primary color (#C9A063) with white text; secondary actions use a ghost or muted style. Maintain a minimum touch target size of 40×40px.
+- **Forms**: Inputs should have rounded corners and light backgrounds; incorporate icons inside inputs where helpful. Provide clear error states in red with descriptive messages.
+- **Navigation**: Use a bottom tab bar on mobile with icons and labels; on larger screens, provide a sidebar or top navigation as appropriate.
 
 ## Imagery
 
-* Icons should be from a consistent set (e.g. Lucide) and follow the same stroke width.
-* Use high‑quality photography that aligns with cultural norms; avoid cluttering pages with too many images.
-* For placeholder images, use neutral backgrounds and subtle patterns.
+- Icons should be from a consistent set (e.g., Lucide) and follow the same stroke width.
+- Use high quality photography that aligns with cultural norms; avoid cluttering pages with too many images.
+- For placeholder images, use neutral backgrounds and subtle patterns.
+- Device frames in mockups are presentation only and must NOT be rendered in the actual app UI.
 
 ## Responsiveness
 
 Ensure that all layouts adapt to both mobile and desktop widths:
 
-* On small screens, stack elements vertically and use full‑width components.
-* On medium and large screens, arrange content in two columns where appropriate (e.g. sidebars next to main content).
-* Use CSS grid or flexbox to adapt card grids for variable numbers of items.
+- On small screens, stack elements vertically and use full-width components.
+- On medium and large screens, arrange content in two columns where appropriate (e.g., sidebars next to main content).
+- Use CSS grid or flexbox to adapt card grids for variable numbers of items.
 
 ## Accessibility
 
-* All interactive elements must have keyboard focus styles.
-* Provide alt text for images and meaningful labels for icons.
-* Ensure color contrasts meet WCAG AA standards.
+- All interactive elements must have keyboard focus styles.
+- Provide alt text for images and meaningful labels for icons.
+- Ensure color contrasts meet WCAG AA standards.
 
 Refer to these guidelines whenever you add new pages or update existing ones to maintain consistency across the application.

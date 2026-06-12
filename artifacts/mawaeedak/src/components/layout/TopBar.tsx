@@ -1,4 +1,4 @@
-import { ArrowRight, Bell, FileText, Headphones, Home, LogIn, LogOut, Mail, Menu, Share2, ShieldCheck, X } from "lucide-react";
+import { ArrowRight, Bell, FileText, Headphones, Home, LogIn, LogOut, Mail, Menu, Share2, ShieldCheck, Sparkles, X } from "lucide-react";
 import type { ElementType } from "react";
 import { Link, useLocation } from "wouter";
 import desertHeroImg from "@assets/desert-hero.png";
@@ -7,6 +7,8 @@ import { Sheet, SheetClose, SheetContent, SheetTrigger } from "@/components/ui/s
 import { useGatewayUnreadCount } from "@/hooks/useGatewayData";
 import { useStore } from "@/hooks/useStore";
 import { formatGregorianDate, getDayName } from "@/lib/utils";
+import { showTopNotification } from "@/components/layout/TopNotificationBanner";
+import { authSignOut } from "@/lib/auth";
 
 interface TopBarProps {
   title?: string;
@@ -84,8 +86,8 @@ function SideMenuItem({
         boxShadow: "0 8px 22px rgba(138,107,61,0.08)",
       }}
     >
-      <span className="grid h-10 w-10 place-items-center rounded-[14px] border bg-[#FFF9EF]">
-        <Icon className="h-5 w-5" strokeWidth={1.8} />
+      <span className="grid h-10 w-10 place-items-center rounded-[14px] border" style={{ background: "#FFF9EF", borderColor: "rgba(201,160,99,0.3)" }}>
+        <Icon className="h-5 w-5" strokeWidth={1.8} style={{ color: danger ? "#B9483F" : GOLD }} />
       </span>
       <span className="flex-1 text-[16px] font-bold">{label}</span>
     </button>
@@ -103,7 +105,7 @@ export function TopBar({ title, showBack = false }: TopBarProps) {
   const [, setLocation] = useLocation();
   const { data: unreadCount } = useGatewayUnreadCount();
   const { user } = useStore();
-  const isLoggedIn = Boolean(user.email);
+  const isLoggedIn = Boolean(user?.email);
   const count = unreadCount ?? 0;
 
   const handleShare = async () => {
@@ -112,13 +114,20 @@ export function TopBar({ title, showBack = false }: TopBarProps) {
       await navigator.share({ title: "مواعيدك", text: "كل مواعيدك في مكان واحد", url }).catch(() => {});
     } else {
       await navigator.clipboard.writeText(url).catch(() => {});
+      showTopNotification("تم نسخ رابط التطبيق", "success");
     }
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    // Clear auth/session only, keep theme/location/preferences
+    await authSignOut().catch(() => {});
     localStorage.removeItem("app-user");
-    setLocation("/login");
-    window.location.reload();
+    sessionStorage.removeItem("mawaeedak_demo_session");
+    sessionStorage.setItem("mawaeedak_splash_shown", "true");
+    
+    showTopNotification("تم تسجيل الخروج والعودة للرئيسية", "success");
+    setLocation("/");
+    window.history.replaceState(null, "", "/");
   };
 
   return (
@@ -154,22 +163,35 @@ export function TopBar({ title, showBack = false }: TopBarProps) {
               <div className="min-h-full px-5 pb-6 pt-5">
                 <div className="mb-5 flex items-center justify-between">
                   <SheetClose asChild>
-                    <button type="button" className="grid h-10 w-10 place-items-center rounded-full border bg-white/60" aria-label="إغلاق">
+                    <button type="button" className="grid h-10 w-10 place-items-center rounded-full border" style={{ background: "rgba(255,255,255,0.6)", borderColor: "rgba(201,160,99,0.3)" }} aria-label="إغلاق">
                       <X className="h-5 w-5" style={{ color: BROWN }} />
                     </button>
                   </SheetClose>
                   <MawaeedakLogo compact />
                 </div>
 
-                <div className="mb-5 rounded-[22px] border bg-white/60 p-4" style={{ borderColor: "rgba(201,160,99,0.22)" }}>
+                {/* Welcome card */}
+                <div 
+                  className="mb-5 rounded-[22px] border p-4" 
+                  style={{ 
+                    borderColor: "rgba(201,160,99,0.22)",
+                    background: "linear-gradient(135deg, rgba(255,255,255,0.72), rgba(255,252,245,0.6))",
+                    boxShadow: "0 8px 24px rgba(138,107,61,0.08)",
+                  }}
+                >
                   <div className="flex items-center gap-3">
                     <img src={desertHeroImg} alt="" className="h-16 w-16 rounded-full object-cover" />
                     <div className="min-w-0 flex-1">
-                      <p className="text-[20px] font-extrabold" style={{ color: BROWN }}>مرحباً بك</p>
+                      <p className="text-[20px] font-extrabold flex items-center gap-2" style={{ color: BROWN }}>
+                        مرحباً بك <Sparkles className="h-4 w-4" style={{ color: GOLD }} />
+                      </p>
                       <p className="text-sm font-semibold" style={{ color: INK }}>
                         {isLoggedIn ? user.name || "مستخدم مواعيدك" : "نسعد بوجودك معنا"}
                       </p>
-                      <p className="mt-2 inline-flex rounded-full border px-3 py-1 text-xs font-bold" style={{ borderColor: "rgba(201,160,99,0.24)", color: BROWN }}>
+                      <p 
+                        className="mt-2 inline-flex rounded-full border px-3 py-1 text-xs font-bold" 
+                        style={{ borderColor: "rgba(201,160,99,0.24)", color: BROWN }}
+                      >
                         {getDayName()}، {formatGregorianDate()}
                       </p>
                     </div>
@@ -190,7 +212,11 @@ export function TopBar({ title, showBack = false }: TopBarProps) {
                   )}
                 </div>
 
-                <div className="relative mt-6 h-32 overflow-hidden rounded-[24px] border" style={{ borderColor: "rgba(201,160,99,0.20)" }}>
+                {/* Decorative motif */}
+                <div 
+                  className="relative mt-6 h-32 overflow-hidden rounded-[24px] border" 
+                  style={{ borderColor: "rgba(201,160,99,0.20)" }}
+                >
                   <img src={desertHeroImg} alt="" className="h-full w-full object-cover opacity-80" />
                   <div className="absolute inset-0 bg-gradient-to-l from-[#FAF7F2] via-[#FAF7F2]/60 to-transparent" />
                   <p className="absolute bottom-4 right-4 text-lg font-extrabold" style={{ color: BROWN }}>

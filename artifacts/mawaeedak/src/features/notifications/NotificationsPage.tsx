@@ -89,6 +89,8 @@ function routeForNotification(type: string): string {
   return routes[type] ?? "/notifications";
 }
 
+type TabFilter = "all" | "unread" | "important";
+
 export default function NotificationsPage() {
   const { toast } = useToast();
   const { format: timeFormat } = useTimeFormat();
@@ -96,10 +98,18 @@ export default function NotificationsPage() {
   const queryClient = useQueryClient();
 
   const { data: notifications, isLoading, isError, refetch } = useGatewayNotifications();
+  const [filter, setFilter] = useState<TabFilter>("all");
 
   const [pendingMarkRead, setPendingMarkRead] = useState<number | null>(null);
   const [pendingDelete, setPendingDelete] = useState<number | null>(null);
   const [pendingMarkAll, setPendingMarkAll] = useState(false);
+
+  // Filter notifications based on tab
+  const filteredNotifications = (notifications ?? []).filter((n: any) => {
+    if (filter === "unread") return !n.is_read;
+    if (filter === "important") return n.type === "financial" || n.type === "salary" || n.type === "event";
+    return true;
+  });
 
   const invalidateAll = () => {
     queryClient.invalidateQueries({ queryKey: gwQueryKeys.notifications });
@@ -161,9 +171,43 @@ export default function NotificationsPage() {
   const unreadCount = (notifications ?? []).filter(n => !n.is_read).length;
   const hasUnread = unreadCount > 0;
 
+  const tabs: { key: TabFilter; label: string }[] = [
+    { key: "all", label: "الكل" },
+    { key: "unread", label: "غير مقروءة" },
+    { key: "important", label: "مهمة" },
+  ];
+
   return (
-    <AppShell title="الإشعارات">
+    <AppShell title="الإشعارات" showBack>
       <div className="space-y-4">
+
+        {/* ─── Segmented Tabs ────────────────────────────────── */}
+        <div 
+          className="rounded-[22px] border p-1" 
+          style={{ 
+            borderColor: "rgba(201,160,99,0.22)",
+            background: "rgba(255,255,255,0.6)",
+          }}
+        >
+          <div className="grid grid-cols-3 gap-1">
+            {tabs.map(tab => (
+              <button
+                key={tab.key}
+                type="button"
+                onClick={() => setFilter(tab.key)}
+                className="h-12 rounded-[18px] text-[16px] font-bold transition-all"
+                style={{
+                  background: filter === tab.key 
+                    ? "linear-gradient(135deg, #C9A063, #A78042)" 
+                    : "transparent",
+                  color: filter === tab.key ? "#FFFFFF" : "#6F6557",
+                }}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+        </div>
 
         {/* ─── Heritage Header ────────────────────────────────── */}
         <div
@@ -222,47 +266,30 @@ export default function NotificationsPage() {
             {[1, 2, 3].map(i => (
               <div
                 key={i}
-                className="rounded-2xl p-4 flex gap-3 items-start animate-pulse"
-                style={{
-                  background: "linear-gradient(145deg, #FFFBF4 0%, hsl(36 28% 93%) 100%)",
-                  border: "1px solid hsl(38 55% 75% / 0.4)",
-                }}
+                className="rounded-2xl border bg-[#FFFCF7] p-4 animate-pulse"
+                style={{ borderColor: "rgba(201,160,99,0.18)" }}
               >
-                <div className="w-10 h-10 rounded-xl shrink-0" style={{ background: "hsl(38 35% 85%)" }} />
-                <div className="flex-1 space-y-2">
-                  <div className="h-4 rounded-lg w-3/4" style={{ background: "hsl(38 35% 85%)" }} />
-                  <div className="h-3 rounded-lg w-full" style={{ background: "hsl(38 30% 88%)" }} />
-                  <div className="h-3 rounded-lg w-1/2" style={{ background: "hsl(38 30% 88%)" }} />
+                <div className="flex gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-[#F3E8D6]" />
+                  <div className="flex-1 space-y-2">
+                    <div className="h-4 bg-[#F3E8D6] rounded w-3/4" />
+                    <div className="h-3 bg-[#F3E8D6] rounded w-1/2" />
+                  </div>
                 </div>
               </div>
             ))}
           </div>
         )}
 
-        {/* ─── Error ───────────────────────────────────────────── */}
-        {isError && (
-          <div
-            className="flex flex-col items-center gap-2 py-10 rounded-2xl"
-            style={{
-              background: "hsl(10 55% 52% / 0.06)",
-              border: "1px solid hsl(10 55% 52% / 0.2)",
-            }}
-          >
-            <AlertCircle className="w-8 h-8" style={{ color: "hsl(10 55% 52%)" }} />
-            <p className="text-sm font-semibold" style={{ color: "hsl(10 40% 40%)" }}>
-              تعذّر تحميل الإشعارات. حاول تحديث الصفحة.
-            </p>
-          </div>
-        )}
-
-        {/* ─── Notification List ───────────────────────────────── */}
-        {!isLoading && !isError && notifications && notifications.length > 0 && (
-          <div className="space-y-3">
-            {notifications.map((notif) => {
+        {/* ─── Notification List ──────────────────────────────── */}
+        {!isLoading && filteredNotifications.length > 0 && (
+          <div className="space-y-3 pt-1">
+            {filteredNotifications.map((notif: any) => {
               const cfg = getTypeConfig(notif.type);
               const Icon = cfg.icon;
               const isMarkingRead = pendingMarkRead === notif.id;
               const isDeleting = pendingDelete === notif.id;
+
               return (
                 <div
                   key={notif.id}
@@ -392,7 +419,7 @@ export default function NotificationsPage() {
         )}
 
         {/* ─── Empty State ─────────────────────────────────────── */}
-        {!isLoading && !isError && (!notifications || notifications.length === 0) && (
+        {!isLoading && !isError && filteredNotifications.length === 0 && (
           <div
             className="flex flex-col items-center gap-4 py-16 rounded-2xl"
             style={{
@@ -417,16 +444,11 @@ export default function NotificationsPage() {
                 لا توجد إشعارات
               </p>
               <p className="text-[13px] mt-1.5" style={{ color: "hsl(38 30% 52%)" }}>
-                ستظهر تنبيهاتك ومواعيدك هنا
+                {filter === "unread" ? "جميع الإشعارات مقروءة" : filter === "important" ? "لا توجد إشعارات مهمة" : "ستظهر تنبيهاتك ومواعيدك هنا"}
               </p>
             </div>
           </div>
         )}
-
-        {/* Push notice */}
-        <p className="text-[10px] text-center pt-1" style={{ color: "hsl(38 25% 55%)" }}>
-          الإشعارات المعروضة داخلية فقط. Push Notifications مؤجل لإصدار لاحق.
-        </p>
       </div>
     </AppShell>
   );

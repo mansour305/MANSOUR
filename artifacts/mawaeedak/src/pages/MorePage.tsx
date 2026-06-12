@@ -8,7 +8,6 @@ import { MawaeedakLogo } from "@/components/layout/TopBar";
 import { ConfirmDialog } from "@/components/layout/ConfirmDialog";
 import { showTopNotification } from "@/components/layout/TopNotificationBanner";
 import { useStore } from "@/hooks/useStore";
-import { authSignOut } from "@/lib/auth";
 
 function MoreRow({
   icon: Icon,
@@ -26,10 +25,19 @@ function MoreRow({
   return (
     <button
       onClick={onClick}
-      className="flex w-full items-center gap-4 border-b px-5 py-5 text-right last:border-b-0"
-      style={{ borderColor: "rgba(201,160,99,0.16)", color: danger ? "#B9483F" : "#2F2B25" }}
+      className="flex w-full items-center gap-4 border-b px-5 py-5 text-right last:border-b-0 transition active:scale-[0.98]"
+      style={{ 
+        borderColor: "rgba(201,160,99,0.16)",
+        color: danger ? "#B9483F" : "#2F2B25",
+        background: danger ? "rgba(185,72,63,0.04)" : "transparent",
+      }}
     >
-      <Icon className="h-7 w-7 shrink-0" strokeWidth={1.6} style={{ color: danger ? "#B9483F" : "#A78042" }} />
+      <span 
+        className="grid h-10 w-10 shrink-0 place-items-center rounded-[14px] border" 
+        style={{ background: "#FFF9EF", borderColor: "rgba(201,160,99,0.3)" }}
+      >
+        <Icon className="h-5 w-5" strokeWidth={1.8} style={{ color: danger ? "#B9483F" : "#A78042" }} />
+      </span>
       <div className="flex-1 text-right">
         <span className="block text-[21px] font-extrabold">{label}</span>
         {description && (
@@ -75,18 +83,6 @@ function DailyCardRow({ onClick }: { onClick: () => void }) {
   );
 }
 
-const GUEST_USER = {
-  id: "",
-  name: "",
-  email: "",
-  city: "الرياض",
-  cityKey: "riyadh",
-  timezone: "Asia/Riyadh",
-  role: "user",
-  onboardingComplete: true,
-  interests: [],
-};
-
 export default function MorePage() {
   const [, setLocation] = useLocation();
   const { user, isAdmin, setUser, setAdmin } = useStore();
@@ -114,18 +110,27 @@ export default function MorePage() {
     }
   };
 
-  const logout = async () => {
-    await authSignOut().catch(() => {});
-
+  const handleLogout = async () => {
+    // Clear auth/session only, keep theme/location/preferences
+    localStorage.removeItem("app-user");
     sessionStorage.removeItem("mawaeedak_demo_session");
     sessionStorage.setItem("mawaeedak_splash_shown", "true");
-    localStorage.setItem("mawaeedak_onboarded", "true");
-    localStorage.setItem("app-user", JSON.stringify(GUEST_USER));
-
-    setUser(GUEST_USER);
+    
+    // Reset user to guest
+    setUser({
+      id: "",
+      name: "",
+      email: "",
+      city: "الرياض",
+      cityKey: "riyadh",
+      timezone: "Asia/Riyadh",
+      role: "user",
+      onboardingComplete: true,
+      interests: [],
+    });
     setAdmin(false);
+    
     showTopNotification("تم تسجيل الخروج والعودة للرئيسية", "success");
-
     setLocation("/");
     window.history.replaceState(null, "", "/");
   };
@@ -133,17 +138,20 @@ export default function MorePage() {
   return (
     <AppShell title="المزيد">
       <div className="space-y-5">
+        {/* Premium greeting card */}
         <section className="relative overflow-hidden rounded-[26px] border bg-white/72 p-5" style={{ borderColor: "rgba(201,160,99,0.22)", boxShadow: "0 16px 40px rgba(138,107,61,0.12)" }}>
           <img src={desertHeroImg} alt="" className="absolute inset-y-0 right-0 h-full w-[48%] object-cover opacity-75" />
           <div className="absolute inset-0 bg-gradient-to-r from-[#FAF7F2] via-[#FAF7F2]/86 to-transparent" />
           <div className="relative z-10 flex min-h-[160px] items-center justify-between gap-4">
             <div className="text-right">
-              <p className="text-[25px] font-extrabold" style={{ color: "#2F2B25" }}>مرحباً بك</p>
+              <p className="text-[25px] font-extrabold flex items-center gap-2" style={{ color: "#2F2B25" }}>
+                مرحباً بك <Sparkles className="h-5 w-5" style={{ color: "#C9A063" }} />
+              </p>
               <p className="mt-2 text-[26px] font-extrabold leading-tight" style={{ color: "#2F2B25" }}>
                 {displayName ? `يا ${displayName}` : "زائر مواعيدك"}
               </p>
               <p className="mt-4 flex items-center gap-2 text-[15px] font-bold" style={{ color: "#8A6B3D" }}>
-                نسعد بخدمتك كل يوم <Sparkles className="h-4 w-4" />
+                نسعد بخدمتك كل يوم
               </p>
             </div>
             <MawaeedakLogo compact />
@@ -151,9 +159,10 @@ export default function MorePage() {
         </section>
 
         <section className="px-1">
-          <DailyCardRow onClick={() => setLocation("/daily-card")} />
+          <DailyCardRow onClick={() => setLocation("/story")} />
         </section>
 
+        {/* Settings list */}
         <section className="overflow-hidden rounded-[24px] border bg-white/82" style={{ borderColor: "rgba(201,160,99,0.22)", boxShadow: "0 14px 34px rgba(138,107,61,0.10)" }}>
           {isLoggedIn && <MoreRow icon={User} label="الملف الشخصي" onClick={() => setLocation("/account")} />}
           {isLoggedIn && <MoreRow icon={Settings} label="الإعدادات" onClick={() => setLocation("/account#settings")} />}
@@ -171,8 +180,15 @@ export default function MorePage() {
           )}
         </section>
 
+        {/* Blessing card */}
         <section className="relative overflow-hidden rounded-[24px] border p-5" style={{ borderColor: "rgba(201,160,99,0.20)", background: "linear-gradient(90deg, #F3E8D6, #FAF7F2)" }}>
           <Lamp className="absolute bottom-4 right-4 h-16 w-16 opacity-35" style={{ color: "#C9A063" }} />
+          {/* Ornamental gold divider */}
+          <div className="flex items-center justify-center gap-3 mb-4">
+            <div className="h-px w-10 flex-1" style={{ background: "linear-gradient(90deg, transparent, #C9A063)" }} />
+            <span className="text-lg" style={{ color: "#C9A063" }}>✦</span>
+            <div className="h-px w-10 flex-1" style={{ background: "linear-gradient(90deg, #C9A063, transparent)" }} />
+          </div>
           <p className="relative text-[22px] font-extrabold" style={{ color: "#8A6B3D" }}>بارك الله في وقتك</p>
           <p className="relative mt-2 text-[15px] font-bold" style={{ color: "#2F2B25" }}>جعلنا الله وإياكم من الموفقين في كل أوقاتنا</p>
         </section>
@@ -184,7 +200,7 @@ export default function MorePage() {
         title="تسجيل الخروج"
         description="هل تريد تسجيل الخروج من حسابك؟ سيتم إعادتك إلى الصفحة الرئيسية."
         confirmText="تسجيل الخروج"
-        onConfirm={logout}
+        onConfirm={handleLogout}
       />
     </AppShell>
   );

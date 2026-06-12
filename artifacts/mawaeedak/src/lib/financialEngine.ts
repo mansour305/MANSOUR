@@ -162,7 +162,7 @@ function fromGateway(records: unknown[], includePast: boolean): FinancialDisplay
 }
 
 function fromFallback(includePast: boolean): FinancialDisplayEvent[] {
-  const events = FALLBACK_MONTHLY_EVENTS.map((event) => {
+  const events: Array<FinancialDisplayEvent | null> = FALLBACK_MONTHLY_EVENTS.map((event) => {
     const dateKey = nextMonthlyDate(event.day);
     const isPast = isPastDate(dateKey);
 
@@ -184,7 +184,7 @@ function fromFallback(includePast: boolean): FinancialDisplayEvent[] {
     };
   });
 
-  return events.filter((event): event is FinancialDisplayEvent => Boolean(event)).sort(sortFinancialEvents);
+  return events.filter((event): event is FinancialDisplayEvent => event !== null).sort(sortFinancialEvents);
 }
 
 export function normalizeFinancialEvents({
