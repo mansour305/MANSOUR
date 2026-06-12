@@ -34,7 +34,6 @@ const DEFAULT_PREFS: LocationPrefs = {
   lastUpdated: null,
 };
 
-/* Saudi city coordinates for nearest-city lookup */
 const SAUDI_CITIES_COORDS: Array<{ key: string; lat: number; lng: number }> = [
   { key: "riyadh", lat: 24.7136, lng: 46.6753 },
   { key: "jeddah", lat: 21.2854, lng: 39.2376 },
@@ -42,6 +41,7 @@ const SAUDI_CITIES_COORDS: Array<{ key: string; lat: number; lng: number }> = [
   { key: "madinah", lat: 24.5247, lng: 39.5692 },
   { key: "dammam", lat: 26.4207, lng: 50.0888 },
   { key: "khobar", lat: 26.2172, lng: 50.1971 },
+  { key: "dhahran", lat: 26.2861, lng: 50.1579 },
   { key: "taif", lat: 21.2854, lng: 40.4149 },
   { key: "tabuk", lat: 28.3998, lng: 36.5717 },
   { key: "buraydah", lat: 26.326, lng: 43.975 },
@@ -53,6 +53,9 @@ const SAUDI_CITIES_COORDS: Array<{ key: string; lat: number; lng: number }> = [
   { key: "arar", lat: 30.9753, lng: 41.0381 },
   { key: "sakaka", lat: 29.9697, lng: 40.2093 },
   { key: "jubail", lat: 27.0046, lng: 49.6587 },
+  { key: "qatif", lat: 26.5674, lng: 50.0068 },
+  { key: "bisha", lat: 19.9891, lng: 42.5978 },
+  { key: "rafha", lat: 29.6199, lng: 43.7329 },
 ];
 
 function deg2rad(d: number): number {
@@ -101,9 +104,6 @@ function savePrefs(prefs: LocationPrefs): void {
   localStorage.setItem(LOCATION_KEY, JSON.stringify(prefs));
 }
 
-/* ══════════════════════════════════════════════
-   HOOK
-   ══════════════════════════════════════════════ */
 export function useLocationPrefs() {
   const [prefs, setPrefs] = useState<LocationPrefs>(loadPrefs);
   const [gpsLoading, setGpsLoading] = useState(false);
@@ -117,7 +117,6 @@ export function useLocationPrefs() {
     });
   }, []);
 
-  /** Request GPS permission and detect nearest city + timezone */
   const requestGPS = useCallback((): Promise<string> => {
     return new Promise((resolve, reject) => {
       if (!navigator.geolocation) {
@@ -135,10 +134,13 @@ export function useLocationPrefs() {
         (pos) => {
           const { latitude: lat, longitude: lng } = pos.coords;
           const city = nearestSaudiCity(lat, lng);
-          const timezone = detectTimezone();
+          const timezone = "Asia/Riyadh";
           const now = new Date().toISOString();
           update({
-            lat, lng, city, timezone,
+            lat,
+            lng,
+            city,
+            timezone,
             source: "gps",
             permissionStatus: "granted",
             lastUpdated: now,
@@ -157,25 +159,24 @@ export function useLocationPrefs() {
           update({ permissionStatus: err.code === 1 ? "denied" : "prompt" });
           reject(new Error(msg));
         },
-        { timeout: 10000, enableHighAccuracy: false, maximumAge: 300000 }
+        { timeout: 15000, enableHighAccuracy: true, maximumAge: 0 }
       );
     });
   }, [update]);
 
-  /** Set city + timezone manually */
   const setManual = useCallback((city: string, timezone: string) => {
     update({
-      city, timezone,
-      lat: null, lng: null,
+      city,
+      timezone,
+      lat: null,
+      lng: null,
       source: "manual",
       lastUpdated: new Date().toISOString(),
     });
   }, [update]);
 
-  /** Reset to default */
   const resetToDefault = useCallback(() => {
-    const tz = detectTimezone();
-    update({ ...DEFAULT_PREFS, timezone: tz, lastUpdated: null });
+    update({ ...DEFAULT_PREFS, timezone: "Asia/Riyadh", lastUpdated: null });
   }, [update]);
 
   return {
