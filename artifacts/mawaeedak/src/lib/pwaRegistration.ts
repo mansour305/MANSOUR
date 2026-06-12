@@ -1,21 +1,24 @@
-let registered = false;
+let purged = false;
 
 export function registerPwaServiceWorker(): void {
-  if (registered || typeof window === "undefined" || !("serviceWorker" in navigator)) {
+  if (purged || typeof window === "undefined" || !("serviceWorker" in navigator)) {
     return;
   }
 
-  registered = true;
+  purged = true;
 
   window.addEventListener("load", () => {
-    const swUrl = new URL("sw.js", window.location.href);
-    const scope = new URL("./", window.location.href).pathname;
-
     navigator.serviceWorker
-      .register(swUrl, { scope })
-      .then((registration) => registration.update())
+      .getRegistrations()
+      .then(async (registrations) => {
+        await Promise.all(registrations.map((registration) => registration.unregister()));
+        if ("caches" in window) {
+          const keys = await caches.keys();
+          await Promise.all(keys.map((key) => caches.delete(key)));
+        }
+      })
       .catch(() => {
-        // Service worker registration is best effort.
+        // Cache cleanup is best effort.
       });
   });
 }
