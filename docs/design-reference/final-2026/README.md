@@ -19,6 +19,9 @@ All UI implementation must match these references EXACTLY. No approximation, no 
 | `07-menu-drawer.jpeg` | Menu drawer / Side panel |
 | `08-app-icon.jpeg` | App icon and logo treatments |
 | `09-services.jpeg` | Services page |
+| `10-daily-card-approved.jpeg` | بطاقة اليوم — Approved daily card reference |
+
+`10-daily-card-approved.jpeg` is the approved visual reference for بطاقة اليوم and any daily-card related UI. It must be treated as the active approved reference.
 
 ## Implementation Rules
 

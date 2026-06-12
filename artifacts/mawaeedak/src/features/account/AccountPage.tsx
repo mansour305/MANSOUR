@@ -539,21 +539,13 @@ export default function AccountPage() {
           </Card>
         </div>
 
-        {/* Danger Zone */}
+        {/* Account Actions */}
         <div className="space-y-2">
           <div className="flex items-center gap-2 px-1">
             <AlertTriangle className="w-4 h-4 text-muted-foreground" />
             <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-wide">الحساب</h3>
           </div>
           <div className="space-y-2 pb-2">
-            <Button
-              variant="outline"
-              className="w-full h-11 text-sm font-bold rounded-xl border-destructive/30 text-destructive hover:bg-destructive/5"
-              onClick={() => setIsDeleteOpen(true)}
-            >
-              <Trash2 className="w-4 h-4 ml-2" />
-              مسح البيانات المحلية
-            </Button>
             <Button
               variant="destructive"
               className="w-full h-12 text-base font-bold rounded-xl"
@@ -563,7 +555,7 @@ export default function AccountPage() {
               تسجيل الخروج
             </Button>
             <p className="text-[11px] text-muted-foreground text-center pt-1">
-              تسجيل الخروج يمسح بياناتك المحلية ويعيدك للبداية
+              سيتم تسجيل الخروج والعودة للصفحة الرئيسية
             </p>
           </div>
         </div>
