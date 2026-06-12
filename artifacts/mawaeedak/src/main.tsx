@@ -2,6 +2,7 @@ import { createRoot } from "react-dom/client";
 import App from "./App";
 import "./index.css";
 import "./styles/mawaeedak-reference.css";
+import "./styles/night-polish.css";
 import { registerApiAuth } from "./lib/apiAuth";
 import { registerPwaServiceWorker } from "./lib/pwaRegistration";
 import { setupNotificationClickHandler } from "./lib/push/pushNotificationService";
