@@ -1,4 +1,4 @@
-import { defineConfig, InputTransformerFn } from "orval";
+﻿import { defineConfig, InputTransformerFn } from "orval";
 import path from "path";
 
 const root = path.resolve(__dirname, "..", "..");
@@ -70,3 +70,4 @@ export default defineConfig({
     },
   },
 });
+

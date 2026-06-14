@@ -1,4 +1,4 @@
-import type { Request, RequestHandler } from "express";
+﻿import type { Request, RequestHandler } from "express";
 
 const ADMIN_ROLES = new Set(["admin", "super_admin", "owner"]);
 
@@ -11,11 +11,11 @@ type SupabaseUser = {
 };
 
 /**
- * يستخرج الدور من app_metadata فقط.
+ * ظٹط³طھط®ط±ط¬ ط§ظ„ط¯ظˆط± ظ…ظ† app_metadata ظپظ‚ط·.
  *
- * تحذير أمني: user_metadata قابل للتعديل من المستخدم نفسه عبر
- * supabase.auth.updateUser({ data: {...} }) → الوثوق به يسمح برفع الصلاحيات.
- * app_metadata لا يُعدَّل إلا من جانب الخادم (service_role) → مصدر ثقة الدور.
+ * طھط­ط°ظٹط± ط£ظ…ظ†ظٹ: user_metadata ظ‚ط§ط¨ظ„ ظ„ظ„طھط¹ط¯ظٹظ„ ظ…ظ† ط§ظ„ظ…ط³طھط®ط¯ظ… ظ†ظپط³ظ‡ ط¹ط¨ط±
+ * supabase.auth.updateUser({ data: {...} }) â†’ ط§ظ„ظˆط«ظˆظ‚ ط¨ظ‡ ظٹط³ظ…ط­ ط¨ط±ظپط¹ ط§ظ„طµظ„ط§ط­ظٹط§طھ.
+ * app_metadata ظ„ط§ ظٹظڈط¹ط¯ظژظ‘ظ„ ط¥ظ„ط§ ظ…ظ† ط¬ط§ظ†ط¨ ط§ظ„ط®ط§ط¯ظ… (service_role) â†’ ظ…طµط¯ط± ط«ظ‚ط© ط§ظ„ط¯ظˆط±.
  */
 function extractRole(user: SupabaseUser): string {
   const appRole = user.app_metadata?.role;
@@ -29,20 +29,20 @@ function extractRole(user: SupabaseUser): string {
 }
 
 /**
- * requireAdmin — يتحقق من Supabase JWT في رأس Authorization ثم يفحص الدور.
+ * requireAdmin â€” ظٹطھط­ظ‚ظ‚ ظ…ظ† Supabase JWT ظپظٹ ط±ط£ط³ Authorization ط«ظ… ظٹظپط­طµ ط§ظ„ط¯ظˆط±.
  *
- * - يطلب Authorization: Bearer <supabase_access_token>
- * - يتحقق من التوكن عبر Supabase Auth API (/auth/v1/user) باستخدام anon key
- * - يسمح فقط للأدوار: admin, super_admin, owner
- * - لا يثق بأي علم محلي (localStorage) — التحقق من جانب الخادم حصراً
+ * - ظٹط·ظ„ط¨ Authorization: Bearer <supabase_access_token>
+ * - ظٹطھط­ظ‚ظ‚ ظ…ظ† ط§ظ„طھظˆظƒظ† ط¹ط¨ط± Supabase Auth API (/auth/v1/user) ط¨ط§ط³طھط®ط¯ط§ظ… anon key
+ * - ظٹط³ظ…ط­ ظپظ‚ط· ظ„ظ„ط£ط¯ظˆط§ط±: admin, super_admin, owner
+ * - ظ„ط§ ظٹط«ظ‚ ط¨ط£ظٹ ط¹ظ„ظ… ظ…ط­ظ„ظٹ (localStorage) â€” ط§ظ„طھط­ظ‚ظ‚ ظ…ظ† ط¬ط§ظ†ط¨ ط§ظ„ط®ط§ط¯ظ… ط­طµط±ط§ظ‹
  */
 export const requireAdmin: RequestHandler = async (req, res, next) => {
   const supabaseUrl = process.env.SUPABASE_URL;
   const anonKey = process.env.SUPABASE_ANON_KEY;
 
   if (!supabaseUrl || !anonKey) {
-    req.log?.error("requireAdmin: SUPABASE_URL أو SUPABASE_ANON_KEY غير مضبوطين");
-    res.status(503).json({ error: "خدمة المصادقة غير مهيأة على الخادم" });
+    req.log?.error("requireAdmin: SUPABASE_URL ط£ظˆ SUPABASE_ANON_KEY ط؛ظٹط± ظ…ط¶ط¨ظˆط·ظٹظ†");
+    res.status(503).json({ error: "ط®ط¯ظ…ط© ط§ظ„ظ…طµط§ط¯ظ‚ط© ط؛ظٹط± ظ…ظ‡ظٹط£ط© ط¹ظ„ظ‰ ط§ظ„ط®ط§ط¯ظ…" });
     return;
   }
 
@@ -50,7 +50,7 @@ export const requireAdmin: RequestHandler = async (req, res, next) => {
   const token = authHeader.startsWith("Bearer ") ? authHeader.slice(7).trim() : "";
 
   if (!token) {
-    res.status(401).json({ error: "مطلوب تسجيل دخول المالك" });
+    res.status(401).json({ error: "ظ…ط·ظ„ظˆط¨ طھط³ط¬ظٹظ„ ط¯ط®ظˆظ„ ط§ظ„ظ…ط§ظ„ظƒ" });
     return;
   }
 
@@ -63,7 +63,7 @@ export const requireAdmin: RequestHandler = async (req, res, next) => {
     });
 
     if (!resp.ok) {
-      res.status(401).json({ error: "جلسة غير صالحة أو منتهية" });
+      res.status(401).json({ error: "ط¬ظ„ط³ط© ط؛ظٹط± طµط§ظ„ط­ط© ط£ظˆ ظ…ظ†طھظ‡ظٹط©" });
       return;
     }
 
@@ -71,14 +71,15 @@ export const requireAdmin: RequestHandler = async (req, res, next) => {
     const role = extractRole(user);
 
     if (!ADMIN_ROLES.has(role)) {
-      res.status(403).json({ error: "صلاحيات غير كافية" });
+      res.status(403).json({ error: "طµظ„ط§ط­ظٹط§طھ ط؛ظٹط± ظƒط§ظپظٹط©" });
       return;
     }
 
     (req as Request & { adminUser?: SupabaseUser }).adminUser = user;
     next();
   } catch (err) {
-    req.log?.error({ err }, "requireAdmin: فشل التحقق من Supabase");
-    res.status(401).json({ error: "تعذر التحقق من الجلسة" });
+    req.log?.error({ err }, "requireAdmin: ظپط´ظ„ ط§ظ„طھط­ظ‚ظ‚ ظ…ظ† Supabase");
+    res.status(401).json({ error: "طھط¹ط°ط± ط§ظ„طھط­ظ‚ظ‚ ظ…ظ† ط§ظ„ط¬ظ„ط³ط©" });
   }
 };
+

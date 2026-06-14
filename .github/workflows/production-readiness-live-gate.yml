@@ -1,4 +1,4 @@
-name: Production Readiness Live Gate
+﻿name: Production Readiness Live Gate
 
 on:
   workflow_dispatch:
@@ -77,3 +77,4 @@ jobs:
             echo "- External scripts removed during Web/PWA-only cleanup"
             echo "- Live smoke tests: run manually or via dedicated workflow"
           } >> "$GITHUB_STEP_SUMMARY"
+

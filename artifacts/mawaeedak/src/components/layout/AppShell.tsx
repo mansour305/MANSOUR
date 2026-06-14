@@ -1,5 +1,5 @@
-/**
- * AppShell — Saudi Premium Minimal App Layout
+﻿/**
+ * AppShell â€” Saudi Premium Minimal App Layout
  * Reference: docs/design-reference/final-2026/
  * 
  * Features:
@@ -41,3 +41,4 @@ export function AppShell({ children, title, hideNav = false, showBack = false }:
     </div>
   );
 }
+

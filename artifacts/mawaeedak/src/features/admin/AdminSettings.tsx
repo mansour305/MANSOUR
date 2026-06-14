@@ -1,5 +1,5 @@
-/**
- * AdminSettings — إعدادات التطبيق العامة
+﻿/**
+ * AdminSettings â€” ط¥ط¹ط¯ط§ط¯ط§طھ ط§ظ„طھط·ط¨ظٹظ‚ ط§ظ„ط¹ط§ظ…ط©
  * 
  * Contains: App name, logo, default theme, language, time format (12/24h),
  * timezone (Asia/Riyadh), location settings, notification settings, maintenance mode.
@@ -24,7 +24,7 @@ const MAINTENANCE_KEY = "mawaeedak_maintenance";
 export default function AdminSettings() {
   const { toast } = useToast();
   const [saving, setSaving] = useState(false);
-  const [appName, setAppName] = useState(() => localStorage.getItem(APP_NAME_KEY) || "مواعيدك");
+  const [appName, setAppName] = useState(() => localStorage.getItem(APP_NAME_KEY) || "ظ…ظˆط§ط¹ظٹط¯ظƒ");
   const [defaultTheme, setDefaultTheme] = useState(() => localStorage.getItem(DEFAULT_THEME_KEY) || "official");
   const [timeFormat, setTimeFormat] = useState(() => localStorage.getItem(TIME_FORMAT_KEY) || "12h");
   const [timezone, setTimezone] = useState(() => localStorage.getItem(TIMEZONE_KEY) || "Asia/Riyadh");
@@ -35,19 +35,19 @@ export default function AdminSettings() {
   const [maintenanceMode, setMaintenanceMode] = useState(() => {
     return localStorage.getItem(MAINTENANCE_KEY) === "true";
   });
-  const [defaultCity, setDefaultCity] = useState(() => localStorage.getItem("mawaeedak_default_city") || "الرياض");
+  const [defaultCity, setDefaultCity] = useState(() => localStorage.getItem("mawaeedak_default_city") || "ط§ظ„ط±ظٹط§ط¶");
 
   const SAUDI_CITIES = [
-    "الرياض", "جدة", "مكة المكرمة", "المدينة المنورة", "الدمام",
-    "الخبر", "الطائف", "تبوك", "بريدة", "خميس مشيط", "الأحساء",
-    "نجران", "جيزان", "أبها", "ينبع", "حائل", "عرعر",
-    "سكاكا", "الباحة", "الجبيل",
+    "ط§ظ„ط±ظٹط§ط¶", "ط¬ط¯ط©", "ظ…ظƒط© ط§ظ„ظ…ظƒط±ظ…ط©", "ط§ظ„ظ…ط¯ظٹظ†ط© ط§ظ„ظ…ظ†ظˆط±ط©", "ط§ظ„ط¯ظ…ط§ظ…",
+    "ط§ظ„ط®ط¨ط±", "ط§ظ„ط·ط§ط¦ظپ", "طھط¨ظˆظƒ", "ط¨ط±ظٹط¯ط©", "ط®ظ…ظٹط³ ظ…ط´ظٹط·", "ط§ظ„ط£ط­ط³ط§ط،",
+    "ظ†ط¬ط±ط§ظ†", "ط¬ظٹط²ط§ظ†", "ط£ط¨ظ‡ط§", "ظٹظ†ط¨ط¹", "ط­ط§ط¦ظ„", "ط¹ط±ط¹ط±",
+    "ط³ظƒط§ظƒط§", "ط§ظ„ط¨ط§ط­ط©", "ط§ظ„ط¬ط¨ظٹظ„",
   ];
 
   const THEMES = [
-    { value: "official", label: "الرسمية" },
-    { value: "dark", label: "داكن" },
-    { value: "light", label: "فاتح" },
+    { value: "official", label: "ط§ظ„ط±ط³ظ…ظٹط©" },
+    { value: "dark", label: "ط¯ط§ظƒظ†" },
+    { value: "light", label: "ظپط§طھط­" },
   ];
 
   const handleSave = () => {
@@ -60,7 +60,7 @@ export default function AdminSettings() {
       localStorage.setItem("mawaeedak_notif_enabled", String(notificationsEnabled));
       localStorage.setItem("mawaeedak_default_city", defaultCity);
       localStorage.setItem(MAINTENANCE_KEY, String(maintenanceMode));
-      toast({ title: "تم حفظ الإعدادات" });
+      toast({ title: "طھظ… ط­ظپط¸ ط§ظ„ط¥ط¹ط¯ط§ط¯ط§طھ" });
       setSaving(false);
     }, 600);
   };
@@ -74,7 +74,7 @@ export default function AdminSettings() {
           style={{ background: "linear-gradient(180deg, hsl(38 62% 52%), hsl(32 55% 42%))" }}
         />
         <h1 className="text-2xl font-extrabold" style={{ color: "hsl(22 62% 18%)" }}>
-          الإعدادات
+          ط§ظ„ط¥ط¹ط¯ط§ط¯ط§طھ
         </h1>
       </div>
 
@@ -83,14 +83,14 @@ export default function AdminSettings() {
         <CardContent className="p-6 space-y-4">
           <h3 className="font-bold flex items-center gap-2">
             <Shield className="w-4 h-4 text-primary" />
-            هوية التطبيق
+            ظ‡ظˆظٹط© ط§ظ„طھط·ط¨ظٹظ‚
           </h3>
           <div className="space-y-2">
-            <Label>اسم التطبيق</Label>
+            <Label>ط§ط³ظ… ط§ظ„طھط·ط¨ظٹظ‚</Label>
             <Input value={appName} onChange={e => setAppName(e.target.value)} dir="rtl" />
           </div>
           <div className="space-y-2">
-            <Label>الثيم الافتراضي</Label>
+            <Label>ط§ظ„ط«ظٹظ… ط§ظ„ط§ظپطھط±ط§ط¶ظٹ</Label>
             <Select value={defaultTheme} onValueChange={setDefaultTheme}>
               <SelectTrigger><SelectValue /></SelectTrigger>
               <SelectContent className="rtl">
@@ -106,31 +106,31 @@ export default function AdminSettings() {
         <CardContent className="p-6 space-y-4">
           <h3 className="font-bold flex items-center gap-2">
             <Globe className="w-4 h-4 text-primary" />
-            الوقت والموقع
+            ط§ظ„ظˆظ‚طھ ظˆط§ظ„ظ…ظˆظ‚ط¹
           </h3>
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label>صيغة الوقت</Label>
+              <Label>طµظٹط؛ط© ط§ظ„ظˆظ‚طھ</Label>
               <Select value={timeFormat} onValueChange={setTimeFormat}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent className="rtl">
-                  <SelectItem value="12h">12 ساعة (صباحاً/مساءً)</SelectItem>
-                  <SelectItem value="24h">24 ساعة</SelectItem>
+                  <SelectItem value="12h">12 ط³ط§ط¹ط© (طµط¨ط§ط­ط§ظ‹/ظ…ط³ط§ط،ظ‹)</SelectItem>
+                  <SelectItem value="24h">24 ط³ط§ط¹ط©</SelectItem>
                 </SelectContent>
               </Select>
             </div>
             <div className="space-y-2">
-              <Label>المنطقة الزمنية</Label>
+              <Label>ط§ظ„ظ…ظ†ط·ظ‚ط© ط§ظ„ط²ظ…ظ†ظٹط©</Label>
               <Select value={timezone} onValueChange={setTimezone}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent className="rtl">
-                  <SelectItem value="Asia/Riyadh">توقيت الرياض (AST +3)</SelectItem>
+                  <SelectItem value="Asia/Riyadh">طھظˆظ‚ظٹطھ ط§ظ„ط±ظٹط§ط¶ (AST +3)</SelectItem>
                 </SelectContent>
               </Select>
             </div>
           </div>
           <div className="space-y-2">
-            <Label>المدينة الافتراضية</Label>
+            <Label>ط§ظ„ظ…ط¯ظٹظ†ط© ط§ظ„ط§ظپطھط±ط§ط¶ظٹط©</Label>
             <Select value={defaultCity} onValueChange={setDefaultCity}>
               <SelectTrigger><SelectValue /></SelectTrigger>
               <SelectContent className="rtl">
@@ -146,12 +146,12 @@ export default function AdminSettings() {
         <CardContent className="p-6 space-y-4">
           <h3 className="font-bold flex items-center gap-2">
             <Bell className="w-4 h-4 text-primary" />
-            الإعدادات الافتراضية للإشعارات
+            ط§ظ„ط¥ط¹ط¯ط§ط¯ط§طھ ط§ظ„ط§ظپطھط±ط§ط¶ظٹط© ظ„ظ„ط¥ط´ط¹ط§ط±ط§طھ
           </h3>
           <div className="flex items-center justify-between">
             <div>
-              <div className="font-medium text-sm">تفعيل الإشعارات افتراضياً</div>
-              <div className="text-xs text-muted-foreground">تفعيل تلقائي للإشعارات للمستخدمين الجدد</div>
+              <div className="font-medium text-sm">طھظپط¹ظٹظ„ ط§ظ„ط¥ط´ط¹ط§ط±ط§طھ ط§ظپطھط±ط§ط¶ظٹط§ظ‹</div>
+              <div className="text-xs text-muted-foreground">طھظپط¹ظٹظ„ طھظ„ظ‚ط§ط¦ظٹ ظ„ظ„ط¥ط´ط¹ط§ط±ط§طھ ظ„ظ„ظ…ط³طھط®ط¯ظ…ظٹظ† ط§ظ„ط¬ط¯ط¯</div>
             </div>
             <Switch checked={notificationsEnabled} onCheckedChange={setNotificationsEnabled} />
           </div>
@@ -163,18 +163,18 @@ export default function AdminSettings() {
         <CardContent className="p-6 space-y-4">
           <h3 className="font-bold flex items-center gap-2">
             <Moon className="w-4 h-4 text-primary" />
-            وضع الصيانة
+            ظˆط¶ط¹ ط§ظ„طµظٹط§ظ†ط©
           </h3>
           <div className="flex items-center justify-between">
             <div>
-              <div className="font-medium text-sm">تفعيل وضع الصيانة</div>
-              <div className="text-xs text-muted-foreground">حظر وصول المستخدمين أثناء الصيانة</div>
+              <div className="font-medium text-sm">طھظپط¹ظٹظ„ ظˆط¶ط¹ ط§ظ„طµظٹط§ظ†ط©</div>
+              <div className="text-xs text-muted-foreground">ط­ط¸ط± ظˆطµظˆظ„ ط§ظ„ظ…ط³طھط®ط¯ظ…ظٹظ† ط£ط«ظ†ط§ط، ط§ظ„طµظٹط§ظ†ط©</div>
             </div>
             <Switch checked={maintenanceMode} onCheckedChange={setMaintenanceMode} />
           </div>
           {maintenanceMode && (
             <div className="p-3 rounded-lg bg-amber-500/10 border border-amber-500/30 text-sm text-amber-700">
-              وضع الصيانة مفعّل. سيتم حجب التطبيق عن جميع المستخدمين.
+              ظˆط¶ط¹ ط§ظ„طµظٹط§ظ†ط© ظ…ظپط¹ظ‘ظ„. ط³ظٹطھظ… ط­ط¬ط¨ ط§ظ„طھط·ط¨ظٹظ‚ ط¹ظ† ط¬ظ…ظٹط¹ ط§ظ„ظ…ط³طھط®ط¯ظ…ظٹظ†.
             </div>
           )}
         </CardContent>
@@ -182,12 +182,13 @@ export default function AdminSettings() {
 
       {/* Save */}
       <Button className="w-full h-12" onClick={handleSave} disabled={saving}>
-        {saving ? <Loader2 className="w-5 h-5 animate-spin" /> : <><Save className="w-5 h-5 ml-1" /> حفظ الإعدادات</>}
+        {saving ? <Loader2 className="w-5 h-5 animate-spin" /> : <><Save className="w-5 h-5 ml-1" /> ط­ظپط¸ ط§ظ„ط¥ط¹ط¯ط§ط¯ط§طھ</>}
       </Button>
 
       <p className="text-xs text-muted-foreground text-center">
-        ملاحظة: هذه الإعدادات عامة وتؤثر على جميع المستخدمين. الإعدادات الشخصية للمستخدمين لا تتغير.
+        ظ…ظ„ط§ط­ط¸ط©: ظ‡ط°ظ‡ ط§ظ„ط¥ط¹ط¯ط§ط¯ط§طھ ط¹ط§ظ…ط© ظˆطھط¤ط«ط± ط¹ظ„ظ‰ ط¬ظ…ظٹط¹ ط§ظ„ظ…ط³طھط®ط¯ظ…ظٹظ†. ط§ظ„ط¥ط¹ط¯ط§ط¯ط§طھ ط§ظ„ط´ط®طµظٹط© ظ„ظ„ظ…ط³طھط®ط¯ظ…ظٹظ† ظ„ط§ طھطھط؛ظٹط±.
       </p>
     </div>
   );
 }
+

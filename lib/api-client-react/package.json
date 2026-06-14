@@ -1,4 +1,4 @@
-{
+﻿{
   "name": "@workspace/api-client-react",
   "version": "0.0.0",
   "private": true,
@@ -13,3 +13,4 @@
     "react": ">=18"
   }
 }
+

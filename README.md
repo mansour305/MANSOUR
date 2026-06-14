@@ -1,4 +1,4 @@
-# Mawaeedak
+﻿# Mawaeedak
 
 Application workspace.
 
@@ -22,3 +22,4 @@ pnpm run typecheck
 pnpm run build
 pnpm run smoke
 ```
+

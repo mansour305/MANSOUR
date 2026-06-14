@@ -1,6 +1,6 @@
-kind = "web"
+﻿kind = "web"
 previewPath = "/"
-title = "مواعيدك"
+title = "ظ…ظˆط§ط¹ظٹط¯ظƒ"
 version = "1.0.0"
 id = "artifacts/mawaeedak"
 router = "path"
@@ -29,3 +29,4 @@ to = "/index.html"
 [services.env]
 PORT = "23640"
 BASE_PATH = "/"
+

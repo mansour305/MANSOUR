@@ -1,7 +1,7 @@
-/**
- * resilience.ts — نظام الاستقرار والتعافي
+﻿/**
+ * resilience.ts â€” ظ†ط¸ط§ظ… ط§ظ„ط§ط³طھظ‚ط±ط§ط± ظˆط§ظ„طھط¹ط§ظپظٹ
  * 
- * يتضمن:
+ * ظٹطھط¶ظ…ظ†:
  * - Global Error Boundary
  * - API Retry Logic
  * - Fallback UI
@@ -45,10 +45,10 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
   }
   
   componentDidCatch(error: Error, info: ErrorInfo): void {
-    // تتبع الخطأ
+    // طھطھط¨ط¹ ط§ظ„ط®ط·ط£
     errorTracker.trackReactError(error, info);
     
-    // استدعاء الـ callback
+    // ط§ط³طھط¯ط¹ط§ط، ط§ظ„ظ€ callback
     this.props.onError?.(error, info);
     
     console.error("[ErrorBoundary]", error, info.componentStack);
@@ -104,12 +104,12 @@ function DefaultErrorFallback({
   return (
     <div className={styles[level]}>
       <div className="text-center max-w-md mx-auto">
-        <div className="text-4xl mb-4">⚠️</div>
+        <div className="text-4xl mb-4">âڑ ï¸ڈ</div>
         <h2 className="text-lg font-bold text-red-800 mb-2">
-          {level === "page" ? "حدث خطأ غير متوقع" : "خطأ في المكون"}
+          {level === "page" ? "ط­ط¯ط« ط®ط·ط£ ط؛ظٹط± ظ…طھظˆظ‚ط¹" : "ط®ط·ط£ ظپظٹ ط§ظ„ظ…ظƒظˆظ†"}
         </h2>
         <p className="text-sm text-red-600 mb-4">
-          {error?.message || "حدث خطأ غير معروف"}
+          {error?.message || "ط­ط¯ط« ط®ط·ط£ ط؛ظٹط± ظ…ط¹ط±ظˆظپ"}
         </p>
         {errorId && (
           <p className="text-xs text-red-400 mb-4 font-mono">
@@ -119,14 +119,14 @@ function DefaultErrorFallback({
         {level !== "component" && (
           <div className="flex gap-2 justify-center">
             <Button onClick={onRetry} variant="outline" size="sm">
-              إعادة المحاولة
+              ط¥ط¹ط§ط¯ط© ط§ظ„ظ…ط­ط§ظˆظ„ط©
             </Button>
             <Button
               onClick={() => window.location.reload()}
               variant="outline"
               size="sm"
             >
-              تحديث الصفحة
+              طھط­ط¯ظٹط« ط§ظ„طµظپط­ط©
             </Button>
           </div>
         )}
@@ -245,14 +245,14 @@ class NetworkRecovery {
   }
   
   /**
-   * فحص الاتصال
+   * ظپط­طµ ط§ظ„ط§طھطµط§ظ„
    */
   checkConnection(): boolean {
     return navigator.onLine;
   }
   
   /**
-   * انتظار الاتصال مع retry
+   * ط§ظ†طھط¸ط§ط± ط§ظ„ط§طھطµط§ظ„ ظ…ط¹ retry
    */
   async waitForConnection(timeout: number = 30000): Promise<boolean> {
     if (this.isOnline) return true;
@@ -273,14 +273,14 @@ class NetworkRecovery {
   }
   
   /**
-   * إضافة مستمع
+   * ط¥ط¶ط§ظپط© ظ…ط³طھظ…ط¹
    */
   addListener(callback: (online: boolean) => void): void {
     this.listeners.push(callback);
   }
   
   /**
-   * إزالة مستمع
+   * ط¥ط²ط§ظ„ط© ظ…ط³طھظ…ط¹
    */
   removeListener(callback: (online: boolean) => void): void {
     this.listeners = this.listeners.filter((l) => l !== callback);
@@ -339,15 +339,15 @@ interface OfflineFallbackProps {
 export function OfflineFallback({ onRetry }: OfflineFallbackProps): React.JSX.Element {
   return (
     <div className="flex flex-col items-center justify-center p-8 text-center">
-      <div className="text-5xl mb-4">📡</div>
+      <div className="text-5xl mb-4">ًں“،</div>
       <h3 className="text-lg font-bold text-gray-800 mb-2">
-        لا يوجد اتصال بالإنترنت
+        ظ„ط§ ظٹظˆط¬ط¯ ط§طھطµط§ظ„ ط¨ط§ظ„ط¥ظ†طھط±ظ†طھ
       </h3>
       <p className="text-sm text-gray-600 mb-4">
-        يرجى التحقق من اتصالك بالشبكة والمحاولة مرة أخرى
+        ظٹط±ط¬ظ‰ ط§ظ„طھط­ظ‚ظ‚ ظ…ظ† ط§طھطµط§ظ„ظƒ ط¨ط§ظ„ط´ط¨ظƒط© ظˆط§ظ„ظ…ط­ط§ظˆظ„ط© ظ…ط±ط© ط£ط®ط±ظ‰
       </p>
       <Button onClick={onRetry} variant="outline">
-        إعادة المحاولة
+        ط¥ط¹ط§ط¯ط© ط§ظ„ظ…ط­ط§ظˆظ„ط©
       </Button>
     </div>
   );
@@ -370,7 +370,7 @@ export function LoadingFallback({ skeleton = true }: LoadingFallbackProps): Reac
   
   return (
     <div className="flex items-center justify-center p-8">
-      <div className="text-2xl animate-spin">⏳</div>
+      <div className="text-2xl animate-spin">âڈ³</div>
     </div>
   );
 }

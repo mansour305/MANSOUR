@@ -1,4 +1,4 @@
-import { type ReactNode } from "react";
+﻿import { type ReactNode } from "react";
 
 interface MawaeedakBadgeProps {
   children: ReactNode;
@@ -20,3 +20,4 @@ export function MawaeedakBadge({ children, variant = "gold", className = "" }: M
     </span>
   );
 }
+

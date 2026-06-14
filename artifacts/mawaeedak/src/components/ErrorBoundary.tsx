@@ -1,4 +1,4 @@
-import React from "react";
+﻿import React from "react";
 import { AlertTriangle, Home, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -47,11 +47,11 @@ export class ErrorBoundary extends React.Component<Props, State> {
           </div>
 
           <h2 className="text-xl font-bold mb-2" style={{ color: "#3D2B1F" }}>
-            حدث خطأ غير متوقع
+            ط­ط¯ط« ط®ط·ط£ ط؛ظٹط± ظ…طھظˆظ‚ط¹
           </h2>
 
           <p className="text-sm mb-8 max-w-[280px] leading-relaxed" style={{ color: "#7A5C3A" }}>
-            نعتذر عن هذا الخطأ. يُرجى المحاولة مرة أخرى أو العودة للرئيسية.
+            ظ†ط¹طھط°ط± ط¹ظ† ظ‡ط°ط§ ط§ظ„ط®ط·ط£. ظٹظڈط±ط¬ظ‰ ط§ظ„ظ…ط­ط§ظˆظ„ط© ظ…ط±ط© ط£ط®ط±ظ‰ ط£ظˆ ط§ظ„ط¹ظˆط¯ط© ظ„ظ„ط±ط¦ظٹط³ظٹط©.
           </p>
 
           <div className="flex flex-col gap-3 w-full max-w-[240px]">
@@ -60,7 +60,7 @@ export class ErrorBoundary extends React.Component<Props, State> {
               onClick={this.handleReload}
             >
               <Home className="w-5 h-5" />
-              العودة للرئيسية
+              ط§ظ„ط¹ظˆط¯ط© ظ„ظ„ط±ط¦ظٹط³ظٹط©
             </Button>
             <Button
               variant="outline"
@@ -68,7 +68,7 @@ export class ErrorBoundary extends React.Component<Props, State> {
               onClick={() => window.location.reload()}
             >
               <RefreshCw className="w-4 h-4" />
-              إعادة تحميل الصفحة
+              ط¥ط¹ط§ط¯ط© طھط­ظ…ظٹظ„ ط§ظ„طµظپط­ط©
             </Button>
           </div>
         </div>
@@ -78,3 +78,4 @@ export class ErrorBoundary extends React.Component<Props, State> {
     return this.props.children;
   }
 }
+

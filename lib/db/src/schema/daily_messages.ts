@@ -1,4 +1,4 @@
-import { pgTable, serial, text, timestamp, boolean } from "drizzle-orm/pg-core";
+﻿import { pgTable, serial, text, timestamp, boolean } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod/v4";
 
@@ -13,3 +13,4 @@ export const dailyMessagesTable = pgTable("daily_messages", {
 export const insertDailyMessageSchema = createInsertSchema(dailyMessagesTable).omit({ id: true, created_at: true });
 export type InsertDailyMessage = z.infer<typeof insertDailyMessageSchema>;
 export type DailyMessage = typeof dailyMessagesTable.$inferSelect;
+

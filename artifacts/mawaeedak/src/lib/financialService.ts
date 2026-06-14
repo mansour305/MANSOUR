@@ -1,7 +1,7 @@
-/**
- * Financial Schedules Service — مواعيدك
+﻿/**
+ * Financial Schedules Service â€” ظ…ظˆط§ط¹ظٹط¯ظƒ
  * 
- * خدمة المواعيد المالية (الرواتب والدعم)
+ * ط®ط¯ظ…ط© ط§ظ„ظ…ظˆط§ط¹ظٹط¯ ط§ظ„ظ…ط§ظ„ظٹط© (ط§ظ„ط±ظˆط§طھط¨ ظˆط§ظ„ط¯ط¹ظ…)
  */
 
 import { supabase, isSupabaseEnabled } from "./supabase";
@@ -21,17 +21,17 @@ export type FinancialProgram =
   | "other";
 
 export const PROGRAM_NAMES: Record<FinancialProgram, string> = {
-  salary: "الراتب",
-  citizen_account: "حساب المواطن",
-  housing_support: "الدعم السكني",
-  social_security: "الضمان الاجتماعي",
-  retirement: "التقاعد",
-  insurance: "التأمينات",
-  saned: "ساند",
-  hafiz: "حافز",
-  rehabilitation: "التأهيل الشامل",
-  agricultural_support: "الدعم الزراعي",
-  other: "دعم آخر",
+  salary: "ط§ظ„ط±ط§طھط¨",
+  citizen_account: "ط­ط³ط§ط¨ ط§ظ„ظ…ظˆط§ط·ظ†",
+  housing_support: "ط§ظ„ط¯ط¹ظ… ط§ظ„ط³ظƒظ†ظٹ",
+  social_security: "ط§ظ„ط¶ظ…ط§ظ† ط§ظ„ط§ط¬طھظ…ط§ط¹ظٹ",
+  retirement: "ط§ظ„طھظ‚ط§ط¹ط¯",
+  insurance: "ط§ظ„طھط£ظ…ظٹظ†ط§طھ",
+  saned: "ط³ط§ظ†ط¯",
+  hafiz: "ط­ط§ظپط²",
+  rehabilitation: "ط§ظ„طھط£ظ‡ظٹظ„ ط§ظ„ط´ط§ظ…ظ„",
+  agricultural_support: "ط§ظ„ط¯ط¹ظ… ط§ظ„ط²ط±ط§ط¹ظٹ",
+  other: "ط¯ط¹ظ… ط¢ط®ط±",
 };
 
 export type FinancialDateRecord = {
@@ -93,7 +93,7 @@ export type FinancialCountdown = {
 };
 
 /**
- * getOfficialFinancialDates — جلب المواعيد المالية الرسمية
+ * getOfficialFinancialDates â€” ط¬ظ„ط¨ ط§ظ„ظ…ظˆط§ط¹ظٹط¯ ط§ظ„ظ…ط§ظ„ظٹط© ط§ظ„ط±ط³ظ…ظٹط©
  */
 export async function getOfficialFinancialDates(): Promise<FinancialDateRecord[]> {
   if (!isSupabaseEnabled || !supabase) return [];
@@ -109,7 +109,7 @@ export async function getOfficialFinancialDates(): Promise<FinancialDateRecord[]
 }
 
 /**
- * getUpcomingFinancialDates — جلب المواعيد القادمة
+ * getUpcomingFinancialDates â€” ط¬ظ„ط¨ ط§ظ„ظ…ظˆط§ط¹ظٹط¯ ط§ظ„ظ‚ط§ط¯ظ…ط©
  */
 export async function getUpcomingFinancialDates(limit = 5): Promise<FinancialDateRecord[]> {
   const all = await getOfficialFinancialDates();
@@ -118,7 +118,7 @@ export async function getUpcomingFinancialDates(limit = 5): Promise<FinancialDat
 }
 
 /**
- * getFinancialCountdowns — حساب العدادات المالية
+ * getFinancialCountdowns â€” ط­ط³ط§ط¨ ط§ظ„ط¹ط¯ط§ط¯ط§طھ ط§ظ„ظ…ط§ظ„ظٹط©
  */
 export async function getFinancialCountdowns(): Promise<FinancialCountdown[]> {
   const dates = await getUpcomingFinancialDates(10);
@@ -134,13 +134,13 @@ export async function getFinancialCountdowns(): Promise<FinancialCountdown[]> {
 }
 
 /**
- * createFinancialDateRecord — إنشاء سجل موعد مالي (للأدمن)
+ * createFinancialDateRecord â€” ط¥ظ†ط´ط§ط، ط³ط¬ظ„ ظ…ظˆط¹ط¯ ظ…ط§ظ„ظٹ (ظ„ظ„ط£ط¯ظ…ظ†)
  */
 export async function createFinancialDateRecord(
   record: Omit<FinancialDateRecord, "id" | "created_at" | "updated_at">
 ): Promise<{ success: boolean; error?: string }> {
   if (!isSupabaseEnabled || !supabase) {
-    return { success: false, error: "Supabase غير مهيأ" };
+    return { success: false, error: "Supabase ط؛ظٹط± ظ…ظ‡ظٹط£" };
   }
   
   const { error } = await supabase
@@ -155,14 +155,14 @@ export async function createFinancialDateRecord(
 }
 
 /**
- * updateFinancialDate — تحديث موعد مالي (للأدمن)
+ * updateFinancialDate â€” طھط­ط¯ظٹط« ظ…ظˆط¹ط¯ ظ…ط§ظ„ظٹ (ظ„ظ„ط£ط¯ظ…ظ†)
  */
 export async function updateFinancialDate(
   id: string,
   updates: Partial<FinancialDateRecord>
 ): Promise<{ success: boolean; error?: string }> {
   if (!isSupabaseEnabled || !supabase) {
-    return { success: false, error: "Supabase غير مهيأ" };
+    return { success: false, error: "Supabase ط؛ظٹط± ظ…ظ‡ظٹط£" };
   }
   
   const { error } = await supabase
@@ -175,7 +175,7 @@ export async function updateFinancialDate(
 }
 
 /**
- * adjustFinancialDate — تعديل موعد مالي مع سجل التعديل
+ * adjustFinancialDate â€” طھط¹ط¯ظٹظ„ ظ…ظˆط¹ط¯ ظ…ط§ظ„ظٹ ظ…ط¹ ط³ط¬ظ„ ط§ظ„طھط¹ط¯ظٹظ„
  */
 export async function adjustFinancialDate(
   id: string,
@@ -185,7 +185,7 @@ export async function adjustFinancialDate(
   updatedBy: string
 ): Promise<{ success: boolean; error?: string }> {
   if (!isSupabaseEnabled || !supabase) {
-    return { success: false, error: "Supabase غير مهيأ" };
+    return { success: false, error: "Supabase ط؛ظٹط± ظ…ظ‡ظٹط£" };
   }
   
   // Get current record
@@ -196,7 +196,7 @@ export async function adjustFinancialDate(
     .single();
   
   if (fetchError || !current) {
-    return { success: false, error: "السجل غير موجود" };
+    return { success: false, error: "ط§ظ„ط³ط¬ظ„ ط؛ظٹط± ظ…ظˆط¬ظˆط¯" };
   }
   
   // Record adjustment
@@ -234,7 +234,7 @@ export async function adjustFinancialDate(
 }
 
 /**
- * getAdjustmentHistory — جلب سجل التعديلات
+ * getAdjustmentHistory â€” ط¬ظ„ط¨ ط³ط¬ظ„ ط§ظ„طھط¹ط¯ظٹظ„ط§طھ
  */
 export async function getAdjustmentHistory(programKey?: string): Promise<FinancialDateAdjustment[]> {
   if (!isSupabaseEnabled || !supabase) return [];
@@ -254,7 +254,7 @@ export async function getAdjustmentHistory(programKey?: string): Promise<Financi
 }
 
 /**
- * getUserFinancialEvents — جلب مواعيد المستخدم المالية
+ * getUserFinancialEvents â€” ط¬ظ„ط¨ ظ…ظˆط§ط¹ظٹط¯ ط§ظ„ظ…ط³طھط®ط¯ظ… ط§ظ„ظ…ط§ظ„ظٹط©
  */
 export async function getUserFinancialEvents(userId: string): Promise<FinancialEvent[]> {
   if (!isSupabaseEnabled || !supabase) return [];
@@ -271,7 +271,7 @@ export async function getUserFinancialEvents(userId: string): Promise<FinancialE
 }
 
 /**
- * createUserFinancialEvent — إنشاء موعد مالي للمستخدم
+ * createUserFinancialEvent â€” ط¥ظ†ط´ط§ط، ظ…ظˆط¹ط¯ ظ…ط§ظ„ظٹ ظ„ظ„ظ…ط³طھط®ط¯ظ…
  */
 export async function createUserFinancialEvent(
   userId: string,
@@ -280,7 +280,7 @@ export async function createUserFinancialEvent(
   programNameAr?: string
 ): Promise<{ success: boolean; error?: string }> {
   if (!isSupabaseEnabled || !supabase) {
-    return { success: false, error: "Supabase غير مهيأ" };
+    return { success: false, error: "Supabase ط؛ظٹط± ظ…ظ‡ظٹط£" };
   }
   
   const { error } = await supabase
@@ -298,13 +298,13 @@ export async function createUserFinancialEvent(
 }
 
 /**
- * deleteUserFinancialEvent — حذف موعد مالي للمستخدم
+ * deleteUserFinancialEvent â€” ط­ط°ظپ ظ…ظˆط¹ط¯ ظ…ط§ظ„ظٹ ظ„ظ„ظ…ط³طھط®ط¯ظ…
  */
 export async function deleteUserFinancialEvent(
   eventId: string
 ): Promise<{ success: boolean; error?: string }> {
   if (!isSupabaseEnabled || !supabase) {
-    return { success: false, error: "Supabase غير مهيأ" };
+    return { success: false, error: "Supabase ط؛ظٹط± ظ…ظ‡ظٹط£" };
   }
   
   const { error } = await supabase
@@ -317,7 +317,7 @@ export async function deleteUserFinancialEvent(
 }
 
 /**
- * approveFinancialDate — اعتماد موعد مالي (للأدمن)
+ * approveFinancialDate â€” ط§ط¹طھظ…ط§ط¯ ظ…ظˆط¹ط¯ ظ…ط§ظ„ظٹ (ظ„ظ„ط£ط¯ظ…ظ†)
  */
 export async function approveFinancialDate(id: string): Promise<{ success: boolean; error?: string }> {
   return updateFinancialDate(id, {
@@ -327,7 +327,7 @@ export async function approveFinancialDate(id: string): Promise<{ success: boole
 }
 
 /**
- * getAllFinancialDatesAdmin — جلب كل المواعيد المالية (للأدمن)
+ * getAllFinancialDatesAdmin â€” ط¬ظ„ط¨ ظƒظ„ ط§ظ„ظ…ظˆط§ط¹ظٹط¯ ط§ظ„ظ…ط§ظ„ظٹط© (ظ„ظ„ط£ط¯ظ…ظ†)
  */
 export async function getAllFinancialDatesAdmin(): Promise<FinancialDateRecord[]> {
   if (!isSupabaseEnabled || !supabase) return [];
@@ -340,3 +340,4 @@ export async function getAllFinancialDatesAdmin(): Promise<FinancialDateRecord[]
   if (error) return [];
   return (data || []) as FinancialDateRecord[];
 }
+

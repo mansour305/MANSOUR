@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+﻿import { useState, useEffect, useMemo } from "react";
 import { AppShell } from "@/components/layout/AppShell";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -13,7 +13,6 @@ import { useStore } from "@/hooks/useStore";
 import { formatHijriDate, formatGregorianDate, getDayName } from "@/lib/utils";
 import { Copy, Share2, Save, CheckCircle2, Loader2, Landmark } from "lucide-react";
 import { useTimeFormat } from "@/hooks/useTimeFormat";
-import desertHeroImg from "@assets/desert-hero.png";
 import { getRiyadhTodayKey } from "@/lib/riyadhTime";
 import { getCityName, normalizeCityKey } from "@/lib/prayerTimesService";
 
@@ -25,20 +24,20 @@ const INK = "#2F2B25";
 const WARM_BG = "#F3E8D6";
 
 const PRAYER_KEYS: [string, string][] = [
-  ["الفجر", "fajr"],
-  ["الشروق", "sunrise"],
-  ["الظهر", "dhuhr"],
-  ["العصر", "asr"],
-  ["المغرب", "maghrib"],
-  ["العشاء", "isha"],
+  ["ط§ظ„ظپط¬ط±", "fajr"],
+  ["ط§ظ„ط´ط±ظˆظ‚", "sunrise"],
+  ["ط§ظ„ط¸ظ‡ط±", "dhuhr"],
+  ["ط§ظ„ط¹طµط±", "asr"],
+  ["ط§ظ„ظ…ط؛ط±ط¨", "maghrib"],
+  ["ط§ظ„ط¹ط´ط§ط،", "isha"],
 ];
 
 const EVENT_ICONS: Record<string, string> = {
-  salary: "💰",
-  support: "👨‍👩‍👧",
-  bill: "📄",
-  housing: "🏠",
-  other: "📅",
+  salary: "ًں’°",
+  support: "ًں‘¨â€چًں‘©â€چًں‘§",
+  bill: "ًں“„",
+  housing: "ًںڈ ",
+  other: "ًں“…",
 };
 
 const STORAGE_KEY_STORY = "mawaeedak_story_v1";
@@ -122,7 +121,7 @@ export default function StoryPage() {
     const data = { showDate, showMessage, showCountdowns, showPrayer, customMessage };
     localStorage.setItem(STORAGE_KEY_STORY, JSON.stringify(data));
     setSavedOk(true);
-    toast({ title: "تم حفظ إعدادات الستوري" });
+    toast({ title: "طھظ… ط­ظپط¸ ط¥ط¹ط¯ط§ط¯ط§طھ ط§ظ„ط³طھظˆط±ظٹ" });
     setTimeout(() => setSavedOk(false), 2000);
   };
 
@@ -130,34 +129,34 @@ export default function StoryPage() {
     setIsLoading(true);
     try {
       const lines = [
-        "✨ مواعيدك ✨",
+        "âœ¨ ظ…ظˆط§ط¹ظٹط¯ظƒ âœ¨",
         getDayName(),
-        `📅 هجري: ${formatHijriDate()}`,
-        `📆 ميلادي: ${formatGregorianDate()}`,
+        `ًں“… ظ‡ط¬ط±ظٹ: ${formatHijriDate()}`,
+        `ًں“† ظ…ظٹظ„ط§ط¯ظٹ: ${formatGregorianDate()}`,
       ];
       if (showMessage && customMessage.trim()) {
-        lines.push(`💡 ${customMessage.trim()}`);
+        lines.push(`ًں’، ${customMessage.trim()}`);
       }
       if (showCountdowns && countdowns.length > 0) {
         lines.push("");
-        lines.push("⏳ كم باقي على:");
+        lines.push("âڈ³ ظƒظ… ط¨ط§ظ‚ظٹ ط¹ظ„ظ‰:");
         countdowns.forEach((c: any) => {
-          lines.push(`${EVENT_ICONS[c.type] ?? "📅"} ${c.name} 🔻 ${c.days} يوم`);
+          lines.push(`${EVENT_ICONS[c.type] ?? "ًں“…"} ${c.name} ًں”» ${c.days} ظٹظˆظ…`);
         });
       }
       if (showPrayer) {
         lines.push("");
-        lines.push("🕌 مواقيت الصلاة:");
+        lines.push("ًں•Œ ظ…ظˆط§ظ‚ظٹطھ ط§ظ„طµظ„ط§ط©:");
         PRAYER_KEYS.forEach(([label, key]) => {
           lines.push(`${label}: ${formatTime(prayers[key as keyof typeof prayers])}`);
         });
       }
       lines.push("");
-      lines.push("مواعيدك - جميع الحقوق محفوظة ©");
+      lines.push("ظ…ظˆط§ط¹ظٹط¯ظƒ - ط¬ظ…ظٹط¹ ط§ظ„ط­ظ‚ظˆظ‚ ظ…ط­ظپظˆط¸ط© آ©");
       await navigator.clipboard.writeText(lines.join("\n"));
-      toast({ title: "تم نسخ الستوري" });
+      toast({ title: "طھظ… ظ†ط³ط® ط§ظ„ط³طھظˆط±ظٹ" });
     } catch {
-      toast({ title: "فشل النسخ", variant: "destructive" });
+      toast({ title: "ظپط´ظ„ ط§ظ„ظ†ط³ط®", variant: "destructive" });
     } finally {
       setIsLoading(false);
     }
@@ -168,8 +167,8 @@ export default function StoryPage() {
     try {
       if (navigator.share) {
         await navigator.share({
-          title: "ستوري مواعيدك",
-          text: `✨ مواعيدك - ${getDayName()}`,
+          title: "ط³طھظˆط±ظٹ ظ…ظˆط§ط¹ظٹط¯ظƒ",
+          text: `âœ¨ ظ…ظˆط§ط¹ظٹط¯ظƒ - ${getDayName()}`,
           url: window.location.origin,
         });
       } else {
@@ -180,9 +179,9 @@ export default function StoryPage() {
   };
 
   return (
-    <AppShell title="ستوري اليوم">
+    <AppShell title="ط³طھظˆط±ظٹ ط§ظ„ظٹظˆظ…">
       <div className="space-y-5">
-        {/* بطاقة الستوري - نفس هوية التطبيق */}
+        {/* ط¨ط·ط§ظ‚ط© ط§ظ„ط³طھظˆط±ظٹ - ظ†ظپط³ ظ‡ظˆظٹط© ط§ظ„طھط·ط¨ظٹظ‚ */}
         <div 
           className="relative overflow-hidden rounded-[28px] border"
           style={{ 
@@ -191,36 +190,32 @@ export default function StoryPage() {
             height: "480px"
           }}
         >
-          {/* خلفية الصورة */}
-          <img 
-            src={desertHeroImg} 
-            alt="" 
-            className="absolute inset-0 h-full w-full object-cover" 
-          />
+          {/* ط®ظ„ظپظٹط© ط§ظ„طµظˆط±ط© */}
+          <div aria-hidden="true" />
           
-          {/* تدرج كريمي من اليمين */}
+          {/* طھط¯ط±ط¬ ظƒط±ظٹظ…ظٹ ظ…ظ† ط§ظ„ظٹظ…ظٹظ† */}
           <div className="absolute inset-0 bg-gradient-to-l from-[#FAF7F2]/95 via-[#FAF7F2]/75 to-transparent" />
           
-          {/* محتوى البطاقة */}
+          {/* ظ…ط­طھظˆظ‰ ط§ظ„ط¨ط·ط§ظ‚ط© */}
           <div className="relative z-10 flex h-full flex-col p-5">
-            {/* الشعار */}
+            {/* ط§ظ„ط´ط¹ط§ط± */}
             <div className="text-center mb-3">
-              <div className="text-2xl mb-1" style={{ color: GOLD }}>✦</div>
+              <div className="text-2xl mb-1" style={{ color: GOLD }}>âœ¦</div>
               <h1 className="text-3xl font-extrabold tracking-tight" style={{ color: INK }}>
-                مواعيدك
+                ظ…ظˆط§ط¹ظٹط¯ظƒ
               </h1>
               <div className="h-[2px] w-24 mx-auto mt-2" style={{ background: `linear-gradient(90deg, transparent, ${GOLD}, transparent)` }} />
             </div>
 
-            {/* التاريخ */}
+            {/* ط§ظ„طھط§ط±ظٹط® */}
             {showDate && (
               <div className="text-center space-y-1 mb-3">
                 <div className="text-xl font-extrabold" style={{ color: BROWN }}>
                   {getDayName()}
                 </div>
                 <div className="flex justify-center gap-4 text-sm font-bold" style={{ color: INK }}>
-                  <span>📅 {formatHijriDate()}</span>
-                  <span>📆 {formatGregorianDate()}</span>
+                  <span>ًں“… {formatHijriDate()}</span>
+                  <span>ًں“† {formatGregorianDate()}</span>
                 </div>
               </div>
             )}
@@ -228,7 +223,7 @@ export default function StoryPage() {
             {/* Divider */}
             <div className="h-[1px] w-full my-2" style={{ background: `linear-gradient(90deg, transparent, ${GOLD}, transparent)` }} />
 
-            {/* رسالة اليوم */}
+            {/* ط±ط³ط§ظ„ط© ط§ظ„ظٹظˆظ… */}
             {showMessage && customMessage.trim() && (
               <div 
                 className="rounded-xl border p-3 text-center mb-2"
@@ -243,7 +238,7 @@ export default function StoryPage() {
               </div>
             )}
 
-            {/* العدادات المالية */}
+            {/* ط§ظ„ط¹ط¯ط§ط¯ط§طھ ط§ظ„ظ…ط§ظ„ظٹط© */}
             {showCountdowns && countdowns.length > 0 && (
               <div 
                 className="rounded-xl border p-3 mb-2"
@@ -253,16 +248,16 @@ export default function StoryPage() {
                 }}
               >
                 <div className="text-center text-xs font-bold mb-2" style={{ color: BROWN }}>
-                  ⏳ كم باقي على:
+                  âڈ³ ظƒظ… ط¨ط§ظ‚ظٹ ط¹ظ„ظ‰:
                 </div>
                 <div className="space-y-1.5">
                   {countdowns.map((c: any, i: number) => (
                     <div key={i} className="flex items-center justify-between">
                       <span className="text-xs font-medium" style={{ color: INK }}>
-                        {EVENT_ICONS[c.type] ?? "📅"} {c.name}
+                        {EVENT_ICONS[c.type] ?? "ًں“…"} {c.name}
                       </span>
                       <span className="shrink-0 text-xs font-extrabold" style={{ color: GOLD }}>
-                        {c.days} يوم
+                        {c.days} ظٹظˆظ…
                       </span>
                     </div>
                   ))}
@@ -275,11 +270,11 @@ export default function StoryPage() {
                 className="rounded-xl border p-3 text-center mb-2"
                 style={{ borderColor: "rgba(201,160,99,0.15)" }}
               >
-                <p className="text-xs opacity-60" style={{ color: INK }}>لا توجد مواعيد مالية حالياً</p>
+                <p className="text-xs opacity-60" style={{ color: INK }}>ظ„ط§ طھظˆط¬ط¯ ظ…ظˆط§ط¹ظٹط¯ ظ…ط§ظ„ظٹط© ط­ط§ظ„ظٹط§ظ‹</p>
               </div>
             )}
 
-            {/* مواقيت الصلاة */}
+            {/* ظ…ظˆط§ظ‚ظٹطھ ط§ظ„طµظ„ط§ط© */}
             {showPrayer && (
               <div 
                 className="rounded-xl border p-3 mt-auto"
@@ -290,7 +285,7 @@ export default function StoryPage() {
               >
                 <div className="flex items-center justify-center gap-2 mb-2">
                   <Landmark className="h-4 w-4" style={{ color: GOLD }} />
-                  <span className="text-xs font-bold" style={{ color: BROWN }}>مواقيت الصلاة</span>
+                  <span className="text-xs font-bold" style={{ color: BROWN }}>ظ…ظˆط§ظ‚ظٹطھ ط§ظ„طµظ„ط§ط©</span>
                 </div>
                 <div className="grid grid-cols-3 gap-x-2 gap-y-1">
                   {PRAYER_KEYS.map(([label, key]) => (
@@ -305,32 +300,32 @@ export default function StoryPage() {
               </div>
             )}
 
-            {/* الفوتر */}
+            {/* ط§ظ„ظپظˆطھط± */}
             <div className="mt-auto pt-2">
               <div className="text-center text-[10px] font-extrabold tracking-wider" style={{ color: GOLD }}>
-                مواعيدك
+                ظ…ظˆط§ط¹ظٹط¯ظƒ
               </div>
               <div className="text-center text-[8px] opacity-50" style={{ color: INK }}>
-                جميع الحقوق محفوظة © {new Date().getFullYear()}
+                ط¬ظ…ظٹط¹ ط§ظ„ط­ظ‚ظˆظ‚ ظ…ط­ظپظˆط¸ط© آ© {new Date().getFullYear()}
               </div>
             </div>
           </div>
         </div>
 
-        {/* رسالة اليوم */}
+        {/* ط±ط³ط§ظ„ط© ط§ظ„ظٹظˆظ… */}
         <div className="space-y-1.5">
-          <Label className="text-sm font-semibold text-foreground">رسالة اليوم</Label>
+          <Label className="text-sm font-semibold text-foreground">ط±ط³ط§ظ„ط© ط§ظ„ظٹظˆظ…</Label>
           <Textarea
             value={customMessage}
             onChange={(e) => setCustomMessage(e.target.value)}
             rows={2}
             className="resize-none rounded-xl text-sm font-medium"
-            placeholder="اكتب رسالة الستوري..."
+            placeholder="ط§ظƒطھط¨ ط±ط³ط§ظ„ط© ط§ظ„ط³طھظˆط±ظٹ..."
             dir="rtl"
           />
         </div>
 
-        {/* عناصر الستوري */}
+        {/* ط¹ظ†ط§طµط± ط§ظ„ط³طھظˆط±ظٹ */}
         <div 
           className="rounded-2xl border p-4 space-y-3"
           style={{ 
@@ -338,34 +333,34 @@ export default function StoryPage() {
             borderColor: "rgba(201,160,99,0.22)",
           }}
         >
-          <p className="text-sm font-bold text-foreground">عناصر الستوري</p>
+          <p className="text-sm font-bold text-foreground">ط¹ظ†ط§طµط± ط§ظ„ط³طھظˆط±ظٹ</p>
           <div className="flex items-center justify-between">
-            <Label htmlFor="sw-date" className="cursor-pointer text-sm">التاريخ</Label>
+            <Label htmlFor="sw-date" className="cursor-pointer text-sm">ط§ظ„طھط§ط±ظٹط®</Label>
             <Switch id="sw-date" checked={showDate} onCheckedChange={setShowDate} />
           </div>
           <div className="flex items-center justify-between">
-            <Label htmlFor="sw-msg" className="cursor-pointer text-sm">الرسالة</Label>
+            <Label htmlFor="sw-msg" className="cursor-pointer text-sm">ط§ظ„ط±ط³ط§ظ„ط©</Label>
             <Switch id="sw-msg" checked={showMessage} onCheckedChange={setShowMessage} />
           </div>
           <div className="flex items-center justify-between">
-            <Label htmlFor="sw-cd" className="cursor-pointer text-sm">العدادات المالية</Label>
+            <Label htmlFor="sw-cd" className="cursor-pointer text-sm">ط§ظ„ط¹ط¯ط§ط¯ط§طھ ط§ظ„ظ…ط§ظ„ظٹط©</Label>
             <Switch id="sw-cd" checked={showCountdowns} onCheckedChange={setShowCountdowns} />
           </div>
           <div className="flex items-center justify-between">
-            <Label htmlFor="sw-pr" className="cursor-pointer text-sm">مواقيت الصلاة</Label>
+            <Label htmlFor="sw-pr" className="cursor-pointer text-sm">ظ…ظˆط§ظ‚ظٹطھ ط§ظ„طµظ„ط§ط©</Label>
             <Switch id="sw-pr" checked={showPrayer} onCheckedChange={setShowPrayer} />
           </div>
         </div>
 
-        {/* أزرار التحكم */}
+        {/* ط£ط²ط±ط§ط± ط§ظ„طھط­ظƒظ… */}
         <div className="grid grid-cols-3 gap-2">
           <Button className="h-12 rounded-xl text-sm font-bold" onClick={handleCopy} disabled={isLoading}>
             {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Copy className="w-4 h-4 ml-1" />}
-            نسخ
+            ظ†ط³ط®
           </Button>
           <Button variant="outline" className="h-12 rounded-xl text-sm font-bold" onClick={handleShare} disabled={isLoading}>
             <Share2 className="w-4 h-4 ml-1" />
-            مشاركة
+            ظ…ط´ط§ط±ظƒط©
           </Button>
           <Button
             variant="outline"
@@ -373,11 +368,12 @@ export default function StoryPage() {
             onClick={handleSave}
           >
             {savedOk ? <CheckCircle2 className="w-4 h-4 ml-1" /> : <Save className="w-4 h-4 ml-1" />}
-            {savedOk ? "محفوظ" : "حفظ"}
+            {savedOk ? "ظ…ط­ظپظˆط¸" : "ط­ظپط¸"}
           </Button>
         </div>
       </div>
     </AppShell>
   );
 }
+
 

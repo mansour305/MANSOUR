@@ -1,4 +1,4 @@
-// Re‑export all schemas including the new official tables and updated schemas
+﻿// Reâ€‘export all schemas including the new official tables and updated schemas
 export * from "./appointments";
 export * from "./financial_events";
 export * from "./notifications";

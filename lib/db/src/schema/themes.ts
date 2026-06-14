@@ -1,4 +1,4 @@
-import { pgTable, serial, text, timestamp, boolean, jsonb } from "drizzle-orm/pg-core";
+﻿import { pgTable, serial, text, timestamp, boolean, jsonb } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod/v4";
 
@@ -17,3 +17,4 @@ export const themesTable = pgTable("themes", {
 export const insertThemeSchema = createInsertSchema(themesTable).omit({ id: true, created_at: true });
 export type InsertTheme = z.infer<typeof insertThemeSchema>;
 export type Theme = typeof themesTable.$inferSelect;
+

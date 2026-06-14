@@ -1,4 +1,4 @@
-{
+﻿{
   "name": "mawaeedak-web",
   "version": "1.0.0",
   "private": true,
@@ -79,3 +79,4 @@
     "vite-plugin-pwa": "^1.3.0"
   }
 }
+

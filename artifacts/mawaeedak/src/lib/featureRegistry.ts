@@ -1,5 +1,5 @@
-/**
- * Feature Registry — Phase 14
+﻿/**
+ * Feature Registry â€” Phase 14
  * 
  * Tracks feature status for paywall and health monitoring.
  */
@@ -26,8 +26,8 @@ export const FEATURE_REGISTRY: Feature[] = [
   // Core features
   {
     feature_key: "home",
-    title: "الرئيسية",
-    description: "الصفحة الرئيسية مع مواقيت الصلاة والمواعيد المالية",
+    title: "ط§ظ„ط±ط¦ظٹط³ظٹط©",
+    description: "ط§ظ„طµظپط­ط© ط§ظ„ط±ط¦ظٹط³ظٹط© ظ…ط¹ ظ…ظˆط§ظ‚ظٹطھ ط§ظ„طµظ„ط§ط© ظˆط§ظ„ظ…ظˆط§ط¹ظٹط¯ ط§ظ„ظ…ط§ظ„ظٹط©",
     plan_required: "free",
     status: "active",
     is_visible_in_paywall: false,
@@ -39,8 +39,8 @@ export const FEATURE_REGISTRY: Feature[] = [
   },
   {
     feature_key: "prayer_times",
-    title: "مواقيت الصلاة",
-    description: "عرض مواقيت الصلاة مع العد التنازلي",
+    title: "ظ…ظˆط§ظ‚ظٹطھ ط§ظ„طµظ„ط§ط©",
+    description: "ط¹ط±ط¶ ظ…ظˆط§ظ‚ظٹطھ ط§ظ„طµظ„ط§ط© ظ…ط¹ ط§ظ„ط¹ط¯ ط§ظ„طھظ†ط§ط²ظ„ظٹ",
     plan_required: "free",
     status: "active",
     is_visible_in_paywall: false,
@@ -52,8 +52,8 @@ export const FEATURE_REGISTRY: Feature[] = [
   },
   {
     feature_key: "financial_dates",
-    title: "المواعيد المالية",
-    description: "الرواتب والمساعدات ومواعيد الدفع",
+    title: "ط§ظ„ظ…ظˆط§ط¹ظٹط¯ ط§ظ„ظ…ط§ظ„ظٹط©",
+    description: "ط§ظ„ط±ظˆط§طھط¨ ظˆط§ظ„ظ…ط³ط§ط¹ط¯ط§طھ ظˆظ…ظˆط§ط¹ظٹط¯ ط§ظ„ط¯ظپط¹",
     plan_required: "free",
     status: "active",
     is_visible_in_paywall: false,
@@ -65,8 +65,8 @@ export const FEATURE_REGISTRY: Feature[] = [
   },
   {
     feature_key: "calendar",
-    title: "التقويم",
-    description: "إدارة المواعيد الشخصية",
+    title: "ط§ظ„طھظ‚ظˆظٹظ…",
+    description: "ط¥ط¯ط§ط±ط© ط§ظ„ظ…ظˆط§ط¹ظٹط¯ ط§ظ„ط´ط®طµظٹط©",
     plan_required: "free",
     status: "active",
     is_visible_in_paywall: false,
@@ -78,8 +78,8 @@ export const FEATURE_REGISTRY: Feature[] = [
   },
   {
     feature_key: "goals",
-    title: "الأهداف",
-    description: "تتبع الأهداف المالية وغير المالية",
+    title: "ط§ظ„ط£ظ‡ط¯ط§ظپ",
+    description: "طھطھط¨ط¹ ط§ظ„ط£ظ‡ط¯ط§ظپ ط§ظ„ظ…ط§ظ„ظٹط© ظˆط؛ظٹط± ط§ظ„ظ…ط§ظ„ظٹط©",
     plan_required: "free",
     status: "active",
     is_visible_in_paywall: false,
@@ -91,8 +91,8 @@ export const FEATURE_REGISTRY: Feature[] = [
   },
   {
     feature_key: "costs",
-    title: "حساب التكاليف",
-    description: "إدارة مشاريع التكاليف والبنود",
+    title: "ط­ط³ط§ط¨ ط§ظ„طھظƒط§ظ„ظٹظپ",
+    description: "ط¥ط¯ط§ط±ط© ظ…ط´ط§ط±ظٹط¹ ط§ظ„طھظƒط§ظ„ظٹظپ ظˆط§ظ„ط¨ظ†ظˆط¯",
     plan_required: "free",
     status: "active",
     is_visible_in_paywall: false,
@@ -104,8 +104,8 @@ export const FEATURE_REGISTRY: Feature[] = [
   },
   {
     feature_key: "reminders",
-    title: "التذكيرات",
-    description: "تذكيرات مخصصة بمواعيد ثابتة",
+    title: "ط§ظ„طھط°ظƒظٹط±ط§طھ",
+    description: "طھط°ظƒظٹط±ط§طھ ظ…ط®طµطµط© ط¨ظ…ظˆط§ط¹ظٹط¯ ط«ط§ط¨طھط©",
     plan_required: "free",
     status: "active",
     is_visible_in_paywall: false,
@@ -117,8 +117,8 @@ export const FEATURE_REGISTRY: Feature[] = [
   },
   {
     feature_key: "notifications",
-    title: "الإشعارات",
-    description: "قائمة الإشعارات الداخلية",
+    title: "ط§ظ„ط¥ط´ط¹ط§ط±ط§طھ",
+    description: "ظ‚ط§ط¦ظ…ط© ط§ظ„ط¥ط´ط¹ط§ط±ط§طھ ط§ظ„ط¯ط§ط®ظ„ظٹط©",
     plan_required: "free",
     status: "active",
     is_visible_in_paywall: false,
@@ -130,8 +130,8 @@ export const FEATURE_REGISTRY: Feature[] = [
   },
   {
     feature_key: "daily_content",
-    title: "محتوى اليوم",
-    description: "رسائل اليوم اليومية",
+    title: "ظ…ط­طھظˆظ‰ ط§ظ„ظٹظˆظ…",
+    description: "ط±ط³ط§ط¦ظ„ ط§ظ„ظٹظˆظ… ط§ظ„ظٹظˆظ…ظٹط©",
     plan_required: "free",
     status: "active",
     is_visible_in_paywall: false,
@@ -143,8 +143,8 @@ export const FEATURE_REGISTRY: Feature[] = [
   },
   {
     feature_key: "complaints",
-    title: "صوتك مسموع",
-    description: "الشكاوى والاقتراحات",
+    title: "طµظˆطھظƒ ظ…ط³ظ…ظˆط¹",
+    description: "ط§ظ„ط´ظƒط§ظˆظ‰ ظˆط§ظ„ط§ظ‚طھط±ط§ط­ط§طھ",
     plan_required: "free",
     status: "active",
     is_visible_in_paywall: false,
@@ -156,8 +156,8 @@ export const FEATURE_REGISTRY: Feature[] = [
   },
   {
     feature_key: "account",
-    title: "حسابي",
-    description: "إدارة الحساب والإعدادات",
+    title: "ط­ط³ط§ط¨ظٹ",
+    description: "ط¥ط¯ط§ط±ط© ط§ظ„ط­ط³ط§ط¨ ظˆط§ظ„ط¥ط¹ط¯ط§ط¯ط§طھ",
     plan_required: "free",
     status: "active",
     is_visible_in_paywall: false,
@@ -169,8 +169,8 @@ export const FEATURE_REGISTRY: Feature[] = [
   },
   {
     feature_key: "themes",
-    title: "الثيمات",
-    description: "تغيير مظهر التطبيق",
+    title: "ط§ظ„ط«ظٹظ…ط§طھ",
+    description: "طھط؛ظٹظٹط± ظ…ط¸ظ‡ط± ط§ظ„طھط·ط¨ظٹظ‚",
     plan_required: "free",
     status: "active",
     is_visible_in_paywall: false,
@@ -183,7 +183,7 @@ export const FEATURE_REGISTRY: Feature[] = [
   {
     feature_key: "pwa",
     title: "PWA",
-    description: "التطبيق القابل للتثبيت",
+    description: "ط§ظ„طھط·ط¨ظٹظ‚ ط§ظ„ظ‚ط§ط¨ظ„ ظ„ظ„طھط«ط¨ظٹطھ",
     plan_required: "free",
     status: "active",
     is_visible_in_paywall: false,
@@ -196,8 +196,8 @@ export const FEATURE_REGISTRY: Feature[] = [
   // Coming soon
   {
     feature_key: "adkkar",
-    title: "الأذكار",
-    description: "أذكار الصباح والمساء",
+    title: "ط§ظ„ط£ط°ظƒط§ط±",
+    description: "ط£ط°ظƒط§ط± ط§ظ„طµط¨ط§ط­ ظˆط§ظ„ظ…ط³ط§ط،",
     plan_required: "free",
     status: "coming_soon",
     is_visible_in_paywall: false,
@@ -209,8 +209,8 @@ export const FEATURE_REGISTRY: Feature[] = [
   },
   {
     feature_key: "greetings",
-    title: "التهاني",
-    description: "إرسال التهاني والمناسبات",
+    title: "ط§ظ„طھظ‡ط§ظ†ظٹ",
+    description: "ط¥ط±ط³ط§ظ„ ط§ظ„طھظ‡ط§ظ†ظٹ ظˆط§ظ„ظ…ظ†ط§ط³ط¨ط§طھ",
     plan_required: "free",
     status: "coming_soon",
     is_visible_in_paywall: false,
@@ -222,8 +222,8 @@ export const FEATURE_REGISTRY: Feature[] = [
   },
   {
     feature_key: "smartwatch",
-    title: "ساعة ذكية",
-    description: "Apple Watch و Wear OS",
+    title: "ط³ط§ط¹ط© ط°ظƒظٹط©",
+    description: "Apple Watch ظˆ Wear OS",
     plan_required: "premium",
     status: "coming_soon",
     is_visible_in_paywall: true,
@@ -235,8 +235,8 @@ export const FEATURE_REGISTRY: Feature[] = [
   },
   {
     feature_key: "push_notifications",
-    title: "إشعارات Push",
-    description: "إشعارات فورية",
+    title: "ط¥ط´ط¹ط§ط±ط§طھ Push",
+    description: "ط¥ط´ط¹ط§ط±ط§طھ ظپظˆط±ظٹط©",
     plan_required: "premium",
     status: "coming_soon",
     is_visible_in_paywall: true,
@@ -248,8 +248,8 @@ export const FEATURE_REGISTRY: Feature[] = [
   },
   {
     feature_key: "export",
-    title: "تصدير البيانات",
-    description: "تصدير المواعيد والتقارير",
+    title: "طھطµط¯ظٹط± ط§ظ„ط¨ظٹط§ظ†ط§طھ",
+    description: "طھطµط¯ظٹط± ط§ظ„ظ…ظˆط§ط¹ظٹط¯ ظˆط§ظ„طھظ‚ط§ط±ظٹط±",
     plan_required: "premium",
     status: "coming_soon",
     is_visible_in_paywall: true,
@@ -261,8 +261,8 @@ export const FEATURE_REGISTRY: Feature[] = [
   },
   {
     feature_key: "advanced_sharing",
-    title: "مشاركة متقدمة",
-    description: "مشاركة التقويم والملفات",
+    title: "ظ…ط´ط§ط±ظƒط© ظ…طھظ‚ط¯ظ…ط©",
+    description: "ظ…ط´ط§ط±ظƒط© ط§ظ„طھظ‚ظˆظٹظ… ظˆط§ظ„ظ…ظ„ظپط§طھ",
     plan_required: "premium",
     status: "coming_soon",
     is_visible_in_paywall: true,
@@ -274,8 +274,8 @@ export const FEATURE_REGISTRY: Feature[] = [
   },
   {
     feature_key: "personal_reports",
-    title: "تقارير شخصية",
-    description: "تقارير وإحصائيات متقدمة",
+    title: "طھظ‚ط§ط±ظٹط± ط´ط®طµظٹط©",
+    description: "طھظ‚ط§ط±ظٹط± ظˆط¥ط­طµط§ط¦ظٹط§طھ ظ…طھظ‚ط¯ظ…ط©",
     plan_required: "premium",
     status: "coming_soon",
     is_visible_in_paywall: true,
@@ -287,8 +287,8 @@ export const FEATURE_REGISTRY: Feature[] = [
   },
   {
     feature_key: "smart_alerts",
-    title: "تنبيهات ذكية",
-    description: "تنبيهات ذكية بناءً على السلوك",
+    title: "طھظ†ط¨ظٹظ‡ط§طھ ط°ظƒظٹط©",
+    description: "طھظ†ط¨ظٹظ‡ط§طھ ط°ظƒظٹط© ط¨ظ†ط§ط،ظ‹ ط¹ظ„ظ‰ ط§ظ„ط³ظ„ظˆظƒ",
     plan_required: "premium",
     status: "coming_soon",
     is_visible_in_paywall: true,
@@ -321,22 +321,22 @@ export const PREMIUM_LIMITS = {
 // Subscription plans
 export const SUBSCRIPTION_PLANS = {
   free: {
-    name: "مجاني",
+    name: "ظ…ط¬ط§ظ†ظٹ",
     price: 0,
     priceMonthly: 0,
     priceAnnual: 0,
     equivalentMonthly: 0,
     features: [
-      "الأهداف (3 أهداف)",
-      "مشاريع التكاليف (2 مشروع)",
-      "التذكيرات (5)",
-      "التقويم (20 موعد)",
-      "الثيم الافتراضي",
+      "ط§ظ„ط£ظ‡ط¯ط§ظپ (3 ط£ظ‡ط¯ط§ظپ)",
+      "ظ…ط´ط§ط±ظٹط¹ ط§ظ„طھظƒط§ظ„ظٹظپ (2 ظ…ط´ط±ظˆط¹)",
+      "ط§ظ„طھط°ظƒظٹط±ط§طھ (5)",
+      "ط§ظ„طھظ‚ظˆظٹظ… (20 ظ…ظˆط¹ط¯)",
+      "ط§ظ„ط«ظٹظ… ط§ظ„ط§ظپطھط±ط§ط¶ظٹ",
     ],
     isTrialAvailable: false,
   },
   premiumMonthly: {
-    name: "اشتراك شهري",
+    name: "ط§ط´طھط±ط§ظƒ ط´ظ‡ط±ظٹ",
     price: 10,
     priceMonthly: 10,
     priceAnnual: 0,
@@ -344,18 +344,18 @@ export const SUBSCRIPTION_PLANS = {
     currency: "USD",
     trialDays: 7,
     features: [
-      "أهداف غير محدودة",
-      "مشاريع تكاليف غير محدودة",
-      "تذكيرات غير محدودة",
-      "تقويم غير محدود",
-      "ثيمات متقدمة",
-      "تقارير شخصية",
-      "تنبيهات ذكية",
+      "ط£ظ‡ط¯ط§ظپ ط؛ظٹط± ظ…ط­ط¯ظˆط¯ط©",
+      "ظ…ط´ط§ط±ظٹط¹ طھظƒط§ظ„ظٹظپ ط؛ظٹط± ظ…ط­ط¯ظˆط¯ط©",
+      "طھط°ظƒظٹط±ط§طھ ط؛ظٹط± ظ…ط­ط¯ظˆط¯ط©",
+      "طھظ‚ظˆظٹظ… ط؛ظٹط± ظ…ط­ط¯ظˆط¯",
+      "ط«ظٹظ…ط§طھ ظ…طھظ‚ط¯ظ…ط©",
+      "طھظ‚ط§ط±ظٹط± ط´ط®طµظٹط©",
+      "طھظ†ط¨ظٹظ‡ط§طھ ط°ظƒظٹط©",
     ],
     isTrialAvailable: true,
   },
   premiumAnnual: {
-    name: "اشتراك سنوي",
+    name: "ط§ط´طھط±ط§ظƒ ط³ظ†ظˆظٹ",
     price: 48,
     priceMonthly: 0,
     priceAnnual: 48,
@@ -363,14 +363,14 @@ export const SUBSCRIPTION_PLANS = {
     currency: "USD",
     trialDays: 7,
     features: [
-      "أهداف غير محدودة",
-      "مشاريع تكاليف غير محدودة",
-      "تذكيرات غير محدودة",
-      "تقويم غير محدود",
-      "ثيمات متقدمة",
-      "تقارير شخصية",
-      "تنبيهات ذكية",
-      "تصدير وإحصائيات",
+      "ط£ظ‡ط¯ط§ظپ ط؛ظٹط± ظ…ط­ط¯ظˆط¯ط©",
+      "ظ…ط´ط§ط±ظٹط¹ طھظƒط§ظ„ظٹظپ ط؛ظٹط± ظ…ط­ط¯ظˆط¯ط©",
+      "طھط°ظƒظٹط±ط§طھ ط؛ظٹط± ظ…ط­ط¯ظˆط¯ط©",
+      "طھظ‚ظˆظٹظ… ط؛ظٹط± ظ…ط­ط¯ظˆط¯",
+      "ط«ظٹظ…ط§طھ ظ…طھظ‚ط¯ظ…ط©",
+      "طھظ‚ط§ط±ظٹط± ط´ط®طµظٹط©",
+      "طھظ†ط¨ظٹظ‡ط§طھ ط°ظƒظٹط©",
+      "طھطµط¯ظٹط± ظˆط¥ط­طµط§ط¦ظٹط§طھ",
     ],
     isTrialAvailable: true,
   },

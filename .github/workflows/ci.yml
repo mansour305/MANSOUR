@@ -1,4 +1,4 @@
-name: CI
+﻿name: CI
 
 on:
   push:
@@ -58,3 +58,4 @@ jobs:
 
       - name: Smoke
         run: pnpm -r --if-present run smoke
+

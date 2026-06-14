@@ -1,4 +1,4 @@
-interface MawaeedakDividerProps {
+﻿interface MawaeedakDividerProps {
   className?: string;
   label?: string;
 }
@@ -22,3 +22,4 @@ export function MawaeedakDivider({ className = "", label }: MawaeedakDividerProp
     </div>
   );
 }
+

@@ -1,7 +1,7 @@
-/**
- * config.ts — نظام الإعدادات الديناميكية
+﻿/**
+ * config.ts â€” ظ†ط¸ط§ظ… ط§ظ„ط¥ط¹ط¯ط§ط¯ط§طھ ط§ظ„ط¯ظٹظ†ط§ظ…ظٹظƒظٹط©
  * 
- * يتضمن:
+ * ظٹطھط¶ظ…ظ†:
  * - Feature Flags
  * - Dynamic Config
  * - Feature Toggle
@@ -49,7 +49,7 @@ export interface AppConfig {
 // ============================================================================
 
 const DEFAULT_CONFIG: AppConfig = {
-  appName: "مواعيدك",
+  appName: "ظ…ظˆط§ط¹ظٹط¯ظƒ",
   version: "1.0.0",
   environment: import.meta.env.PROD ? "production" : "development",
   features: {
@@ -121,21 +121,21 @@ class ConfigManager {
   }
   
   /**
-   * الحصول على الإعدادات
+   * ط§ظ„ط­طµظˆظ„ ط¹ظ„ظ‰ ط§ظ„ط¥ط¹ط¯ط§ط¯ط§طھ
    */
   get(): AppConfig {
     return { ...this.config };
   }
   
   /**
-   * الحصول على قيمة معينة
+   * ط§ظ„ط­طµظˆظ„ ط¹ظ„ظ‰ ظ‚ظٹظ…ط© ظ…ط¹ظٹظ†ط©
    */
   getValue<K extends keyof AppConfig>(key: K): AppConfig[K] {
     return this.config[key];
   }
   
   /**
-   * تحديث الإعدادات جزئياً
+   * طھط­ط¯ظٹط« ط§ظ„ط¥ط¹ط¯ط§ط¯ط§طھ ط¬ط²ط¦ظٹط§ظ‹
    */
   update(updates: Partial<AppConfig>): void {
     this.config = { ...this.config, ...updates };
@@ -144,14 +144,14 @@ class ConfigManager {
   }
   
   /**
-   * فحص ميزة معينة
+   * ظپط­طµ ظ…ظٹط²ط© ظ…ط¹ظٹظ†ط©
    */
   isFeatureEnabled(feature: string): boolean {
     return this.config.features[feature] ?? false;
   }
   
   /**
-   * تفعيل/تعطيل ميزة
+   * طھظپط¹ظٹظ„/طھط¹ط·ظٹظ„ ظ…ظٹط²ط©
    */
   setFeature(feature: string, enabled: boolean): void {
     this.config.features = {
@@ -163,35 +163,35 @@ class ConfigManager {
   }
   
   /**
-   * الحصول على جميع الميزات
+   * ط§ظ„ط­طµظˆظ„ ط¹ظ„ظ‰ ط¬ظ…ظٹط¹ ط§ظ„ظ…ظٹط²ط§طھ
    */
   getFeatures(): Record<string, boolean> {
     return { ...this.config.features };
   }
   
   /**
-   * فحص بيئة الإنتاج
+   * ظپط­طµ ط¨ظٹط¦ط© ط§ظ„ط¥ظ†طھط§ط¬
    */
   isProduction(): boolean {
     return this.config.environment === "production";
   }
   
   /**
-   * فحص بيئة التطوير
+   * ظپط­طµ ط¨ظٹط¦ط© ط§ظ„طھط·ظˆظٹط±
    */
   isDevelopment(): boolean {
     return this.config.environment === "development";
   }
   
   /**
-   * فحص وضع الصيانة
+   * ظپط­طµ ظˆط¶ط¹ ط§ظ„طµظٹط§ظ†ط©
    */
   isMaintenanceMode(): boolean {
     return this.config.maintenance.enabled;
   }
   
   /**
-   * إضافة مستمع للتغييرات
+   * ط¥ط¶ط§ظپط© ظ…ط³طھظ…ط¹ ظ„ظ„طھط؛ظٹظٹط±ط§طھ
    */
   addListener(callback: (config: AppConfig) => void): () => void {
     this.listeners.add(callback);
@@ -227,7 +227,7 @@ class ConfigManager {
   }
   
   /**
-   * إعادة تعيين الإعدادات الافتراضية
+   * ط¥ط¹ط§ط¯ط© طھط¹ظٹظٹظ† ط§ظ„ط¥ط¹ط¯ط§ط¯ط§طھ ط§ظ„ط§ظپطھط±ط§ط¶ظٹط©
    */
   reset(): void {
     this.config = { ...DEFAULT_CONFIG };
@@ -273,25 +273,25 @@ export function validateEnvironment(): {
   // Supabase
   if (!configManager.getValue("supabase").enabled) {
     if (configManager.isProduction()) {
-      errors.push("Supabase غير مهيأ في بيئة الإنتاج");
+      errors.push("Supabase ط؛ظٹط± ظ…ظ‡ظٹط£ ظپظٹ ط¨ظٹط¦ط© ط§ظ„ط¥ظ†طھط§ط¬");
     } else {
-      warnings.push("Supabase غير مهيأ - وضع تجريبي");
+      warnings.push("Supabase ط؛ظٹط± ظ…ظ‡ظٹط£ - ظˆط¶ط¹ طھط¬ط±ظٹط¨ظٹ");
     }
   }
   
   // API
   if (!configManager.getValue("api").baseUrl) {
-    warnings.push("API URL غير محدد");
+    warnings.push("API URL ط؛ظٹط± ظ…ط­ط¯ط¯");
   }
   
   // Maintenance
   if (configManager.isMaintenanceMode() && configManager.isProduction()) {
-    warnings.push("وضع الصيانة مفعّل في الإنتاج");
+    warnings.push("ظˆط¶ط¹ ط§ظ„طµظٹط§ظ†ط© ظ…ظپط¹ظ‘ظ„ ظپظٹ ط§ظ„ط¥ظ†طھط§ط¬");
   }
   
   // Debug mode
   if (configManager.isFeatureEnabled("debugMode") && configManager.isProduction()) {
-    errors.push("وضع التصحيح مفعّل في الإنتاج");
+    errors.push("ظˆط¶ط¹ ط§ظ„طھطµط­ظٹط­ ظ…ظپط¹ظ‘ظ„ ظپظٹ ط§ظ„ط¥ظ†طھط§ط¬");
   }
   
   return {
@@ -325,8 +325,8 @@ export async function checkProductionReadiness(): Promise<{
     name: "Supabase",
     status: supabase.enabled ? "pass" : "fail",
     message: supabase.enabled
-      ? "Supabase مهيأ"
-      : "Supabase غير مهيأ - مطلوب للإنتاج",
+      ? "Supabase ظ…ظ‡ظٹط£"
+      : "Supabase ط؛ظٹط± ظ…ظ‡ظٹط£ - ظ…ط·ظ„ظˆط¨ ظ„ظ„ط¥ظ†طھط§ط¬",
   });
   
   // 2. Environment Check
@@ -334,7 +334,7 @@ export async function checkProductionReadiness(): Promise<{
   checks.push({
     name: "Environment",
     status: envValidation.valid ? "pass" : "warn",
-    message: envValidation.errors.join(", ") || "الإعدادات صحيحة",
+    message: envValidation.errors.join(", ") || "ط§ظ„ط¥ط¹ط¯ط§ط¯ط§طھ طµط­ظٹط­ط©",
   });
   
   // 3. Network Check
@@ -346,13 +346,13 @@ export async function checkProductionReadiness(): Promise<{
     checks.push({
       name: "Network",
       status: response.ok ? "pass" : "warn",
-      message: response.ok ? "الشبكة تعمل" : `HTTP ${response.status}`,
+      message: response.ok ? "ط§ظ„ط´ط¨ظƒط© طھط¹ظ…ظ„" : `HTTP ${response.status}`,
     });
   } catch {
     checks.push({
       name: "Network",
       status: "warn",
-      message: "فشل فحص الشبكة",
+      message: "ظپط´ظ„ ظپط­طµ ط§ظ„ط´ط¨ظƒط©",
     });
   }
   
@@ -366,8 +366,8 @@ export async function checkProductionReadiness(): Promise<{
     name: "Features",
     status: disabledFeatures.length > 0 ? "warn" : "pass",
     message: disabledFeatures.length > 0
-      ? `${disabledFeatures.length} ميزات معطّلة`
-      : "جميع الميزات مهيأة",
+      ? `${disabledFeatures.length} ظ…ظٹط²ط§طھ ظ…ط¹ط·ظ‘ظ„ط©`
+      : "ط¬ظ…ظٹط¹ ط§ظ„ظ…ظٹط²ط§طھ ظ…ظ‡ظٹط£ط©",
   });
   
   // 5. Maintenance Check
@@ -375,8 +375,8 @@ export async function checkProductionReadiness(): Promise<{
     name: "Maintenance",
     status: configManager.isMaintenanceMode() ? "warn" : "pass",
     message: configManager.isMaintenanceMode()
-      ? "وضع الصيانة مفعّل"
-      : "التطبيق يعمل بشكل طبيعي",
+      ? "ظˆط¶ط¹ ط§ظ„طµظٹط§ظ†ط© ظ…ظپط¹ظ‘ظ„"
+      : "ط§ظ„طھط·ط¨ظٹظ‚ ظٹط¹ظ…ظ„ ط¨ط´ظƒظ„ ط·ط¨ظٹط¹ظٹ",
   });
   
   const ready = checks.every((c) => c.status !== "fail");

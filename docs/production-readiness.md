@@ -1,7 +1,7 @@
-# Mawaeedak Production Readiness Report
+﻿# Mawaeedak Production Readiness Report
 
 **Last Updated**: 2026-06-12
-**Status**: Code Ready — Deployment Setup Required
+**Status**: Code Ready â€” Deployment Setup Required
 
 ---
 
@@ -11,9 +11,9 @@ The Mawaeedak Web/PWA application has been comprehensively hardened for producti
 
 ---
 
-## What's Implemented ✅
+## What's Implemented âœ…
 
-### 1. Production Data Mode Safety ✅
+### 1. Production Data Mode Safety âœ…
 
 **File**: `artifacts/mawaeedak/src/lib/dataSourceMode.ts`
 
@@ -28,7 +28,7 @@ The Mawaeedak Web/PWA application has been comprehensively hardened for producti
 # App throws: "Mawaeedak Production Configuration Error"
 ```
 
-### 2. Splash First-Entry Behavior ✅
+### 2. Splash First-Entry Behavior âœ…
 
 **File**: `artifacts/mawaeedak/src/App.tsx`
 
@@ -47,7 +47,7 @@ The Mawaeedak Web/PWA application has been comprehensively hardened for producti
 - `/notifications`
 - `/admin`
 
-### 3. Prayer Engine Hardening ✅
+### 3. Prayer Engine Hardening âœ…
 
 **Files**:
 - `artifacts/mawaeedak/src/hooks/usePrayerEngine.ts`
@@ -62,7 +62,7 @@ The Mawaeedak Web/PWA application has been comprehensively hardened for producti
 - Timeout/AbortController on AlAdhan fetch
 - Loading/Error/Empty/Ready states preserved
 
-### 4. PWA Service Worker ✅
+### 4. PWA Service Worker âœ…
 
 **File**: `artifacts/mawaeedak/vite.config.ts`
 
@@ -74,14 +74,14 @@ The Mawaeedak Web/PWA application has been comprehensively hardened for producti
 - Auto-update registration
 - Service worker generated at build time (`dist/sw.js`)
 
-### 5. Web Push Foundation ✅
+### 5. Web Push Foundation âœ…
 
 **Files**:
 - `artifacts/mawaeedak/src/lib/push/pushNotificationService.ts`
 - `supabase/migrations/20250612000001_create_push_subscriptions.sql`
 - `supabase/functions/send-push/index.ts`
 
-**Status**: Code Ready — Deployment Setup Required
+**Status**: Code Ready â€” Deployment Setup Required
 
 **What's Implemented**:
 - Browser push subscription (Push API)
@@ -97,7 +97,7 @@ The Mawaeedak Web/PWA application has been comprehensively hardened for producti
 4. Deploy `send-push` Edge Function
 5. Set up cron/scheduler for reminder notifications
 
-### 6. Supabase Schema and RLS ✅
+### 6. Supabase Schema and RLS âœ…
 
 **Files**:
 - `artifacts/mawaeedak/supabase-bootstrap.sql`
@@ -133,7 +133,7 @@ The Mawaeedak Web/PWA application has been comprehensively hardened for producti
 - Public access blocked except for public data
 - No table left open unintentionally
 
-### 7. Local-Only Services Classification ✅
+### 7. Local-Only Services Classification âœ…
 
 **Files**:
 - `artifacts/mawaeedak/src/features/services/GoalsPage.tsx`
@@ -141,11 +141,11 @@ The Mawaeedak Web/PWA application has been comprehensively hardened for producti
 - `artifacts/mawaeedak/src/features/services/RemindersPage.tsx`
 
 **UI Banners**:
-- Goals: "💾 ملاحظة: محفوظ على هذا الجهاز فقط. المزامنة مع السحابة قادمة قريباً."
-- Costs: "💾 ملاحظة: محفوظ على هذا الجهاز فقط. المزامنة مع السحابة قادمة قريباً."
-- Reminders: "💾 ملاحظة: محفوظ على هذا الجهاز فقط. الإشعارات الداخلية فقط حالياً. إعداد الإشعارات الفورية قيد التطوير."
+- Goals: "ًں’¾ ظ…ظ„ط§ط­ط¸ط©: ظ…ط­ظپظˆط¸ ط¹ظ„ظ‰ ظ‡ط°ط§ ط§ظ„ط¬ظ‡ط§ط² ظپظ‚ط·. ط§ظ„ظ…ط²ط§ظ…ظ†ط© ظ…ط¹ ط§ظ„ط³ط­ط§ط¨ط© ظ‚ط§ط¯ظ…ط© ظ‚ط±ظٹط¨ط§ظ‹."
+- Costs: "ًں’¾ ظ…ظ„ط§ط­ط¸ط©: ظ…ط­ظپظˆط¸ ط¹ظ„ظ‰ ظ‡ط°ط§ ط§ظ„ط¬ظ‡ط§ط² ظپظ‚ط·. ط§ظ„ظ…ط²ط§ظ…ظ†ط© ظ…ط¹ ط§ظ„ط³ط­ط§ط¨ط© ظ‚ط§ط¯ظ…ط© ظ‚ط±ظٹط¨ط§ظ‹."
+- Reminders: "ًں’¾ ظ…ظ„ط§ط­ط¸ط©: ظ…ط­ظپظˆط¸ ط¹ظ„ظ‰ ظ‡ط°ط§ ط§ظ„ط¬ظ‡ط§ط² ظپظ‚ط·. ط§ظ„ط¥ط´ط¹ط§ط±ط§طھ ط§ظ„ط¯ط§ط®ظ„ظٹط© ظپظ‚ط· ط­ط§ظ„ظٹط§ظ‹. ط¥ط¹ط¯ط§ط¯ ط§ظ„ط¥ط´ط¹ط§ط±ط§طھ ط§ظ„ظپظˆط±ظٹط© ظ‚ظٹط¯ ط§ظ„طھط·ظˆظٹط±."
 
-### 8. API Error Handling Hardening ✅
+### 8. API Error Handling Hardening âœ…
 
 **File**: `artifacts/mawaeedak/src/lib/apiAuth.ts`
 
@@ -155,7 +155,7 @@ The Mawaeedak Web/PWA application has been comprehensively hardened for producti
 - Clear timeout error messages
 - Error handling without exposing sensitive info
 
-### 9. Monitoring System ✅
+### 9. Monitoring System âœ…
 
 **File**: `artifacts/mawaeedak/src/lib/monitoring.ts`
 
@@ -165,7 +165,7 @@ The Mawaeedak Web/PWA application has been comprehensively hardened for producti
 - API monitoring
 - Security event logging
 
-### 10. Feature Registry ✅
+### 10. Feature Registry âœ…
 
 **File**: `artifacts/mawaeedak/src/lib/featureRegistry.ts`
 
@@ -239,8 +239,8 @@ npx web-push generate-vapid-keys
 | Check | Status |
 |-------|--------|
 | NPM lockfile absent | Static check enforced |
-| No real VAPID private keys | ✅ PASS |
-| No Supabase service role keys | ✅ PASS |
+| No real VAPID private keys | âœ… PASS |
+| No Supabase service role keys | âœ… PASS |
 | No built-in prayer time literals | Static check enforced |
 | Legacy AlAdhan calculation method absent | Static check enforced |
 
@@ -249,7 +249,7 @@ npx web-push generate-vapid-keys
 ## Remaining Risks
 
 ### 1. Web Push Notifications
-**Status**: Code Ready — Deployment Required
+**Status**: Code Ready â€” Deployment Required
 
 - VAPID keys not configured
 - Edge Function not deployed
@@ -273,29 +273,29 @@ npx web-push generate-vapid-keys
 
 ## Final Verdict
 
-**Status**: `Code Ready — Deployment Setup Required`
+**Status**: `Code Ready â€” Deployment Setup Required`
 
 The codebase is production-ready in terms of:
-- ✅ No Flutter/Dart/native mobile code
-- ✅ React/Vite/TypeScript architecture
-- ✅ Arabic RTL support
-- ✅ Mobile-first design (360px-430px)
-- ✅ PWA manifest and service worker
-- ✅ Supabase schema with strict RLS (has_admin_role helper)
-- ✅ Prayer engine uses the approved Umm Al-Qura calculation method only
-- ✅ No secrets committed
-- ✅ Production data mode safety (error mode)
-- ✅ Splash first-entry behavior
-- ✅ Deep links working
-- ✅ Error handling and monitoring
-- ✅ Feature registry and health logs
-- ✅ Goals have real Supabase sync for logged-in users
-- ✅ Costs/Reminders have schema with local fallback
+- âœ… No Flutter/Dart/native mobile code
+- âœ… React/Vite/TypeScript architecture
+- âœ… Arabic RTL support
+- âœ… Mobile-first design (360px-430px)
+- âœ… PWA manifest and service worker
+- âœ… Supabase schema with strict RLS (has_admin_role helper)
+- âœ… Prayer engine uses the approved Umm Al-Qura calculation method only
+- âœ… No secrets committed
+- âœ… Production data mode safety (error mode)
+- âœ… Splash first-entry behavior
+- âœ… Deep links working
+- âœ… Error handling and monitoring
+- âœ… Feature registry and health logs
+- âœ… Goals have real Supabase sync for logged-in users
+- âœ… Costs/Reminders have schema with local fallback
 
 The following require deployment setup:
-- ⏳ Web Push: VAPID keys configuration, Edge Function deployment, Scheduler/cron
-- ⏳ Costs/Reminders: Full Supabase sync integration (schema exists, hook pending)
-- ⏳ Device testing: iOS Safari PWA, Android Chrome PWA installation
+- âڈ³ Web Push: VAPID keys configuration, Edge Function deployment, Scheduler/cron
+- âڈ³ Costs/Reminders: Full Supabase sync integration (schema exists, hook pending)
+- âڈ³ Device testing: iOS Safari PWA, Android Chrome PWA installation
 
 ---
 
@@ -308,3 +308,4 @@ The following require deployment setup:
 5. **Test on devices** (iOS Safari, Android Chrome)
 6. **Monitor** health logs and error tracking
 7. **Deploy** to production Vercel
+

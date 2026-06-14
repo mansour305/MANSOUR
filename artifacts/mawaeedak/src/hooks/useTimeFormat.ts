@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+﻿import { useCallback, useEffect, useState } from "react";
 import {
   formatClockTime,
   getPreferredTimeFormat,
@@ -43,3 +43,4 @@ export function useTimeFormat() {
     formatTime,
   };
 }
+

@@ -1,4 +1,4 @@
-import { pgTable, serial, text, timestamp, boolean } from "drizzle-orm/pg-core";
+﻿import { pgTable, serial, text, timestamp, boolean } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod/v4";
 
@@ -16,3 +16,4 @@ export const storyTemplatesTable = pgTable("story_templates", {
 export const insertStoryTemplateSchema = createInsertSchema(storyTemplatesTable).omit({ id: true, created_at: true });
 export type InsertStoryTemplate = z.infer<typeof insertStoryTemplateSchema>;
 export type StoryTemplate = typeof storyTemplatesTable.$inferSelect;
+

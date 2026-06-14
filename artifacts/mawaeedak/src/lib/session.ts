@@ -1,7 +1,7 @@
-/**
- * session.ts — نظام إدارة الجلسات
+﻿/**
+ * session.ts â€” ظ†ط¸ط§ظ… ط¥ط¯ط§ط±ط© ط§ظ„ط¬ظ„ط³ط§طھ
  * 
- * يتضمن:
+ * ظٹطھط¶ظ…ظ†:
  * - Session Timeout
  * - Session Renewal
  * - Multi Device Sessions
@@ -34,8 +34,8 @@ interface StoredSession {
 // Constants
 // ============================================================================
 
-const SESSION_TIMEOUT = 30 * 60 * 1000; // 30 دقيقة
-const RENEWAL_THRESHOLD = 5 * 60 * 1000; // 5 دقائق قبل الانتهاء
+const SESSION_TIMEOUT = 30 * 60 * 1000; // 30 ط¯ظ‚ظٹظ‚ط©
+const RENEWAL_THRESHOLD = 5 * 60 * 1000; // 5 ط¯ظ‚ط§ط¦ظ‚ ظ‚ط¨ظ„ ط§ظ„ط§ظ†طھظ‡ط§ط،
 const MAX_SESSIONS = 5;
 
 // ============================================================================
@@ -49,7 +49,7 @@ class SessionManager {
   private listeners: ((event: "timeout" | "renewed" | "expired") => void)[] = [];
   
   /**
-   * إنشاء جلسة جديدة
+   * ط¥ظ†ط´ط§ط، ط¬ظ„ط³ط© ط¬ط¯ظٹط¯ط©
    */
   create(userId: string): Session {
     const session: Session = {
@@ -72,14 +72,14 @@ class SessionManager {
   }
   
   /**
-   * الحصول على الجلسة الحالية
+   * ط§ظ„ط­طµظˆظ„ ط¹ظ„ظ‰ ط§ظ„ط¬ظ„ط³ط© ط§ظ„ط­ط§ظ„ظٹط©
    */
   getSession(): Session | null {
     return this.session;
   }
   
   /**
-   * تحديث النشاط
+   * طھط­ط¯ظٹط« ط§ظ„ظ†ط´ط§ط·
    */
   updateActivity(): void {
     if (!this.session) return;
@@ -91,7 +91,7 @@ class SessionManager {
   }
   
   /**
-   * التحقق من صلاحية الجلسة
+   * ط§ظ„طھط­ظ‚ظ‚ ظ…ظ† طµظ„ط§ط­ظٹط© ط§ظ„ط¬ظ„ط³ط©
    */
   isValid(): boolean {
     if (!this.session) return false;
@@ -99,7 +99,7 @@ class SessionManager {
   }
   
   /**
-   * تجديد الجلسة
+   * طھط¬ط¯ظٹط¯ ط§ظ„ط¬ظ„ط³ط©
    */
   renew(): boolean {
     if (!this.session) return false;
@@ -116,7 +116,7 @@ class SessionManager {
   }
   
   /**
-   * إنهاء الجلسة
+   * ط¥ظ†ظ‡ط§ط، ط§ظ„ط¬ظ„ط³ط©
    */
   logout(): void {
     if (this.session) {
@@ -129,7 +129,7 @@ class SessionManager {
   }
   
   /**
-   * فحص انتهاء الجلسة
+   * ظپط­طµ ط§ظ†طھظ‡ط§ط، ط§ظ„ط¬ظ„ط³ط©
    */
   checkExpiration(): boolean {
     if (!this.session) return false;
@@ -143,14 +143,14 @@ class SessionManager {
   }
   
   /**
-   * إضافة مستمع للأحداث
+   * ط¥ط¶ط§ظپط© ظ…ط³طھظ…ط¹ ظ„ظ„ط£ط­ط¯ط§ط«
    */
   addListener(callback: (event: "timeout" | "renewed" | "expired") => void): void {
     this.listeners.push(callback);
   }
   
   /**
-   * إزالة مستمع
+   * ط¥ط²ط§ظ„ط© ظ…ط³طھظ…ط¹
    */
   removeListener(callback: (event: "timeout" | "renewed" | "expired") => void): void {
     this.listeners = this.listeners.filter((l) => l !== callback);
@@ -212,12 +212,12 @@ class SessionManager {
   private startTimers(): void {
     this.stopTimers();
     
-    // فحص كل دقيقة
+    // ظپط­طµ ظƒظ„ ط¯ظ‚ظٹظ‚ط©
     this.timeoutId = window.setInterval(() => {
       this.checkExpiration();
     }, 60 * 1000);
     
-    // تجديد قبل الانتهاء بـ 5 دقائق
+    // طھط¬ط¯ظٹط¯ ظ‚ط¨ظ„ ط§ظ„ط§ظ†طھظ‡ط§ط، ط¨ظ€ 5 ط¯ظ‚ط§ط¦ظ‚
     this.renewalId = window.setInterval(() => {
       if (this.session && this.session.expiresAt - Date.now() <= RENEWAL_THRESHOLD) {
         this.renew();
@@ -254,7 +254,7 @@ class SessionManager {
   private cleanOldSessions(userId: string): void {
     const all = this.loadAllSessions().filter((s) => s.userId === userId);
     
-    // حذف الجلسات القديمة إذا تجاوزت الحد
+    // ط­ط°ظپ ط§ظ„ط¬ظ„ط³ط§طھ ط§ظ„ظ‚ط¯ظٹظ…ط© ط¥ط°ط§ طھط¬ط§ظˆط²طھ ط§ظ„ط­ط¯
     if (all.length > MAX_SESSIONS) {
       const sorted = all.sort((a, b) => b.lastActiveAt - a.lastActiveAt);
       const toKeep = sorted.slice(0, MAX_SESSIONS);
@@ -271,7 +271,7 @@ class SessionManager {
   }
   
   /**
-   * تحميل جلسة مخزنة
+   * طھط­ظ…ظٹظ„ ط¬ظ„ط³ط© ظ…ط®ط²ظ†ط©
    */
   loadFromStorage(): boolean {
     const stored = this.loadSession();
@@ -298,7 +298,7 @@ export function trackSessionActivity(): void {
   events.forEach((event) => {
     document.addEventListener(event, () => {
       const now = Date.now();
-      // تحديث فقط كل 30 ثانية لتجنب الإفراط
+      // طھط­ط¯ظٹط« ظپظ‚ط· ظƒظ„ 30 ط«ط§ظ†ظٹط© ظ„طھط¬ظ†ط¨ ط§ظ„ط¥ظپط±ط§ط·
       if (now - lastActivity > 30 * 1000) {
         sessionManager.updateActivity();
         lastActivity = now;
@@ -306,3 +306,4 @@ export function trackSessionActivity(): void {
     }, { passive: true });
   });
 }
+

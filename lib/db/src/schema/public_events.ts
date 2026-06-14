@@ -1,4 +1,4 @@
-import { pgTable, serial, text, timestamp, boolean } from "drizzle-orm/pg-core";
+﻿import { pgTable, serial, text, timestamp, boolean } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod/v4";
 
@@ -15,3 +15,4 @@ export const publicEventsTable = pgTable("public_events", {
 export const insertPublicEventSchema = createInsertSchema(publicEventsTable).omit({ id: true, created_at: true });
 export type InsertPublicEvent = z.infer<typeof insertPublicEventSchema>;
 export type PublicEvent = typeof publicEventsTable.$inferSelect;
+

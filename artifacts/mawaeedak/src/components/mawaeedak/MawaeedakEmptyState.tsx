@@ -1,4 +1,4 @@
-import { type ReactNode } from "react";
+﻿import { type ReactNode } from "react";
 
 interface MawaeedakEmptyStateProps {
   icon: ReactNode;
@@ -41,3 +41,4 @@ export function MawaeedakEmptyState({ icon, title, subtitle, action }: Mawaeedak
     </div>
   );
 }
+

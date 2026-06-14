@@ -1,9 +1,9 @@
-/**
- * Auth Service — مواعيدك
+﻿/**
+ * Auth Service â€” ظ…ظˆط§ط¹ظٹط¯ظƒ
  *
- * يوفر واجهة موحدة للمصادقة:
- * - Supabase Auth عند توفر المفاتيح
- * - ممنوع Demo mode في الإنتاج
+ * ظٹظˆظپط± ظˆط§ط¬ظ‡ط© ظ…ظˆط­ط¯ط© ظ„ظ„ظ…طµط§ط¯ظ‚ط©:
+ * - Supabase Auth ط¹ظ†ط¯ طھظˆظپط± ط§ظ„ظ…ظپط§طھظٹط­
+ * - ظ…ظ…ظ†ظˆط¹ Demo mode ظپظٹ ط§ظ„ط¥ظ†طھط§ط¬
  */
 
 import { supabase, isSupabaseEnabled, isProduction } from "./supabase";
@@ -20,26 +20,26 @@ export type AuthSession = {
   isDemo: boolean;
 };
 
-// ── Demo mode constants ────────────────────────────────────────────────────
+// â”€â”€ Demo mode constants â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const DEMO_ADMIN_USERNAME = "admin";
 const DEMO_ADMIN_PASSWORD = import.meta.env.VITE_DEMO_ADMIN_PASSWORD || "admin123";
 const DEMO_SESSION_KEY = "mawaeedak_demo_session";
 // Demo mode allowed in development when no Supabase, or when explicitly configured
 const isDemoAuthAllowed = import.meta.env.DEV && !isProduction;
 
-// ── Admin roles ────────────────────────────────────────────────────────────
+// â”€â”€ Admin roles â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const ADMIN_ROLES = ["admin", "super_admin", "owner"] as const;
 
-// ── Supabase Auth ──────────────────────────────────────────────────────────
+// â”€â”€ Supabase Auth â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 /**
- * signInWithSupabase — تسجيل دخول عبر Supabase Auth
+ * signInWithSupabase â€” طھط³ط¬ظٹظ„ ط¯ط®ظˆظ„ ط¹ط¨ط± Supabase Auth
  */
 async function signInWithSupabase(
   email: string,
   password: string
 ): Promise<{ success: boolean; error?: string }> {
-  if (!supabase) return { success: false, error: "Supabase غير متصل" };
+  if (!supabase) return { success: false, error: "Supabase ط؛ظٹط± ظ…طھطµظ„" };
 
   const { error } = await supabase.auth.signInWithPassword({ email, password });
   if (error) return { success: false, error: error.message };
@@ -47,7 +47,7 @@ async function signInWithSupabase(
 }
 
 /**
- * signOutFromSupabase — تسجيل خروج من Supabase
+ * signOutFromSupabase â€” طھط³ط¬ظٹظ„ ط®ط±ظˆط¬ ظ…ظ† Supabase
  */
 async function signOutFromSupabase(): Promise<void> {
   if (!supabase) return;
@@ -55,7 +55,7 @@ async function signOutFromSupabase(): Promise<void> {
 }
 
 /**
- * getSupabaseSession — قراءة session الحالية
+ * getSupabaseSession â€” ظ‚ط±ط§ط،ط© session ط§ظ„ط­ط§ظ„ظٹط©
  */
 async function getSupabaseSession(): Promise<AuthSession | null> {
   if (!supabase) return null;
@@ -85,31 +85,31 @@ async function getSupabaseSession(): Promise<AuthSession | null> {
   };
 }
 
-// ── Demo mode Auth ─────────────────────────────────────────────────────────
+// â”€â”€ Demo mode Auth â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 /**
- * signInDemo — تسجيل دخول demo (username/password)
+ * signInDemo â€” طھط³ط¬ظٹظ„ ط¯ط®ظˆظ„ demo (username/password)
  */
 function signInDemo(
   username: string,
   password: string
 ): { success: boolean; error?: string } {
   if (!isDemoAuthAllowed) {
-    return { success: false, error: "تسجيل دخول العرض غير متاح في بيئة الإنتاج" };
+    return { success: false, error: "طھط³ط¬ظٹظ„ ط¯ط®ظˆظ„ ط§ظ„ط¹ط±ط¶ ط؛ظٹط± ظ…طھط§ط­ ظپظٹ ط¨ظٹط¦ط© ط§ظ„ط¥ظ†طھط§ط¬" };
   }
 
   if (username === DEMO_ADMIN_USERNAME && password === DEMO_ADMIN_PASSWORD) {
     const demoUser = {
-      user: { id: "demo-admin", role: "admin", displayName: "مدير النظام" },
+      user: { id: "demo-admin", role: "admin", displayName: "ظ…ط¯ظٹط± ط§ظ„ظ†ط¸ط§ظ…" },
       isDemo: true,
     };
     sessionStorage.setItem(DEMO_SESSION_KEY, JSON.stringify(demoUser));
     // Also save to localStorage so useStore picks it up
     localStorage.setItem('app-user', JSON.stringify({
       id: "demo-admin",
-      name: "مدير النظام",
+      name: "ظ…ط¯ظٹط± ط§ظ„ظ†ط¸ط§ظ…",
       email: "demo@mawaeedak.local",
-      city: "الرياض",
+      city: "ط§ظ„ط±ظٹط§ط¶",
       cityKey: "riyadh",
       timezone: "Asia/Riyadh",
       role: "admin",
@@ -118,18 +118,18 @@ function signInDemo(
     }));
     return { success: true };
   }
-  return { success: false, error: "اسم المستخدم أو كلمة المرور غير صحيحة" };
+  return { success: false, error: "ط§ط³ظ… ط§ظ„ظ…ط³طھط®ط¯ظ… ط£ظˆ ظƒظ„ظ…ط© ط§ظ„ظ…ط±ظˆط± ط؛ظٹط± طµط­ظٹط­ط©" };
 }
 
 /**
- * signOutDemo — تسجيل خروج demo
+ * signOutDemo â€” طھط³ط¬ظٹظ„ ط®ط±ظˆط¬ demo
  */
 function signOutDemo(): void {
   sessionStorage.removeItem(DEMO_SESSION_KEY);
 }
 
 /**
- * getDemoSession — قراءة session demo
+ * getDemoSession â€” ظ‚ط±ط§ط،ط© session demo
  */
 function getDemoSession(): AuthSession | null {
   if (!isDemoAuthAllowed) {
@@ -152,12 +152,12 @@ function getDemoSession(): AuthSession | null {
   }
 }
 
-// ── Unified Auth API ───────────────────────────────────────────────────────
+// â”€â”€ Unified Auth API â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 /**
- * authSignIn — تسجيل دخول موحد
- * Supabase Auth فقط في الإنتاج
- * Demo mode ممنوع في الإنتاج
+ * authSignIn â€” طھط³ط¬ظٹظ„ ط¯ط®ظˆظ„ ظ…ظˆط­ط¯
+ * Supabase Auth ظپظ‚ط· ظپظٹ ط§ظ„ط¥ظ†طھط§ط¬
+ * Demo mode ظ…ظ…ظ†ظˆط¹ ظپظٹ ط§ظ„ط¥ظ†طھط§ط¬
  */
 export async function authSignIn(
   usernameOrEmail: string,
@@ -165,7 +165,7 @@ export async function authSignIn(
 ): Promise<{ success: boolean; error?: string }> {
   // Production requires Supabase
   if (isProduction && !isSupabaseEnabled) {
-    return { success: false, error: "التطبيق يتطلب إعداد Supabase للاتصال" };
+    return { success: false, error: "ط§ظ„طھط·ط¨ظٹظ‚ ظٹطھط·ظ„ط¨ ط¥ط¹ط¯ط§ط¯ Supabase ظ„ظ„ط§طھطµط§ظ„" };
   }
   
   if (isSupabaseEnabled) {
@@ -177,11 +177,11 @@ export async function authSignIn(
     return signInDemo(usernameOrEmail, password);
   }
   
-  return { success: false, error: "تسجيل الدخول يتطلب إعداد Supabase" };
+  return { success: false, error: "طھط³ط¬ظٹظ„ ط§ظ„ط¯ط®ظˆظ„ ظٹطھط·ظ„ط¨ ط¥ط¹ط¯ط§ط¯ Supabase" };
 }
 
 /**
- * authSignOut — تسجيل خروج موحد
+ * authSignOut â€” طھط³ط¬ظٹظ„ ط®ط±ظˆط¬ ظ…ظˆط­ط¯
  */
 export async function authSignOut(): Promise<void> {
   if (isSupabaseEnabled) {
@@ -192,7 +192,7 @@ export async function authSignOut(): Promise<void> {
 }
 
 /**
- * getAuthSession — قراءة session موحدة
+ * getAuthSession â€” ظ‚ط±ط§ط،ط© session ظ…ظˆط­ط¯ط©
  */
 export async function getAuthSession(): Promise<AuthSession | null> {
   if (isSupabaseEnabled) {
@@ -202,7 +202,7 @@ export async function getAuthSession(): Promise<AuthSession | null> {
 }
 
 /**
- * isAdminUser — هل المستخدم admin أو super_admin؟
+ * isAdminUser â€” ظ‡ظ„ ط§ظ„ظ…ط³طھط®ط¯ظ… admin ط£ظˆ super_adminطں
  */
 export function isAdminUser(session: AuthSession | null): boolean {
   if (!session?.user?.id) return false;
@@ -219,7 +219,7 @@ export function isAdminUser(session: AuthSession | null): boolean {
 }
 
 /**
- * isAllowedAdminSession — guard for legacy admin login call sites.
+ * isAllowedAdminSession â€” guard for legacy admin login call sites.
  */
 export function isAllowedAdminSession(session: AuthSession | null): boolean {
   return isAdminUser(session);
@@ -232,8 +232,9 @@ declare global {
 globalThis.isAllowedAdminSession = isAllowedAdminSession;
 
 /**
- * getAuthMode — وضع المصادقة الحالي
+ * getAuthMode â€” ظˆط¶ط¹ ط§ظ„ظ…طµط§ط¯ظ‚ط© ط§ظ„ط­ط§ظ„ظٹ
  */
 export function getAuthMode(): "supabase" | "demo" {
   return isSupabaseEnabled ? "supabase" : "demo";
 }
+

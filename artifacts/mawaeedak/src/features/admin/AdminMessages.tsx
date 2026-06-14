@@ -1,10 +1,10 @@
-/**
- * AdminMessages — Phase 12M
+﻿/**
+ * AdminMessages â€” Phase 12M
  *
- * Read:   useGatewayDailyMessages → API (mode=api/shadow) | Supabase (mode=supabase)
+ * Read:   useGatewayDailyMessages â†’ API (mode=api/shadow) | Supabase (mode=supabase)
  * Write:  gwCreateDailyMessage / gwUpdateDailyMessage / gwDeleteDailyMessage
- *           mode=api/shadow → /api/daily-messages/:id
- *           mode=supabase   → Supabase INSERT/UPDATE/DELETE
+ *           mode=api/shadow â†’ /api/daily-messages/:id
+ *           mode=supabase   â†’ Supabase INSERT/UPDATE/DELETE
  *
  * Invalidation: gwQueryKeys.dailyMessages + getListDailyMessagesQueryKey
  */
@@ -72,7 +72,7 @@ export default function AdminMessages() {
 
   const handleSave = async () => {
     if (!message) {
-      toast({ title: "خطأ", description: "الرسالة مطلوبة", variant: "destructive" });
+      toast({ title: "ط®ط·ط£", description: "ط§ظ„ط±ط³ط§ظ„ط© ظ…ط·ظ„ظˆط¨ط©", variant: "destructive" });
       return;
     }
     const payload = { message, display_date: displayDate || undefined, is_active: isActive };
@@ -82,11 +82,11 @@ export default function AdminMessages() {
         ? await gwUpdateDailyMessage(editId, payload)
         : await gwCreateDailyMessage(payload);
       if (result.success) {
-        toast({ title: isEdit ? "تم التعديل" : "تمت الإضافة" });
+        toast({ title: isEdit ? "طھظ… ط§ظ„طھط¹ط¯ظٹظ„" : "طھظ…طھ ط§ظ„ط¥ط¶ط§ظپط©" });
         setIsOpen(false);
         invalidateMessages();
       } else {
-        toast({ title: "خطأ", description: result.error ?? "فشلت العملية", variant: "destructive" });
+        toast({ title: "ط®ط·ط£", description: result.error ?? "ظپط´ظ„طھ ط§ظ„ط¹ظ…ظ„ظٹط©", variant: "destructive" });
       }
     } finally {
       setSavePending(false);
@@ -99,11 +99,11 @@ export default function AdminMessages() {
     try {
       const result = await gwDeleteDailyMessage(deleteId);
       if (result.success) {
-        toast({ title: "تم الحذف" });
+        toast({ title: "طھظ… ط§ظ„ط­ط°ظپ" });
         setIsDeleteOpen(false);
         invalidateMessages();
       } else {
-        toast({ title: "فشل الحذف", description: result.error ?? "خطأ غير معروف", variant: "destructive" });
+        toast({ title: "ظپط´ظ„ ط§ظ„ط­ط°ظپ", description: result.error ?? "ط®ط·ط£ ط؛ظٹط± ظ…ط¹ط±ظˆظپ", variant: "destructive" });
         setIsDeleteOpen(false);
       }
     } finally {
@@ -121,35 +121,35 @@ export default function AdminMessages() {
             style={{ background: "linear-gradient(180deg, hsl(38 62% 52%), hsl(32 55% 42%))" }}
           />
           <h1 className="text-2xl font-extrabold" style={{ color: "hsl(22 62% 18%)" }}>
-            الرسائل اليومية
+            ط§ظ„ط±ط³ط§ط¦ظ„ ط§ظ„ظٹظˆظ…ظٹط©
           </h1>
         </div>
         <Button onClick={openAdd} size="sm">
-          <Plus className="w-4 h-4 ml-1" /> إضافة رسالة
+          <Plus className="w-4 h-4 ml-1" /> ط¥ط¶ط§ظپط© ط±ط³ط§ظ„ط©
         </Button>
       </div>
 
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogContent className="rtl max-w-[400px] rounded-xl">
           <DialogHeader>
-            <DialogTitle>{isEdit ? "تعديل رسالة" : "رسالة جديدة"}</DialogTitle>
+            <DialogTitle>{isEdit ? "طھط¹ط¯ظٹظ„ ط±ط³ط§ظ„ط©" : "ط±ط³ط§ظ„ط© ط¬ط¯ظٹط¯ط©"}</DialogTitle>
           </DialogHeader>
           <div className="space-y-4 py-4">
             <div className="space-y-2">
-              <Label>نص الرسالة</Label>
-              <Textarea value={message} onChange={e => setMessage(e.target.value)} rows={4} placeholder="اكتب الحكمة أو الرسالة هنا..." />
+              <Label>ظ†طµ ط§ظ„ط±ط³ط§ظ„ط©</Label>
+              <Textarea value={message} onChange={e => setMessage(e.target.value)} rows={4} placeholder="ط§ظƒطھط¨ ط§ظ„ط­ظƒظ…ط© ط£ظˆ ط§ظ„ط±ط³ط§ظ„ط© ظ‡ظ†ط§..." />
             </div>
             <div className="space-y-2">
-              <Label>تاريخ العرض (اختياري)</Label>
+              <Label>طھط§ط±ظٹط® ط§ظ„ط¹ط±ط¶ (ط§ط®طھظٹط§ط±ظٹ)</Label>
               <Input type="date" value={displayDate} onChange={e => setDisplayDate(e.target.value)} />
-              <p className="text-xs text-muted-foreground">إذا تركته فارغاً ستظهر الرسالة بشكل عشوائي للرسائل المفعّلة</p>
+              <p className="text-xs text-muted-foreground">ط¥ط°ط§ طھط±ظƒطھظ‡ ظپط§ط±ط؛ط§ظ‹ ط³طھط¸ظ‡ط± ط§ظ„ط±ط³ط§ظ„ط© ط¨ط´ظƒظ„ ط¹ط´ظˆط§ط¦ظٹ ظ„ظ„ط±ط³ط§ط¦ظ„ ط§ظ„ظ…ظپط¹ظ‘ظ„ط©</p>
             </div>
             <div className="flex items-center justify-between">
-              <Label>تفعيل الرسالة</Label>
+              <Label>طھظپط¹ظٹظ„ ط§ظ„ط±ط³ط§ظ„ط©</Label>
               <Switch checked={isActive} onCheckedChange={setIsActive} />
             </div>
             <Button className="w-full" onClick={handleSave} disabled={savePending}>
-              {savePending ? <Loader2 className="w-4 h-4 animate-spin" /> : "حفظ"}
+              {savePending ? <Loader2 className="w-4 h-4 animate-spin" /> : "ط­ظپط¸"}
             </Button>
           </div>
         </DialogContent>
@@ -168,9 +168,9 @@ export default function AdminMessages() {
                     {msg.display_date ? (
                       <span className="flex items-center gap-1"><CalIcon className="w-3 h-3" /> {msg.display_date}</span>
                     ) : (
-                      <span className="text-accent bg-accent/10 px-2 py-0.5 rounded">عامة</span>
+                      <span className="text-accent bg-accent/10 px-2 py-0.5 rounded">ط¹ط§ظ…ط©</span>
                     )}
-                    {!msg.is_active && <span className="text-destructive bg-destructive/10 px-2 py-0.5 rounded">معطلة</span>}
+                    {!msg.is_active && <span className="text-destructive bg-destructive/10 px-2 py-0.5 rounded">ظ…ط¹ط·ظ„ط©</span>}
                   </div>
                   <div className="flex gap-2">
                     <Button variant="ghost" size="icon" className="h-8 w-8 text-primary" onClick={() => openEdit(msg)}>
@@ -193,17 +193,18 @@ export default function AdminMessages() {
         </div>
       ) : (
         <div className="text-center p-8 bg-card rounded-xl border border-dashed border-border text-muted-foreground">
-          لا توجد رسائل
+          ظ„ط§ طھظˆط¬ط¯ ط±ط³ط§ط¦ظ„
         </div>
       )}
 
       <ConfirmDialog
         open={isDeleteOpen}
         onOpenChange={setIsDeleteOpen}
-        title="حذف الرسالة"
-        description="هل أنت متأكد من حذف هذه الرسالة؟"
+        title="ط­ط°ظپ ط§ظ„ط±ط³ط§ظ„ط©"
+        description="ظ‡ظ„ ط£ظ†طھ ظ…طھط£ظƒط¯ ظ…ظ† ط­ط°ظپ ظ‡ط°ظ‡ ط§ظ„ط±ط³ط§ظ„ط©طں"
         onConfirm={handleDelete}
       />
     </div>
   );
 }
+

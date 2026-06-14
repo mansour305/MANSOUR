@@ -1,4 +1,4 @@
-# OpenHands Execution Lock — Mawaeedak
+﻿# OpenHands Execution Lock â€” Mawaeedak
 
 This repository has a strict execution rule: do not report READY unless the claimed files, routes, and verification commands are real and present in git.
 
@@ -95,3 +95,4 @@ grep -n "/services/reminders" artifacts/mawaeedak/src/features/centers/CentersPa
 - Build fails.
 - Flutter/Dart/mobile app files are added.
 - Any feature is claimed as implemented without actual git changes.
+

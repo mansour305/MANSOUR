@@ -1,252 +1,252 @@
-# DATA_SOURCE_MAP.md — مواعيدك
-**تاريخ الإنشاء:** 2026-05-24 | Phase 12A
+﻿# DATA_SOURCE_MAP.md â€” ظ…ظˆط§ط¹ظٹط¯ظƒ
+**طھط§ط±ظٹط® ط§ظ„ط¥ظ†ط´ط§ط،:** 2026-05-24 | Phase 12A
 
-خريطة شاملة لمصادر البيانات الحالية ومقابلاتها في Supabase.
+ط®ط±ظٹط·ط© ط´ط§ظ…ظ„ط© ظ„ظ…طµط§ط¯ط± ط§ظ„ط¨ظٹط§ظ†ط§طھ ط§ظ„ط­ط§ظ„ظٹط© ظˆظ…ظ‚ط§ط¨ظ„ط§طھظ‡ط§ ظپظٹ Supabase.
 
 ---
 
-## ملخص المصادر الحالية
+## ظ…ظ„ط®طµ ط§ظ„ظ…طµط§ط¯ط± ط§ظ„ط­ط§ظ„ظٹط©
 
-| المصدر | الاستخدام | الحالة |
+| ط§ظ„ظ…طµط¯ط± | ط§ظ„ط§ط³طھط®ط¯ط§ظ… | ط§ظ„ط­ط§ظ„ط© |
 |---|---|---|
-| **PostgreSQL (Drizzle/Express)** | 12 جدول، كل البيانات التشغيلية | مصدر الحقيقة الحالي |
-| **localStorage** | رحلات السفر، مهام العمل، مسودة الستوري، الإعدادات الشخصية | بيانات محلية |
-| **Supabase** | Auth فقط — /admin login | يعمل |
-| **External API** | مواقيت الصلاة (Aladhan) | يعمل |
+| **PostgreSQL (Drizzle/Express)** | 12 ط¬ط¯ظˆظ„طŒ ظƒظ„ ط§ظ„ط¨ظٹط§ظ†ط§طھ ط§ظ„طھط´ط؛ظٹظ„ظٹط© | ظ…طµط¯ط± ط§ظ„ط­ظ‚ظٹظ‚ط© ط§ظ„ط­ط§ظ„ظٹ |
+| **localStorage** | ط±ط­ظ„ط§طھ ط§ظ„ط³ظپط±طŒ ظ…ظ‡ط§ظ… ط§ظ„ط¹ظ…ظ„طŒ ظ…ط³ظˆط¯ط© ط§ظ„ط³طھظˆط±ظٹطŒ ط§ظ„ط¥ط¹ط¯ط§ط¯ط§طھ ط§ظ„ط´ط®طµظٹط© | ط¨ظٹط§ظ†ط§طھ ظ…ط­ظ„ظٹط© |
+| **Supabase** | Auth ظپظ‚ط· â€” /admin login | ظٹط¹ظ…ظ„ |
+| **External API** | ظ…ظˆط§ظ‚ظٹطھ ط§ظ„طµظ„ط§ط© (Aladhan) | ظٹط¹ظ…ظ„ |
 
 ---
 
-## جدول مصادر البيانات التفصيلي
+## ط¬ط¯ظˆظ„ ظ…طµط§ط¯ط± ط§ظ„ط¨ظٹط§ظ†ط§طھ ط§ظ„طھظپطµظٹظ„ظٹ
 
-| الصفحة/الميزة | المصدر الحالي | جدول PostgreSQL (Drizzle) | جدول Supabase | عامة/خاصة | يحتاج user_id | يحتاج Migration | درجة المخاطر | القرار المقترح |
+| ط§ظ„طµظپط­ط©/ط§ظ„ظ…ظٹط²ط© | ط§ظ„ظ…طµط¯ط± ط§ظ„ط­ط§ظ„ظٹ | ط¬ط¯ظˆظ„ PostgreSQL (Drizzle) | ط¬ط¯ظˆظ„ Supabase | ط¹ط§ظ…ط©/ط®ط§طµط© | ظٹط­طھط§ط¬ user_id | ظٹط­طھط§ط¬ Migration | ط¯ط±ط¬ط© ط§ظ„ظ…ط®ط§ط·ط± | ط§ظ„ظ‚ط±ط§ط± ط§ظ„ظ…ظ‚طھط±ط­ |
 |---|---|---|---|---|---|---|---|---|
-| **الرئيسية — رسالة اليوم** | PostgreSQL API | `daily_messages` | `daily_messages` | عامة (admin_managed) | لا | نعم | منخفضة | seed + بيانات حالية |
-| **الرئيسية — مواقيت الصلاة** | Aladhan API خارجي | `prayer_times` (cache) | غير موجود | عامة | لا | لا | منخفضة | يبقى external API |
-| **الرئيسية — العدادات المالية** | PostgreSQL API | `financial_events` | `financial_events` | مشتركة حالياً* | نعم (مستقبلاً) | نعم | متوسطة | migration + إضافة user_id |
-| **التقويم — المواعيد** | PostgreSQL API | `appointments` | `appointments` | مشتركة حالياً* | نعم (مستقبلاً) | نعم | متوسطة | migration + إضافة user_id |
-| **المال — الأحداث المالية** | PostgreSQL API | `financial_events` | `financial_events` | مشتركة حالياً* | نعم (مستقبلاً) | نعم | متوسطة | migration + إضافة user_id |
-| **المال — الحاسبات** | حسابات محلية | — | — | محلية | لا | لا | لا يوجد | يبقى محلياً |
-| **ستوري اليوم — القوالب** | PostgreSQL API | `story_templates` | `story_templates` | عامة (admin_managed) | لا | نعم | منخفضة | seed + بيانات حالية |
-| **ستوري اليوم — المسودة** | localStorage | `mawaeedak_story_v1` | — | محلية | لا | لا | لا يوجد | يبقى localStorage |
-| **الإشعارات** | PostgreSQL API | `notifications` | `notifications` | مشتركة حالياً* | نعم (مستقبلاً) | نعم | متوسطة | migration + إضافة user_id |
-| **الإشعارات — التفضيلات** | localStorage | — | `notification_preferences` | خاصة | نعم | لا (بيانات جديدة) | منخفضة | ربط بـ Supabase مباشرة |
-| **مراكز — الأعمال** | localStorage | — | — | محلية | لا | لا | لا يوجد | يبقى localStorage |
-| **مراكز — السفر** | localStorage | `mawaeedak_travel_v1` | — | محلية | لا | لا | لا يوجد | يبقى localStorage |
-| **مراكز — الدراسة** | حسابات محلية | — | — | محلية | لا | لا | لا يوجد | يبقى محلياً |
-| **مراكز — الأخبار** | PostgreSQL API | `news` | `news` | عامة (admin_managed) | لا | نعم | منخفضة | seed + بيانات حالية |
-| **مراكز — الوظائف** | PostgreSQL API | `jobs` | `jobs` | عامة (admin_managed) | لا | نعم | منخفضة | seed + بيانات حالية |
-| **مراكز — التهاني** | حسابات محلية | — | — | محلية | لا | لا | لا يوجد | يبقى محلياً |
-| **مراكز — الشكاوى** | PostgreSQL API | `complaints` | `complaints` | مشتركة | user_id اختياري | نعم | منخفضة | migration |
-| **حسابي — الملف الشخصي** | localStorage (`app-user`) | — | `profiles` | خاصة | نعم | لا (بيانات جديدة) | منخفضة | ربط بـ Supabase مستقبلاً |
-| **حسابي — الثيمات** | PostgreSQL API | `themes` | `themes` | عامة (admin_managed) | لا | نعم | منخفضة | seed + بيانات حالية |
-| **حسابي — الثيم المختار** | localStorage (`app-mode`) | — | `profiles.theme_preference` | خاصة | نعم | لا (بيانات جديدة) | منخفضة | ربط بـ Supabase مستقبلاً |
-| **الإدارة — Auth** | Supabase Auth | — | `auth.users` + `user_roles` | خاصة | نعم | تم | لا يوجد | يعمل |
-| **الإدارة — الأحداث** | PostgreSQL API | `public_events` | `public_events` | عامة (admin_managed) | لا | نعم | منخفضة | seed |
-| **الإدارة — الرسائل** | PostgreSQL API | `daily_messages` | `daily_messages` | عامة (admin_managed) | لا | نعم | منخفضة | seed |
-| **Audit Logs** | PostgreSQL API | `audit_logs` | `audit_logs` | admin_managed | لا | نعم | منخفضة | migration |
+| **ط§ظ„ط±ط¦ظٹط³ظٹط© â€” ط±ط³ط§ظ„ط© ط§ظ„ظٹظˆظ…** | PostgreSQL API | `daily_messages` | `daily_messages` | ط¹ط§ظ…ط© (admin_managed) | ظ„ط§ | ظ†ط¹ظ… | ظ…ظ†ط®ظپط¶ط© | seed + ط¨ظٹط§ظ†ط§طھ ط­ط§ظ„ظٹط© |
+| **ط§ظ„ط±ط¦ظٹط³ظٹط© â€” ظ…ظˆط§ظ‚ظٹطھ ط§ظ„طµظ„ط§ط©** | Aladhan API ط®ط§ط±ط¬ظٹ | `prayer_times` (cache) | ط؛ظٹط± ظ…ظˆط¬ظˆط¯ | ط¹ط§ظ…ط© | ظ„ط§ | ظ„ط§ | ظ…ظ†ط®ظپط¶ط© | ظٹط¨ظ‚ظ‰ external API |
+| **ط§ظ„ط±ط¦ظٹط³ظٹط© â€” ط§ظ„ط¹ط¯ط§ط¯ط§طھ ط§ظ„ظ…ط§ظ„ظٹط©** | PostgreSQL API | `financial_events` | `financial_events` | ظ…ط´طھط±ظƒط© ط­ط§ظ„ظٹط§ظ‹* | ظ†ط¹ظ… (ظ…ط³طھظ‚ط¨ظ„ط§ظ‹) | ظ†ط¹ظ… | ظ…طھظˆط³ط·ط© | migration + ط¥ط¶ط§ظپط© user_id |
+| **ط§ظ„طھظ‚ظˆظٹظ… â€” ط§ظ„ظ…ظˆط§ط¹ظٹط¯** | PostgreSQL API | `appointments` | `appointments` | ظ…ط´طھط±ظƒط© ط­ط§ظ„ظٹط§ظ‹* | ظ†ط¹ظ… (ظ…ط³طھظ‚ط¨ظ„ط§ظ‹) | ظ†ط¹ظ… | ظ…طھظˆط³ط·ط© | migration + ط¥ط¶ط§ظپط© user_id |
+| **ط§ظ„ظ…ط§ظ„ â€” ط§ظ„ط£ط­ط¯ط§ط« ط§ظ„ظ…ط§ظ„ظٹط©** | PostgreSQL API | `financial_events` | `financial_events` | ظ…ط´طھط±ظƒط© ط­ط§ظ„ظٹط§ظ‹* | ظ†ط¹ظ… (ظ…ط³طھظ‚ط¨ظ„ط§ظ‹) | ظ†ط¹ظ… | ظ…طھظˆط³ط·ط© | migration + ط¥ط¶ط§ظپط© user_id |
+| **ط§ظ„ظ…ط§ظ„ â€” ط§ظ„ط­ط§ط³ط¨ط§طھ** | ط­ط³ط§ط¨ط§طھ ظ…ط­ظ„ظٹط© | â€” | â€” | ظ…ط­ظ„ظٹط© | ظ„ط§ | ظ„ط§ | ظ„ط§ ظٹظˆط¬ط¯ | ظٹط¨ظ‚ظ‰ ظ…ط­ظ„ظٹط§ظ‹ |
+| **ط³طھظˆط±ظٹ ط§ظ„ظٹظˆظ… â€” ط§ظ„ظ‚ظˆط§ظ„ط¨** | PostgreSQL API | `story_templates` | `story_templates` | ط¹ط§ظ…ط© (admin_managed) | ظ„ط§ | ظ†ط¹ظ… | ظ…ظ†ط®ظپط¶ط© | seed + ط¨ظٹط§ظ†ط§طھ ط­ط§ظ„ظٹط© |
+| **ط³طھظˆط±ظٹ ط§ظ„ظٹظˆظ… â€” ط§ظ„ظ…ط³ظˆط¯ط©** | localStorage | `mawaeedak_story_v1` | â€” | ظ…ط­ظ„ظٹط© | ظ„ط§ | ظ„ط§ | ظ„ط§ ظٹظˆط¬ط¯ | ظٹط¨ظ‚ظ‰ localStorage |
+| **ط§ظ„ط¥ط´ط¹ط§ط±ط§طھ** | PostgreSQL API | `notifications` | `notifications` | ظ…ط´طھط±ظƒط© ط­ط§ظ„ظٹط§ظ‹* | ظ†ط¹ظ… (ظ…ط³طھظ‚ط¨ظ„ط§ظ‹) | ظ†ط¹ظ… | ظ…طھظˆط³ط·ط© | migration + ط¥ط¶ط§ظپط© user_id |
+| **ط§ظ„ط¥ط´ط¹ط§ط±ط§طھ â€” ط§ظ„طھظپط¶ظٹظ„ط§طھ** | localStorage | â€” | `notification_preferences` | ط®ط§طµط© | ظ†ط¹ظ… | ظ„ط§ (ط¨ظٹط§ظ†ط§طھ ط¬ط¯ظٹط¯ط©) | ظ…ظ†ط®ظپط¶ط© | ط±ط¨ط· ط¨ظ€ Supabase ظ…ط¨ط§ط´ط±ط© |
+| **ظ…ط±ط§ظƒط² â€” ط§ظ„ط£ط¹ظ…ط§ظ„** | localStorage | â€” | â€” | ظ…ط­ظ„ظٹط© | ظ„ط§ | ظ„ط§ | ظ„ط§ ظٹظˆط¬ط¯ | ظٹط¨ظ‚ظ‰ localStorage |
+| **ظ…ط±ط§ظƒط² â€” ط§ظ„ط³ظپط±** | localStorage | `mawaeedak_travel_v1` | â€” | ظ…ط­ظ„ظٹط© | ظ„ط§ | ظ„ط§ | ظ„ط§ ظٹظˆط¬ط¯ | ظٹط¨ظ‚ظ‰ localStorage |
+| **ظ…ط±ط§ظƒط² â€” ط§ظ„ط¯ط±ط§ط³ط©** | ط­ط³ط§ط¨ط§طھ ظ…ط­ظ„ظٹط© | â€” | â€” | ظ…ط­ظ„ظٹط© | ظ„ط§ | ظ„ط§ | ظ„ط§ ظٹظˆط¬ط¯ | ظٹط¨ظ‚ظ‰ ظ…ط­ظ„ظٹط§ظ‹ |
+| **ظ…ط±ط§ظƒط² â€” ط§ظ„ط£ط®ط¨ط§ط±** | PostgreSQL API | `news` | `news` | ط¹ط§ظ…ط© (admin_managed) | ظ„ط§ | ظ†ط¹ظ… | ظ…ظ†ط®ظپط¶ط© | seed + ط¨ظٹط§ظ†ط§طھ ط­ط§ظ„ظٹط© |
+| **ظ…ط±ط§ظƒط² â€” ط§ظ„ظˆط¸ط§ط¦ظپ** | PostgreSQL API | `jobs` | `jobs` | ط¹ط§ظ…ط© (admin_managed) | ظ„ط§ | ظ†ط¹ظ… | ظ…ظ†ط®ظپط¶ط© | seed + ط¨ظٹط§ظ†ط§طھ ط­ط§ظ„ظٹط© |
+| **ظ…ط±ط§ظƒط² â€” ط§ظ„طھظ‡ط§ظ†ظٹ** | ط­ط³ط§ط¨ط§طھ ظ…ط­ظ„ظٹط© | â€” | â€” | ظ…ط­ظ„ظٹط© | ظ„ط§ | ظ„ط§ | ظ„ط§ ظٹظˆط¬ط¯ | ظٹط¨ظ‚ظ‰ ظ…ط­ظ„ظٹط§ظ‹ |
+| **ظ…ط±ط§ظƒط² â€” ط§ظ„ط´ظƒط§ظˆظ‰** | PostgreSQL API | `complaints` | `complaints` | ظ…ط´طھط±ظƒط© | user_id ط§ط®طھظٹط§ط±ظٹ | ظ†ط¹ظ… | ظ…ظ†ط®ظپط¶ط© | migration |
+| **ط­ط³ط§ط¨ظٹ â€” ط§ظ„ظ…ظ„ظپ ط§ظ„ط´ط®طµظٹ** | localStorage (`app-user`) | â€” | `profiles` | ط®ط§طµط© | ظ†ط¹ظ… | ظ„ط§ (ط¨ظٹط§ظ†ط§طھ ط¬ط¯ظٹط¯ط©) | ظ…ظ†ط®ظپط¶ط© | ط±ط¨ط· ط¨ظ€ Supabase ظ…ط³طھظ‚ط¨ظ„ط§ظ‹ |
+| **ط­ط³ط§ط¨ظٹ â€” ط§ظ„ط«ظٹظ…ط§طھ** | PostgreSQL API | `themes` | `themes` | ط¹ط§ظ…ط© (admin_managed) | ظ„ط§ | ظ†ط¹ظ… | ظ…ظ†ط®ظپط¶ط© | seed + ط¨ظٹط§ظ†ط§طھ ط­ط§ظ„ظٹط© |
+| **ط­ط³ط§ط¨ظٹ â€” ط§ظ„ط«ظٹظ… ط§ظ„ظ…ط®طھط§ط±** | localStorage (`app-mode`) | â€” | `profiles.theme_preference` | ط®ط§طµط© | ظ†ط¹ظ… | ظ„ط§ (ط¨ظٹط§ظ†ط§طھ ط¬ط¯ظٹط¯ط©) | ظ…ظ†ط®ظپط¶ط© | ط±ط¨ط· ط¨ظ€ Supabase ظ…ط³طھظ‚ط¨ظ„ط§ظ‹ |
+| **ط§ظ„ط¥ط¯ط§ط±ط© â€” Auth** | Supabase Auth | â€” | `auth.users` + `user_roles` | ط®ط§طµط© | ظ†ط¹ظ… | طھظ… | ظ„ط§ ظٹظˆط¬ط¯ | ظٹط¹ظ…ظ„ |
+| **ط§ظ„ط¥ط¯ط§ط±ط© â€” ط§ظ„ط£ط­ط¯ط§ط«** | PostgreSQL API | `public_events` | `public_events` | ط¹ط§ظ…ط© (admin_managed) | ظ„ط§ | ظ†ط¹ظ… | ظ…ظ†ط®ظپط¶ط© | seed |
+| **ط§ظ„ط¥ط¯ط§ط±ط© â€” ط§ظ„ط±ط³ط§ط¦ظ„** | PostgreSQL API | `daily_messages` | `daily_messages` | ط¹ط§ظ…ط© (admin_managed) | ظ„ط§ | ظ†ط¹ظ… | ظ…ظ†ط®ظپط¶ط© | seed |
+| **Audit Logs** | PostgreSQL API | `audit_logs` | `audit_logs` | admin_managed | ظ„ط§ | ظ†ط¹ظ… | ظ…ظ†ط®ظپط¶ط© | migration |
 
-> *مشتركة حالياً: لا يوجد user_id في schema الحالي — كل البيانات global
+> *ظ…ط´طھط±ظƒط© ط­ط§ظ„ظٹط§ظ‹: ظ„ط§ ظٹظˆط¬ط¯ user_id ظپظٹ schema ط§ظ„ط­ط§ظ„ظٹ â€” ظƒظ„ ط§ظ„ط¨ظٹط§ظ†ط§طھ global
 
 ---
 
-## فحص كل جدول
+## ظپط­طµ ظƒظ„ ط¬ط¯ظˆظ„
 
-### جداول Drizzle (PostgreSQL الحالي)
+### ط¬ط¯ط§ظˆظ„ Drizzle (PostgreSQL ط§ظ„ط­ط§ظ„ظٹ)
 
-| الجدول | في PostgreSQL | في Supabase | بيانات حالية | يحتاج Migration | user-owned | admin-managed | يحتاج RLS | يحتاج Seed |
+| ط§ظ„ط¬ط¯ظˆظ„ | ظپظٹ PostgreSQL | ظپظٹ Supabase | ط¨ظٹط§ظ†ط§طھ ط­ط§ظ„ظٹط© | ظٹط­طھط§ط¬ Migration | user-owned | admin-managed | ظٹط­طھط§ط¬ RLS | ظٹط­طھط§ط¬ Seed |
 |---|---|---|---|---|---|---|---|---|
-| `appointments` | ✅ 2 صف | ✅ موجود | نعم | نعم | نعم (مستقبلاً) | لا | نعم | لا |
-| `financial_events` | ✅ 8 صف | ✅ موجود | نعم | نعم | نعم (مستقبلاً) | لا | نعم | لا |
-| `daily_messages` | ✅ 8 صف | ✅ موجود | نعم | نعم | لا | نعم | لا (عامة) | نعم |
-| `story_templates` | ✅ 2 صف | ✅ موجود | نعم | نعم | لا | نعم | لا (عامة) | نعم |
-| `themes` | ✅ 10 صف | ✅ موجود | نعم | نعم | لا | نعم | لا (عامة) | نعم |
-| `notifications` | ✅ 3 صف | ✅ موجود | نعم | نعم | نعم (مستقبلاً) | لا | نعم | لا |
-| `public_events` | ✅ 0 صف | ✅ موجود | لا | نعم (seed) | لا | نعم | لا (عامة) | نعم |
-| `news` | ✅ 2 صف | ✅ موجود | نعم | نعم | لا | نعم | لا (عامة) | نعم |
-| `jobs` | ✅ 2 صف | ✅ موجود | نعم | نعم | لا | نعم | لا (عامة) | نعم |
-| `complaints` | ✅ 3 صف | ✅ موجود | نعم | نعم | اختياري | لا | نعم | لا |
-| `audit_logs` | ✅ 28 صف | ✅ موجود | نعم | نعم | لا | نعم | نعم (admin فقط) | لا |
-| `prayer_times` | ✅ (cache) | ❌ غير موجود | cache فقط | لا | لا | لا | لا | لا |
+| `appointments` | âœ… 2 طµظپ | âœ… ظ…ظˆط¬ظˆط¯ | ظ†ط¹ظ… | ظ†ط¹ظ… | ظ†ط¹ظ… (ظ…ط³طھظ‚ط¨ظ„ط§ظ‹) | ظ„ط§ | ظ†ط¹ظ… | ظ„ط§ |
+| `financial_events` | âœ… 8 طµظپ | âœ… ظ…ظˆط¬ظˆط¯ | ظ†ط¹ظ… | ظ†ط¹ظ… | ظ†ط¹ظ… (ظ…ط³طھظ‚ط¨ظ„ط§ظ‹) | ظ„ط§ | ظ†ط¹ظ… | ظ„ط§ |
+| `daily_messages` | âœ… 8 طµظپ | âœ… ظ…ظˆط¬ظˆط¯ | ظ†ط¹ظ… | ظ†ط¹ظ… | ظ„ط§ | ظ†ط¹ظ… | ظ„ط§ (ط¹ط§ظ…ط©) | ظ†ط¹ظ… |
+| `story_templates` | âœ… 2 طµظپ | âœ… ظ…ظˆط¬ظˆط¯ | ظ†ط¹ظ… | ظ†ط¹ظ… | ظ„ط§ | ظ†ط¹ظ… | ظ„ط§ (ط¹ط§ظ…ط©) | ظ†ط¹ظ… |
+| `themes` | âœ… 10 طµظپ | âœ… ظ…ظˆط¬ظˆط¯ | ظ†ط¹ظ… | ظ†ط¹ظ… | ظ„ط§ | ظ†ط¹ظ… | ظ„ط§ (ط¹ط§ظ…ط©) | ظ†ط¹ظ… |
+| `notifications` | âœ… 3 طµظپ | âœ… ظ…ظˆط¬ظˆط¯ | ظ†ط¹ظ… | ظ†ط¹ظ… | ظ†ط¹ظ… (ظ…ط³طھظ‚ط¨ظ„ط§ظ‹) | ظ„ط§ | ظ†ط¹ظ… | ظ„ط§ |
+| `public_events` | âœ… 0 طµظپ | âœ… ظ…ظˆط¬ظˆط¯ | ظ„ط§ | ظ†ط¹ظ… (seed) | ظ„ط§ | ظ†ط¹ظ… | ظ„ط§ (ط¹ط§ظ…ط©) | ظ†ط¹ظ… |
+| `news` | âœ… 2 طµظپ | âœ… ظ…ظˆط¬ظˆط¯ | ظ†ط¹ظ… | ظ†ط¹ظ… | ظ„ط§ | ظ†ط¹ظ… | ظ„ط§ (ط¹ط§ظ…ط©) | ظ†ط¹ظ… |
+| `jobs` | âœ… 2 طµظپ | âœ… ظ…ظˆط¬ظˆط¯ | ظ†ط¹ظ… | ظ†ط¹ظ… | ظ„ط§ | ظ†ط¹ظ… | ظ„ط§ (ط¹ط§ظ…ط©) | ظ†ط¹ظ… |
+| `complaints` | âœ… 3 طµظپ | âœ… ظ…ظˆط¬ظˆط¯ | ظ†ط¹ظ… | ظ†ط¹ظ… | ط§ط®طھظٹط§ط±ظٹ | ظ„ط§ | ظ†ط¹ظ… | ظ„ط§ |
+| `audit_logs` | âœ… 28 طµظپ | âœ… ظ…ظˆط¬ظˆط¯ | ظ†ط¹ظ… | ظ†ط¹ظ… | ظ„ط§ | ظ†ط¹ظ… | ظ†ط¹ظ… (admin ظپظ‚ط·) | ظ„ط§ |
+| `prayer_times` | âœ… (cache) | â‌Œ ط؛ظٹط± ظ…ظˆط¬ظˆط¯ | cache ظپظ‚ط· | ظ„ط§ | ظ„ط§ | ظ„ط§ | ظ„ط§ | ظ„ط§ |
 
-### جداول Supabase فقط (غير موجودة في Drizzle)
+### ط¬ط¯ط§ظˆظ„ Supabase ظپظ‚ط· (ط؛ظٹط± ظ…ظˆط¬ظˆط¯ط© ظپظٹ Drizzle)
 
-| الجدول | في PostgreSQL | في Supabase | الغرض | user-owned | admin-managed | يحتاج Seed |
+| ط§ظ„ط¬ط¯ظˆظ„ | ظپظٹ PostgreSQL | ظپظٹ Supabase | ط§ظ„ط؛ط±ط¶ | user-owned | admin-managed | ظٹط­طھط§ط¬ Seed |
 |---|---|---|---|---|---|---|
-| `profiles` | ❌ | ✅ | ملف المستخدم الشخصي | نعم | لا | لا (auto-created) |
-| `roles` | ❌ | ✅ | تعريف الأدوار | لا | نعم | نعم |
-| `permissions` | ❌ | ✅ | تعريف الصلاحيات | لا | نعم | نعم |
-| `role_permissions` | ❌ | ✅ | ربط دور بصلاحيات | لا | نعم | نعم |
-| `user_roles` | ❌ | ✅ | ربط مستخدم بدور | نعم | نعم | نعم (hrq→super_admin) |
-| `admin_users` | ❌ | ✅ | قائمة المسؤولين | لا | نعم | نعم |
-| `notification_preferences` | ❌ | ✅ | تفضيلات الإشعارات | نعم | لا | لا |
-| `app_settings` | ❌ | ✅ | إعدادات التطبيق | لا | نعم | نعم |
+| `profiles` | â‌Œ | âœ… | ظ…ظ„ظپ ط§ظ„ظ…ط³طھط®ط¯ظ… ط§ظ„ط´ط®طµظٹ | ظ†ط¹ظ… | ظ„ط§ | ظ„ط§ (auto-created) |
+| `roles` | â‌Œ | âœ… | طھط¹ط±ظٹظپ ط§ظ„ط£ط¯ظˆط§ط± | ظ„ط§ | ظ†ط¹ظ… | ظ†ط¹ظ… |
+| `permissions` | â‌Œ | âœ… | طھط¹ط±ظٹظپ ط§ظ„طµظ„ط§ط­ظٹط§طھ | ظ„ط§ | ظ†ط¹ظ… | ظ†ط¹ظ… |
+| `role_permissions` | â‌Œ | âœ… | ط±ط¨ط· ط¯ظˆط± ط¨طµظ„ط§ط­ظٹط§طھ | ظ„ط§ | ظ†ط¹ظ… | ظ†ط¹ظ… |
+| `user_roles` | â‌Œ | âœ… | ط±ط¨ط· ظ…ط³طھط®ط¯ظ… ط¨ط¯ظˆط± | ظ†ط¹ظ… | ظ†ط¹ظ… | ظ†ط¹ظ… (hrqâ†’super_admin) |
+| `admin_users` | â‌Œ | âœ… | ظ‚ط§ط¦ظ…ط© ط§ظ„ظ…ط³ط¤ظˆظ„ظٹظ† | ظ„ط§ | ظ†ط¹ظ… | ظ†ط¹ظ… |
+| `notification_preferences` | â‌Œ | âœ… | طھظپط¶ظٹظ„ط§طھ ط§ظ„ط¥ط´ط¹ط§ط±ط§طھ | ظ†ط¹ظ… | ظ„ط§ | ظ„ط§ |
+| `app_settings` | â‌Œ | âœ… | ط¥ط¹ط¯ط§ط¯ط§طھ ط§ظ„طھط·ط¨ظٹظ‚ | ظ„ط§ | ظ†ط¹ظ… | ظ†ط¹ظ… |
 
 ---
 
-## الاختلافات الحرجة بين Schema الحالي وSupabase
+## ط§ظ„ط§ط®طھظ„ط§ظپط§طھ ط§ظ„ط­ط±ط¬ط© ط¨ظٹظ† Schema ط§ظ„ط­ط§ظ„ظٹ ظˆSupabase
 
-| الاختلاف | الوصف | درجة الخطورة | الحل المقترح |
+| ط§ظ„ط§ط®طھظ„ط§ظپ | ط§ظ„ظˆطµظپ | ط¯ط±ط¬ط© ط§ظ„ط®ط·ظˆط±ط© | ط§ظ„ط­ظ„ ط§ظ„ظ…ظ‚طھط±ط­ |
 |---|---|---|---|
-| **غياب user_id** | جداول appointments/financial_events/notifications لا تحتوي `user_id` في Drizzle | عالية | إضافة عمود `user_id uuid` + migration |
-| **prayer_times** | موجود في Drizzle كـ cache، غير موجود في Supabase | منخفضة | يبقى cache محلي أو يُحذف |
-| **نوع ID** | Drizzle يستخدم `serial` (integer)، Supabase يستخدم `uuid` | عالية | الجداول المشتركة تحتاج تعديل أو wrapper |
-| **عدم وجود `owner_id`** | Drizzle tables ليست مربوطة بـ user | عالية | إضافة foreign key لـ `auth.users(id)` |
-| **created_at type** | Drizzle timestamp، Supabase timestamptz | منخفضة | قابل للتحويل |
+| **ط؛ظٹط§ط¨ user_id** | ط¬ط¯ط§ظˆظ„ appointments/financial_events/notifications ظ„ط§ طھط­طھظˆظٹ `user_id` ظپظٹ Drizzle | ط¹ط§ظ„ظٹط© | ط¥ط¶ط§ظپط© ط¹ظ…ظˆط¯ `user_id uuid` + migration |
+| **prayer_times** | ظ…ظˆط¬ظˆط¯ ظپظٹ Drizzle ظƒظ€ cacheطŒ ط؛ظٹط± ظ…ظˆط¬ظˆط¯ ظپظٹ Supabase | ظ…ظ†ط®ظپط¶ط© | ظٹط¨ظ‚ظ‰ cache ظ…ط­ظ„ظٹ ط£ظˆ ظٹظڈط­ط°ظپ |
+| **ظ†ظˆط¹ ID** | Drizzle ظٹط³طھط®ط¯ظ… `serial` (integer)طŒ Supabase ظٹط³طھط®ط¯ظ… `uuid` | ط¹ط§ظ„ظٹط© | ط§ظ„ط¬ط¯ط§ظˆظ„ ط§ظ„ظ…ط´طھط±ظƒط© طھط­طھط§ط¬ طھط¹ط¯ظٹظ„ ط£ظˆ wrapper |
+| **ط¹ط¯ظ… ظˆط¬ظˆط¯ `owner_id`** | Drizzle tables ظ„ظٹط³طھ ظ…ط±ط¨ظˆط·ط© ط¨ظ€ user | ط¹ط§ظ„ظٹط© | ط¥ط¶ط§ظپط© foreign key ظ„ظ€ `auth.users(id)` |
+| **created_at type** | Drizzle timestampطŒ Supabase timestamptz | ظ…ظ†ط®ظپط¶ط© | ظ‚ط§ط¨ظ„ ظ„ظ„طھط­ظˆظٹظ„ |
 
 ---
 
-## ملخص القرارات
+## ظ…ظ„ط®طµ ط§ظ„ظ‚ط±ط§ط±ط§طھ
 
-| التصنيف | الجداول |
+| ط§ظ„طھطµظ†ظٹظپ | ط§ظ„ط¬ط¯ط§ظˆظ„ |
 |---|---|
-| **يبقى في PostgreSQL/Express** (لا تغيير الآن) | الكل — مصدر الحقيقة الحالي |
-| **أولوية migration عالية** | `daily_messages`, `story_templates`, `themes`, `news`, `jobs` (admin-managed، بلا user_id) |
-| **أولوية migration متوسطة** | `appointments`, `financial_events`, `notifications`, `complaints` (تحتاج user_id) |
-| **يبقى localStorage** | مهام العمل، رحلات السفر، مسودة الستوري، الثيم المختار، الملف الشخصي |
-| **Supabase Auth فقط** | /admin — يعمل بالفعل |
-| **Supabase جاهز للربط** | `profiles`, `notification_preferences` (بيانات جديدة) |
+| **ظٹط¨ظ‚ظ‰ ظپظٹ PostgreSQL/Express** (ظ„ط§ طھط؛ظٹظٹط± ط§ظ„ط¢ظ†) | ط§ظ„ظƒظ„ â€” ظ…طµط¯ط± ط§ظ„ط­ظ‚ظٹظ‚ط© ط§ظ„ط­ط§ظ„ظٹ |
+| **ط£ظˆظ„ظˆظٹط© migration ط¹ط§ظ„ظٹط©** | `daily_messages`, `story_templates`, `themes`, `news`, `jobs` (admin-managedطŒ ط¨ظ„ط§ user_id) |
+| **ط£ظˆظ„ظˆظٹط© migration ظ…طھظˆط³ط·ط©** | `appointments`, `financial_events`, `notifications`, `complaints` (طھط­طھط§ط¬ user_id) |
+| **ظٹط¨ظ‚ظ‰ localStorage** | ظ…ظ‡ط§ظ… ط§ظ„ط¹ظ…ظ„طŒ ط±ط­ظ„ط§طھ ط§ظ„ط³ظپط±طŒ ظ…ط³ظˆط¯ط© ط§ظ„ط³طھظˆط±ظٹطŒ ط§ظ„ط«ظٹظ… ط§ظ„ظ…ط®طھط§ط±طŒ ط§ظ„ظ…ظ„ظپ ط§ظ„ط´ط®طµظٹ |
+| **Supabase Auth ظپظ‚ط·** | /admin â€” ظٹط¹ظ…ظ„ ط¨ط§ظ„ظپط¹ظ„ |
+| **Supabase ط¬ط§ظ‡ط² ظ„ظ„ط±ط¨ط·** | `profiles`, `notification_preferences` (ط¨ظٹط§ظ†ط§طھ ط¬ط¯ظٹط¯ط©) |
 
 ---
 
-## تحديث Phase 12C — Admin Seed Status (2026-05-24)
+## طھط­ط¯ظٹط« Phase 12C â€” Admin Seed Status (2026-05-24)
 
-### حالة جداول admin-managed بعد Phase 12C
+### ط­ط§ظ„ط© ط¬ط¯ط§ظˆظ„ admin-managed ط¨ط¹ط¯ Phase 12C
 
-| الجدول | PostgreSQL (الحالي) | Supabase Seed | الأعمدة المُضافة |
+| ط§ظ„ط¬ط¯ظˆظ„ | PostgreSQL (ط§ظ„ط­ط§ظ„ظٹ) | Supabase Seed | ط§ظ„ط£ط¹ظ…ط¯ط© ط§ظ„ظ…ظڈط¶ط§ظپط© |
 |---|---|---|---|
-| `daily_messages` | 8 صف ✅ | SQL جاهز ⏳ | legacy_id, migrated_at, migration_batch |
-| `story_templates` | 2 صف ✅ | SQL جاهز ⏳ | legacy_id, migrated_at, migration_batch |
-| `themes` | 10 صف ✅ | SQL جاهز ⏳ | legacy_id, migrated_at, migration_batch |
-| `news` | 2 صف ✅ | SQL جاهز ⏳ | legacy_id, migrated_at, migration_batch |
-| `jobs` | 2 صف ✅ | SQL جاهز ⏳ | legacy_id, migrated_at, migration_batch |
-| `public_events` | 0 صف | متجاهل | — |
+| `daily_messages` | 8 طµظپ âœ… | SQL ط¬ط§ظ‡ط² âڈ³ | legacy_id, migrated_at, migration_batch |
+| `story_templates` | 2 طµظپ âœ… | SQL ط¬ط§ظ‡ط² âڈ³ | legacy_id, migrated_at, migration_batch |
+| `themes` | 10 طµظپ âœ… | SQL ط¬ط§ظ‡ط² âڈ³ | legacy_id, migrated_at, migration_batch |
+| `news` | 2 طµظپ âœ… | SQL ط¬ط§ظ‡ط² âڈ³ | legacy_id, migrated_at, migration_batch |
+| `jobs` | 2 طµظپ âœ… | SQL ط¬ط§ظ‡ط² âڈ³ | legacy_id, migrated_at, migration_batch |
+| `public_events` | 0 طµظپ | ظ…طھط¬ط§ظ‡ظ„ | â€” |
 
-**مصدر الحقيقة:** PostgreSQL/Express/Drizzle — لا تغيير
+**ظ…طµط¯ط± ط§ظ„ط­ظ‚ظٹظ‚ط©:** PostgreSQL/Express/Drizzle â€” ظ„ط§ طھط؛ظٹظٹط±
 
 ---
 
-## تحديث Phase 12D — User-owned Core Migration Status (2026-05-24)
+## طھط­ط¯ظٹط« Phase 12D â€” User-owned Core Migration Status (2026-05-24)
 
-| الجدول | PostgreSQL (الحالي) | Supabase Seed | user_id |
+| ط§ظ„ط¬ط¯ظˆظ„ | PostgreSQL (ط§ظ„ط­ط§ظ„ظٹ) | Supabase Seed | user_id |
 |---|---|---|---|
-| `appointments` | 2 صف ✅ | SQL جاهز ⏳ | hrq@hotmail.com UUID |
-| `financial_events` | 8 صف ✅ | SQL جاهز ⏳ | hrq@hotmail.com UUID |
-| `notifications` | لم تُنقل | — | — |
-| `complaints` | لم تُنقل | — | — |
+| `appointments` | 2 طµظپ âœ… | SQL ط¬ط§ظ‡ط² âڈ³ | hrq@hotmail.com UUID |
+| `financial_events` | 8 طµظپ âœ… | SQL ط¬ط§ظ‡ط² âڈ³ | hrq@hotmail.com UUID |
+| `notifications` | ظ„ظ… طھظڈظ†ظ‚ظ„ | â€” | â€” |
+| `complaints` | ظ„ظ… طھظڈظ†ظ‚ظ„ | â€” | â€” |
 
-**مصدر الحقيقة:** PostgreSQL/Express/Drizzle — لا تغيير
+**ظ…طµط¯ط± ط§ظ„ط­ظ‚ظٹظ‚ط©:** PostgreSQL/Express/Drizzle â€” ظ„ط§ طھط؛ظٹظٹط±
 
 ---
 
-## تحديث Phase 12D Verification (2026-05-24)
+## طھط­ط¯ظٹط« Phase 12D Verification (2026-05-24)
 
-### الحالة النهائية لكل الجداول في Supabase
+### ط§ظ„ط­ط§ظ„ط© ط§ظ„ظ†ظ‡ط§ط¦ظٹط© ظ„ظƒظ„ ط§ظ„ط¬ط¯ط§ظˆظ„ ظپظٹ Supabase
 
-| الجدول | PostgreSQL | Supabase | user_id | الحكم |
+| ط§ظ„ط¬ط¯ظˆظ„ | PostgreSQL | Supabase | user_id | ط§ظ„ط­ظƒظ… |
 |---|---|---|---|---|
-| `appointments` | 2 صف ✅ | 2 صف ✅ | hrq UUID ✅ | Applied |
-| `financial_events` | 8 صف ✅ | 8 صف ✅ | hrq UUID ✅ | Applied |
-| `notifications` | 3 صف | 0 صف | — | ⏳ Phase 12E |
-| `complaints` | 3 صف | 0 صف | — | ⏳ Phase 12E |
-| `daily_messages` | 8 صف ✅ | 8 صف ✅ | — | Applied (12C) |
-| `themes` | 10 صف ✅ | 10 صف ✅ | — | Applied (12C) |
-| `news` | 2 صف ✅ | 2 صف ✅ | — | Applied (12C) |
-| `jobs` | 2 صف ✅ | 2 صف ✅ | — | Applied (12C) |
-| `story_templates` | 2 صف ✅ | 2 صف ✅ | — | Applied (12C) |
+| `appointments` | 2 طµظپ âœ… | 2 طµظپ âœ… | hrq UUID âœ… | Applied |
+| `financial_events` | 8 طµظپ âœ… | 8 طµظپ âœ… | hrq UUID âœ… | Applied |
+| `notifications` | 3 طµظپ | 0 طµظپ | â€” | âڈ³ Phase 12E |
+| `complaints` | 3 طµظپ | 0 طµظپ | â€” | âڈ³ Phase 12E |
+| `daily_messages` | 8 طµظپ âœ… | 8 طµظپ âœ… | â€” | Applied (12C) |
+| `themes` | 10 طµظپ âœ… | 10 طµظپ âœ… | â€” | Applied (12C) |
+| `news` | 2 طµظپ âœ… | 2 طµظپ âœ… | â€” | Applied (12C) |
+| `jobs` | 2 طµظپ âœ… | 2 طµظپ âœ… | â€” | Applied (12C) |
+| `story_templates` | 2 طµظپ âœ… | 2 طµظپ âœ… | â€” | Applied (12C) |
 
-**مصدر الحقيقة الحالي:** PostgreSQL/Express/Drizzle — لا تغيير حتى Phase 12F
+**ظ…طµط¯ط± ط§ظ„ط­ظ‚ظٹظ‚ط© ط§ظ„ط­ط§ظ„ظٹ:** PostgreSQL/Express/Drizzle â€” ظ„ط§ طھط؛ظٹظٹط± ط­طھظ‰ Phase 12F
 
 ---
 
-## تحديث Phase 12E — Support Data Migration Ready (2026-05-24)
+## طھط­ط¯ظٹط« Phase 12E â€” Support Data Migration Ready (2026-05-24)
 
-| الجدول | PostgreSQL | Supabase | user_id | الحكم |
+| ط§ظ„ط¬ط¯ظˆظ„ | PostgreSQL | Supabase | user_id | ط§ظ„ط­ظƒظ… |
 |---|---|---|---|---|
-| `notifications` | 3 صف ✅ | SQL جاهز ⏳ | hrq UUID | Needs SQL Run |
-| `complaints` | 3 صف ✅ | SQL جاهز ⏳ | NULL | Needs SQL Run |
-| `appointments` | 2 صف ✅ | 2 صف ✅ | hrq UUID ✅ | Applied (12D) |
-| `financial_events` | 8 صف ✅ | 8 صف ✅ | hrq UUID ✅ | Applied (12D) |
+| `notifications` | 3 طµظپ âœ… | SQL ط¬ط§ظ‡ط² âڈ³ | hrq UUID | Needs SQL Run |
+| `complaints` | 3 طµظپ âœ… | SQL ط¬ط§ظ‡ط² âڈ³ | NULL | Needs SQL Run |
+| `appointments` | 2 طµظپ âœ… | 2 طµظپ âœ… | hrq UUID âœ… | Applied (12D) |
+| `financial_events` | 8 طµظپ âœ… | 8 طµظپ âœ… | hrq UUID âœ… | Applied (12D) |
 
-**بعد تشغيل 12E: إجمالي Supabase = 40 صف**
-**مصدر الحقيقة الحالي:** PostgreSQL/Express/Drizzle — لا تغيير حتى Phase 12F
+**ط¨ط¹ط¯ طھط´ط؛ظٹظ„ 12E: ط¥ط¬ظ…ط§ظ„ظٹ Supabase = 40 طµظپ**
+**ظ…طµط¯ط± ط§ظ„ط­ظ‚ظٹظ‚ط© ط§ظ„ط­ط§ظ„ظٹ:** PostgreSQL/Express/Drizzle â€” ظ„ط§ طھط؛ظٹظٹط± ط­طھظ‰ Phase 12F
 
 ---
 
-## تحديث Phase 12E Verification (2026-05-24)
+## طھط­ط¯ظٹط« Phase 12E Verification (2026-05-24)
 
-### الحالة النهائية لكل الجداول في Supabase — 40 صف
+### ط§ظ„ط­ط§ظ„ط© ط§ظ„ظ†ظ‡ط§ط¦ظٹط© ظ„ظƒظ„ ط§ظ„ط¬ط¯ط§ظˆظ„ ظپظٹ Supabase â€” 40 طµظپ
 
-| الجدول | PostgreSQL | Supabase | user_id | الحكم |
+| ط§ظ„ط¬ط¯ظˆظ„ | PostgreSQL | Supabase | user_id | ط§ظ„ط­ظƒظ… |
 |---|---|---|---|---|
-| `daily_messages` | 8 ✅ | 8 ✅ | — | Applied (12C) |
-| `story_templates` | 2 ✅ | 2 ✅ | — | Applied (12C) |
-| `themes` | 10 ✅ | 10 ✅ | — | Applied (12C) |
-| `news` | 2 ✅ | 2 ✅ | — | Applied (12C) |
-| `jobs` | 2 ✅ | 2 ✅ | — | Applied (12C) |
-| `appointments` | 2 ✅ | 2 ✅ | hrq UUID ✅ | Applied (12D) |
-| `financial_events` | 8 ✅ | 8 ✅ | hrq UUID ✅ | Applied (12D) |
-| `notifications` | 3 ✅ | 3 ✅ | hrq UUID ✅ | Applied (12E) |
-| `complaints` | 3 ✅ | 3 ✅ | NULL ✅ | Applied (12E) |
+| `daily_messages` | 8 âœ… | 8 âœ… | â€” | Applied (12C) |
+| `story_templates` | 2 âœ… | 2 âœ… | â€” | Applied (12C) |
+| `themes` | 10 âœ… | 10 âœ… | â€” | Applied (12C) |
+| `news` | 2 âœ… | 2 âœ… | â€” | Applied (12C) |
+| `jobs` | 2 âœ… | 2 âœ… | â€” | Applied (12C) |
+| `appointments` | 2 âœ… | 2 âœ… | hrq UUID âœ… | Applied (12D) |
+| `financial_events` | 8 âœ… | 8 âœ… | hrq UUID âœ… | Applied (12D) |
+| `notifications` | 3 âœ… | 3 âœ… | hrq UUID âœ… | Applied (12E) |
+| `complaints` | 3 âœ… | 3 âœ… | NULL âœ… | Applied (12E) |
 
-**مصدر الحقيقة الحالي:** PostgreSQL/Express/Drizzle — لا تغيير حتى Phase 12F
+**ظ…طµط¯ط± ط§ظ„ط­ظ‚ظٹظ‚ط© ط§ظ„ط­ط§ظ„ظٹ:** PostgreSQL/Express/Drizzle â€” ظ„ط§ طھط؛ظٹظٹط± ط­طھظ‰ Phase 12F
 
 ---
 
-## تحديث Phase 12F — Supabase Shadow Read (2026-05-24)
+## طھط­ط¯ظٹط« Phase 12F â€” Supabase Shadow Read (2026-05-24)
 
 ### Data Layer Architecture
 
 ```
-الحالي (Phase 12F):
-  UI → Orval hooks → Express API → PostgreSQL
-                                     ↑
-                              مصدر الحقيقة
+ط§ظ„ط­ط§ظ„ظٹ (Phase 12F):
+  UI â†’ Orval hooks â†’ Express API â†’ PostgreSQL
+                                     â†‘
+                              ظ…طµط¯ط± ط§ظ„ط­ظ‚ظٹظ‚ط©
 
-Shadow (عند VITE_DATA_SOURCE_MODE=supabase_shadow):
-  UI → Orval hooks → Express API → PostgreSQL  ← يُعرض للمستخدم
-  supabaseData.ts → Supabase DB               ← مقارنة فقط
+Shadow (ط¹ظ†ط¯ VITE_DATA_SOURCE_MODE=supabase_shadow):
+  UI â†’ Orval hooks â†’ Express API â†’ PostgreSQL  â†گ ظٹظڈط¹ط±ط¶ ظ„ظ„ظ…ط³طھط®ط¯ظ…
+  supabaseData.ts â†’ Supabase DB               â†گ ظ…ظ‚ط§ط±ظ†ط© ظپظ‚ط·
 
-القادم (Phase 12G):
-  UI → supabaseData.ts → Supabase DB  ← مصدر الحقيقة الجديد
+ط§ظ„ظ‚ط§ط¯ظ… (Phase 12G):
+  UI â†’ supabaseData.ts â†’ Supabase DB  â†گ ظ…طµط¯ط± ط§ظ„ط­ظ‚ظٹظ‚ط© ط§ظ„ط¬ط¯ظٹط¯
 ```
 
-### الملفات الجديدة
+### ط§ظ„ظ…ظ„ظپط§طھ ط§ظ„ط¬ط¯ظٹط¯ط©
 
-| الملف | الدور |
+| ط§ظ„ظ…ظ„ظپ | ط§ظ„ط¯ظˆط± |
 |---|---|
-| `src/lib/dataSourceMode.ts` | Feature flag ("api" افتراضياً) |
-| `src/lib/supabaseData.ts` | 9 دوال قراءة + runShadowComparison |
+| `src/lib/dataSourceMode.ts` | Feature flag ("api" ط§ظپطھط±ط§ط¶ظٹط§ظ‹) |
+| `src/lib/supabaseData.ts` | 9 ط¯ظˆط§ظ„ ظ‚ط±ط§ط،ط© + runShadowComparison |
 
-### Shadow Comparison المتوقع (API = Supabase = 40 صف)
+### Shadow Comparison ط§ظ„ظ…طھظˆظ‚ط¹ (API = Supabase = 40 طµظپ)
 
-| الجدول | API | Supabase | Match |
+| ط§ظ„ط¬ط¯ظˆظ„ | API | Supabase | Match |
 |---|---|---|---|
-| daily_messages | 8 | 8 | ✅ |
-| story_templates | 2 | 2 | ✅ |
-| themes | 10 | 10 | ✅ |
-| news | 2 | 2 | ✅ |
-| jobs | 2 | 2 | ✅ |
-| appointments | 2 | 2 | ✅ |
-| financial_events | 8 | 8 | ✅ |
-| notifications | 3 | 3 | ✅ |
-| complaints | 3 | 3 | ✅ |
+| daily_messages | 8 | 8 | âœ… |
+| story_templates | 2 | 2 | âœ… |
+| themes | 10 | 10 | âœ… |
+| news | 2 | 2 | âœ… |
+| jobs | 2 | 2 | âœ… |
+| appointments | 2 | 2 | âœ… |
+| financial_events | 8 | 8 | âœ… |
+| notifications | 3 | 3 | âœ… |
+| complaints | 3 | 3 | âœ… |
 
-**مصدر الحقيقة:** PostgreSQL/Express/Drizzle — لا تغيير حتى Phase 12G
+**ظ…طµط¯ط± ط§ظ„ط­ظ‚ظٹظ‚ط©:** PostgreSQL/Express/Drizzle â€” ظ„ط§ طھط؛ظٹظٹط± ط­طھظ‰ Phase 12G
 
 ---
 
-## تحديث Phase 12G — Data Gateway Cutover (2026-05-24)
+## طھط­ط¯ظٹط« Phase 12G â€” Data Gateway Cutover (2026-05-24)
 
-### الملفات الجديدة
+### ط§ظ„ظ…ظ„ظپط§طھ ط§ظ„ط¬ط¯ظٹط¯ط©
 
-| الملف | الدور |
+| ط§ظ„ظ…ظ„ظپ | ط§ظ„ط¯ظˆط± |
 |---|---|
-| `src/lib/dataGateway.ts` | Data Gateway — يوجّه القراءة حسب الوضع |
-| `src/features/admin/AdminDataLayer.tsx` | لوحة مقارنة طبقة البيانات في /admin/data-layer |
+| `src/lib/dataGateway.ts` | Data Gateway â€” ظٹظˆط¬ظ‘ظ‡ ط§ظ„ظ‚ط±ط§ط،ط© ط­ط³ط¨ ط§ظ„ظˆط¶ط¹ |
+| `src/features/admin/AdminDataLayer.tsx` | ظ„ظˆط­ط© ظ…ظ‚ط§ط±ظ†ط© ط·ط¨ظ‚ط© ط§ظ„ط¨ظٹط§ظ†ط§طھ ظپظٹ /admin/data-layer |
 
-### Data Gateway — gwGet functions
+### Data Gateway â€” gwGet functions
 
-| الدالة | API Path | Supabase Reader |
+| ط§ظ„ط¯ط§ظ„ط© | API Path | Supabase Reader |
 |---|---|---|
 | `gwGetDailyMessages` | /api/daily-messages | getDailyMessagesFromSupabase |
 | `gwGetStoryTemplates` | /api/story-templates | getStoryTemplatesFromSupabase |
@@ -258,232 +258,232 @@ Shadow (عند VITE_DATA_SOURCE_MODE=supabase_shadow):
 | `gwGetNotifications` | /api/notifications | getNotificationsFromSupabase |
 | `gwGetComplaints` | /api/complaints | getComplaintsFromSupabase |
 
-### قرار Mutations
+### ظ‚ط±ط§ط± Mutations
 
-**Read Cutover فقط** — كل عمليات POST/PATCH/DELETE تبقى على API/PostgreSQL.
-الحكم: **Supabase Read Cutover Ready** وليس Full Supabase Data Source.
+**Read Cutover ظپظ‚ط·** â€” ظƒظ„ ط¹ظ…ظ„ظٹط§طھ POST/PATCH/DELETE طھط¨ظ‚ظ‰ ط¹ظ„ظ‰ API/PostgreSQL.
+ط§ظ„ط­ظƒظ…: **Supabase Read Cutover Ready** ظˆظ„ظٹط³ Full Supabase Data Source.
 
-### Data Flow المعتمد
+### Data Flow ط§ظ„ظ…ط¹طھظ…ط¯
 
 ```
-mode=api (الافتراضي):
-  غير متأثر — Orval hooks → Express API → PostgreSQL
+mode=api (ط§ظ„ط§ظپطھط±ط§ط¶ظٹ):
+  ط؛ظٹط± ظ…طھط£ط«ط± â€” Orval hooks â†’ Express API â†’ PostgreSQL
 
 mode=supabase_shadow:
-  Orval hooks → Express API → PostgreSQL (للواجهة)
-  gwRunShadowComparison → Supabase (مقارنة في /admin/data-layer)
+  Orval hooks â†’ Express API â†’ PostgreSQL (ظ„ظ„ظˆط§ط¬ظ‡ط©)
+  gwRunShadowComparison â†’ Supabase (ظ…ظ‚ط§ط±ظ†ط© ظپظٹ /admin/data-layer)
 
 mode=supabase:
-  gwGet* → Supabase → PostgreSQL/API (fallback)
-  Mutations: Express API → PostgreSQL (لم تتغير)
+  gwGet* â†’ Supabase â†’ PostgreSQL/API (fallback)
+  Mutations: Express API â†’ PostgreSQL (ظ„ظ… طھطھط؛ظٹط±)
 ```
 
 ---
 
-## تحديث Phase 12H — Frontend Read Gateway Integration (2026-05-24)
+## طھط­ط¯ظٹط« Phase 12H â€” Frontend Read Gateway Integration (2026-05-24)
 
-### ملف جديد
+### ظ…ظ„ظپ ط¬ط¯ظٹط¯
 
-| الملف | الدور |
+| ط§ظ„ظ…ظ„ظپ | ط§ظ„ط¯ظˆط± |
 |---|---|
-| `src/hooks/useGatewayData.ts` | React Query hooks تغلّف gwGet* للقراءة |
+| `src/hooks/useGatewayData.ts` | React Query hooks طھط؛ظ„ظ‘ظپ gwGet* ظ„ظ„ظ‚ط±ط§ط،ط© |
 
-### تصنيف الصفحات
+### طھطµظ†ظٹظپ ط§ظ„طµظپط­ط§طھ
 
-| الصفحة | مصدر القراءة | مصدر الكتابة | الملاحظة |
+| ط§ظ„طµظپط­ط© | ظ…طµط¯ط± ط§ظ„ظ‚ط±ط§ط،ط© | ظ…طµط¯ط± ط§ظ„ظƒطھط§ط¨ط© | ط§ظ„ظ…ظ„ط§ط­ط¸ط© |
 |---|---|---|---|
-| CentersNewsPage | Gateway (gw:news) | — | read-only ✅ |
-| CentersJobsPage | Gateway (gw:jobs) | — | read-only ✅ |
-| AccountPage | Gateway (gw:themes) | localStorage | theme ✅ |
-| StoryPage | Gateway (gw:story-templates) + Orval | localStorage | templates ✅ |
-| CalendarPage | Orval → API | Orval → API | Phase 12I |
-| FinancePage | Orval → API | Orval → API | Phase 12I |
-| NotificationsPage | Orval → API | Orval → API | Phase 12I |
-| HomePage | Orval → API | — | Phase 12I |
-| Admin pages | Orval → API | Orval → API | Phase 12I |
+| CentersNewsPage | Gateway (gw:news) | â€” | read-only âœ… |
+| CentersJobsPage | Gateway (gw:jobs) | â€” | read-only âœ… |
+| AccountPage | Gateway (gw:themes) | localStorage | theme âœ… |
+| StoryPage | Gateway (gw:story-templates) + Orval | localStorage | templates âœ… |
+| CalendarPage | Orval â†’ API | Orval â†’ API | Phase 12I |
+| FinancePage | Orval â†’ API | Orval â†’ API | Phase 12I |
+| NotificationsPage | Orval â†’ API | Orval â†’ API | Phase 12I |
+| HomePage | Orval â†’ API | â€” | Phase 12I |
+| Admin pages | Orval â†’ API | Orval â†’ API | Phase 12I |
 
 ---
 
-## تحديث Phase 12I — Controlled Write Cutover (2026-05-24)
+## طھط­ط¯ظٹط« Phase 12I â€” Controlled Write Cutover (2026-05-24)
 
-### ملفات جديدة / محدّثة
+### ظ…ظ„ظپط§طھ ط¬ط¯ظٹط¯ط© / ظ…ط­ط¯ظ‘ط«ط©
 
-| الملف | التغيير |
+| ط§ظ„ظ…ظ„ظپ | ط§ظ„طھط؛ظٹظٹط± |
 |---|---|
 | `src/lib/supabaseData.ts` | WriteResult + markNotificationReadInSupabase + markAllNotificationsReadInSupabase |
 | `src/lib/dataGateway.ts` | gwMarkNotificationRead + gwMarkAllNotificationsRead |
 | `src/features/admin/AdminDataLayer.tsx` | Write Test UI + mutations inventory |
 
-### سياسة الكتابة الكاملة
+### ط³ظٹط§ط³ط© ط§ظ„ظƒطھط§ط¨ط© ط§ظ„ظƒط§ظ…ظ„ط©
 
-| الصفحة / الجدول | القراءة | الكتابة | الوضع |
+| ط§ظ„طµظپط­ط© / ط§ظ„ط¬ط¯ظˆظ„ | ط§ظ„ظ‚ط±ط§ط،ط© | ط§ظ„ظƒطھط§ط¨ط© | ط§ظ„ظˆط¶ط¹ |
 |---|---|---|---|
-| notifications (gateway test) | — | gwMarkNotificationRead → Supabase (mode=supabase) | Write Gateway |
-| NotificationsPage | Orval → API | Orval → API | Phase 12J |
-| CalendarPage | Orval → API | Orval → API | Phase 12J |
-| FinancePage | Orval → API | Orval → API | Phase 12J |
-| Admin pages | Orval → API | Orval → API | Phase 12J |
-| CentersNewsPage | Gateway → Supabase/API | — | read-only |
-| CentersJobsPage | Gateway → Supabase/API | — | read-only |
-| AccountPage | Gateway → Supabase/API | localStorage | read-only |
-| StoryPage | Gateway → Supabase/API | localStorage | read-only |
+| notifications (gateway test) | â€” | gwMarkNotificationRead â†’ Supabase (mode=supabase) | Write Gateway |
+| NotificationsPage | Orval â†’ API | Orval â†’ API | Phase 12J |
+| CalendarPage | Orval â†’ API | Orval â†’ API | Phase 12J |
+| FinancePage | Orval â†’ API | Orval â†’ API | Phase 12J |
+| Admin pages | Orval â†’ API | Orval â†’ API | Phase 12J |
+| CentersNewsPage | Gateway â†’ Supabase/API | â€” | read-only |
+| CentersJobsPage | Gateway â†’ Supabase/API | â€” | read-only |
+| AccountPage | Gateway â†’ Supabase/API | localStorage | read-only |
+| StoryPage | Gateway â†’ Supabase/API | localStorage | read-only |
 
 ---
 
-## تحديث Phase 12J — Notifications Read+Write Consistency (2026-05-24)
+## طھط­ط¯ظٹط« Phase 12J â€” Notifications Read+Write Consistency (2026-05-24)
 
-### ملفات مُعدَّلة
+### ظ…ظ„ظپط§طھ ظ…ظڈط¹ط¯ظژظ‘ظ„ط©
 
-| الملف | التغيير |
+| ط§ظ„ظ…ظ„ظپ | ط§ظ„طھط؛ظٹظٹط± |
 |---|---|
 | `src/lib/supabaseData.ts` | deleteNotificationInSupabase |
 | `src/lib/dataGateway.ts` | gwDeleteNotification |
 | `src/features/notifications/NotificationsPage.tsx` | Gateway read+write |
 
-### خريطة البيانات المحدَّثة
+### ط®ط±ظٹط·ط© ط§ظ„ط¨ظٹط§ظ†ط§طھ ط§ظ„ظ…ط­ط¯ظژظ‘ط«ط©
 
-| الصفحة | القراءة | الكتابة | ملاحظة |
+| ط§ظ„طµظپط­ط© | ط§ظ„ظ‚ط±ط§ط،ط© | ط§ظ„ظƒطھط§ط¨ط© | ظ…ظ„ط§ط­ط¸ط© |
 |---|---|---|---|
-| NotificationsPage | useGatewayNotifications | gwMark*/gwDelete | ✅ متسق Phase 12J |
-| TopBar (عداد) | useGatewayUnreadCount | — | ✅ 12K |
-| AdminNotifications | useGatewayNotifications | delete→Gateway / send→API | ✅ 12K |
-| CentersNewsPage | useGatewayNews | — | read-only ✅ |
-| CentersJobsPage | useGatewayJobs | — | read-only ✅ |
-| AdminNewsJobs | useGatewayNews + useGatewayJobs | gwCreate/Update/Delete News/Job | ✅ 12L |
-| AccountPage | useGatewayThemes | localStorage | read-only ✅ |
-| StoryPage | useGatewayStoryTemplates | localStorage | read-only ✅ |
-| CalendarPage | Orval → API | Orval → API | ⏳ Phase 12M+ |
-| FinancePage | Orval → API | Orval → API | ⏳ Phase 12M+ |
+| NotificationsPage | useGatewayNotifications | gwMark*/gwDelete | âœ… ظ…طھط³ظ‚ Phase 12J |
+| TopBar (ط¹ط¯ط§ط¯) | useGatewayUnreadCount | â€” | âœ… 12K |
+| AdminNotifications | useGatewayNotifications | deleteâ†’Gateway / sendâ†’API | âœ… 12K |
+| CentersNewsPage | useGatewayNews | â€” | read-only âœ… |
+| CentersJobsPage | useGatewayJobs | â€” | read-only âœ… |
+| AdminNewsJobs | useGatewayNews + useGatewayJobs | gwCreate/Update/Delete News/Job | âœ… 12L |
+| AccountPage | useGatewayThemes | localStorage | read-only âœ… |
+| StoryPage | useGatewayStoryTemplates | localStorage | read-only âœ… |
+| CalendarPage | Orval â†’ API | Orval â†’ API | âڈ³ Phase 12M+ |
+| FinancePage | Orval â†’ API | Orval â†’ API | âڈ³ Phase 12M+ |
 
 ---
 
-## تحديث Phase 12L — Admin News/Jobs CRUD Gateway (2026-05-25)
+## طھط­ط¯ظٹط« Phase 12L â€” Admin News/Jobs CRUD Gateway (2026-05-25)
 
-### ملفات مُعدَّلة
+### ظ…ظ„ظپط§طھ ظ…ظڈط¹ط¯ظژظ‘ظ„ط©
 
-| الملف | التغيير |
+| ط§ظ„ظ…ظ„ظپ | ط§ظ„طھط؛ظٹظٹط± |
 |---|---|
-| `src/lib/supabaseData.ts` | 6 دوال جديدة: createNewsInSupabase / updateNewsInSupabase / deleteNewsInSupabase / createJobInSupabase / updateJobInSupabase / deleteJobInSupabase + NewsPayload + JobPayload |
-| `src/lib/dataGateway.ts` | imports محدَّثة + gwCreateNews / gwUpdateNews / gwDeleteNews / gwCreateJob / gwUpdateJob / gwDeleteJob (6 دوال) |
-| `src/features/admin/AdminNewsJobs.tsx` | إعادة كتابة كاملة — read: useGatewayNews/useGatewayJobs / write: gw* async functions |
+| `src/lib/supabaseData.ts` | 6 ط¯ظˆط§ظ„ ط¬ط¯ظٹط¯ط©: createNewsInSupabase / updateNewsInSupabase / deleteNewsInSupabase / createJobInSupabase / updateJobInSupabase / deleteJobInSupabase + NewsPayload + JobPayload |
+| `src/lib/dataGateway.ts` | imports ظ…ط­ط¯ظژظ‘ط«ط© + gwCreateNews / gwUpdateNews / gwDeleteNews / gwCreateJob / gwUpdateJob / gwDeleteJob (6 ط¯ظˆط§ظ„) |
+| `src/features/admin/AdminNewsJobs.tsx` | ط¥ط¹ط§ط¯ط© ظƒطھط§ط¨ط© ظƒط§ظ…ظ„ط© â€” read: useGatewayNews/useGatewayJobs / write: gw* async functions |
 
-### سلوك AdminNewsJobs بعد Phase 12L
+### ط³ظ„ظˆظƒ AdminNewsJobs ط¨ط¹ط¯ Phase 12L
 
-| العملية | mode=api | mode=supabase_shadow | mode=supabase |
+| ط§ظ„ط¹ظ…ظ„ظٹط© | mode=api | mode=supabase_shadow | mode=supabase |
 |---|---|---|---|
-| قراءة news/jobs | API (Gateway hook) | API (Gateway hook) | Supabase |
-| إضافة خبر/وظيفة | POST /api/news|jobs | POST /api/news|jobs | Supabase INSERT |
-| تعديل خبر/وظيفة | PATCH /api/news|jobs/:id | PATCH /api/news|jobs/:id | Supabase UPDATE |
-| حذف خبر/وظيفة | DELETE /api/news|jobs/:id | DELETE /api/news|jobs/:id | Supabase DELETE |
-| فشل write عند supabase | — | — | toast خطأ صريح (لا fallback صامت) |
+| ظ‚ط±ط§ط،ط© news/jobs | API (Gateway hook) | API (Gateway hook) | Supabase |
+| ط¥ط¶ط§ظپط© ط®ط¨ط±/ظˆط¸ظٹظپط© | POST /api/news|jobs | POST /api/news|jobs | Supabase INSERT |
+| طھط¹ط¯ظٹظ„ ط®ط¨ط±/ظˆط¸ظٹظپط© | PATCH /api/news|jobs/:id | PATCH /api/news|jobs/:id | Supabase UPDATE |
+| ط­ط°ظپ ط®ط¨ط±/ظˆط¸ظٹظپط© | DELETE /api/news|jobs/:id | DELETE /api/news|jobs/:id | Supabase DELETE |
+| ظپط´ظ„ write ط¹ظ†ط¯ supabase | â€” | â€” | toast ط®ط·ط£ طµط±ظٹط­ (ظ„ط§ fallback طµط§ظ…طھ) |
 
-### خريطة البيانات الكاملة بعد Phase 12L
+### ط®ط±ظٹط·ط© ط§ظ„ط¨ظٹط§ظ†ط§طھ ط§ظ„ظƒط§ظ…ظ„ط© ط¨ط¹ط¯ Phase 12L
 
-| الصفحة | القراءة | الكتابة | الاتساق |
+| ط§ظ„طµظپط­ط© | ط§ظ„ظ‚ط±ط§ط،ط© | ط§ظ„ظƒطھط§ط¨ط© | ط§ظ„ط§طھط³ط§ظ‚ |
 |---|---|---|---|
-| TopBar | useGatewayUnreadCount | — | ✅ 12K |
-| NotificationsPage | useGatewayNotifications | gw* writes | ✅ 12J |
-| AdminNotifications | useGatewayNotifications | delete→Gateway / send→API | ✅ 12K |
-| CentersNewsPage | useGatewayNews | — | ✅ read-only |
-| CentersJobsPage | useGatewayJobs | — | ✅ read-only |
-| AdminNewsJobs | useGatewayNews + useGatewayJobs | gwCreate/Update/Delete News/Job | ✅ 12L |
-| AdminThemes | useGatewayThemes | gwUpdateTheme | ✅ 12M |
-| AdminStory | useGatewayStoryTemplates | gwCreate/Update/Delete StoryTemplate | ✅ 12M |
-| AdminMessages | useGatewayDailyMessages | gwCreate/Update/Delete DailyMessage | ✅ 12M |
-| AccountPage | useGatewayThemes | localStorage | ✅ |
-| StoryPage | useGatewayStoryTemplates | localStorage | ✅ |
-| CalendarPage | useGatewayAppointments | gwCreate/Update/Delete Appointment | ✅ 12N |
-| HomePage (upcoming) | useGatewayUpcomingAppointments | gwCreateAppointment | ✅ 12N |
-| FinancePage | useGatewayFinancialCountdown | gwCreate/Update/Delete FinancialEvent | ✅ 12O |
-| HomePage (countdown) | useGatewayFinancialCountdown | — | ✅ 12O |
-| StoryPage (counters) | useGatewayFinancialCountdown | — | ✅ 12O |
+| TopBar | useGatewayUnreadCount | â€” | âœ… 12K |
+| NotificationsPage | useGatewayNotifications | gw* writes | âœ… 12J |
+| AdminNotifications | useGatewayNotifications | deleteâ†’Gateway / sendâ†’API | âœ… 12K |
+| CentersNewsPage | useGatewayNews | â€” | âœ… read-only |
+| CentersJobsPage | useGatewayJobs | â€” | âœ… read-only |
+| AdminNewsJobs | useGatewayNews + useGatewayJobs | gwCreate/Update/Delete News/Job | âœ… 12L |
+| AdminThemes | useGatewayThemes | gwUpdateTheme | âœ… 12M |
+| AdminStory | useGatewayStoryTemplates | gwCreate/Update/Delete StoryTemplate | âœ… 12M |
+| AdminMessages | useGatewayDailyMessages | gwCreate/Update/Delete DailyMessage | âœ… 12M |
+| AccountPage | useGatewayThemes | localStorage | âœ… |
+| StoryPage | useGatewayStoryTemplates | localStorage | âœ… |
+| CalendarPage | useGatewayAppointments | gwCreate/Update/Delete Appointment | âœ… 12N |
+| HomePage (upcoming) | useGatewayUpcomingAppointments | gwCreateAppointment | âœ… 12N |
+| FinancePage | useGatewayFinancialCountdown | gwCreate/Update/Delete FinancialEvent | âœ… 12O |
+| HomePage (countdown) | useGatewayFinancialCountdown | â€” | âœ… 12O |
+| StoryPage (counters) | useGatewayFinancialCountdown | â€” | âœ… 12O |
 
-### Divergence المتبقي بعد Phase 12M
+### Divergence ط§ظ„ظ…طھط¨ظ‚ظٹ ط¨ط¹ط¯ Phase 12M
 
-| النطاق | الوضع | المخاطرة |
+| ط§ظ„ظ†ط·ط§ظ‚ | ط§ظ„ظˆط¶ط¹ | ط§ظ„ظ…ط®ط§ط·ط±ط© |
 |---|---|---|
-| CalendarPage CRUD | Orval/API فقط | متوسطة (appointments — user-owned) |
-| FinancePage CRUD | Orval/API فقط | متوسطة (financial_events — user-owned) |
-| AdminNotifications send | API فقط (fan-out) | منخفضة (موثَّق عمداً) |
+| CalendarPage CRUD | Orval/API ظپظ‚ط· | ظ…طھظˆط³ط·ط© (appointments â€” user-owned) |
+| FinancePage CRUD | Orval/API ظپظ‚ط· | ظ…طھظˆط³ط·ط© (financial_events â€” user-owned) |
+| AdminNotifications send | API ظپظ‚ط· (fan-out) | ظ…ظ†ط®ظپط¶ط© (ظ…ظˆط«ظژظ‘ظ‚ ط¹ظ…ط¯ط§ظ‹) |
 
 ---
 
-## تحديث Phase 12M — Admin Content CRUD Gateway (2026-05-25)
+## طھط­ط¯ظٹط« Phase 12M â€” Admin Content CRUD Gateway (2026-05-25)
 
-### ملفات مُعدَّلة
+### ظ…ظ„ظپط§طھ ظ…ظڈط¹ط¯ظژظ‘ظ„ط©
 
-| الملف | التغيير |
+| ط§ظ„ظ…ظ„ظپ | ط§ظ„طھط؛ظٹظٹط± |
 |---|---|
-| `src/lib/supabaseData.ts` | ThemeUpdatePayload + updateThemeInSupabase / StoryTemplatePayload + 3 دوال / DailyMessagePayload + 3 دوال |
-| `src/lib/dataGateway.ts` | 7 gateway functions جديدة + imports |
+| `src/lib/supabaseData.ts` | ThemeUpdatePayload + updateThemeInSupabase / StoryTemplatePayload + 3 ط¯ظˆط§ظ„ / DailyMessagePayload + 3 ط¯ظˆط§ظ„ |
+| `src/lib/dataGateway.ts` | 7 gateway functions ط¬ط¯ظٹط¯ط© + imports |
 | `src/features/admin/AdminThemes.tsx` | useGatewayThemes + gwUpdateTheme |
 | `src/features/admin/AdminStory.tsx` | useGatewayStoryTemplates + gw* |
 | `src/features/admin/AdminMessages.tsx` | useGatewayDailyMessages + gw* |
 
-### خريطة البيانات الكاملة بعد Phase 12M
+### ط®ط±ظٹط·ط© ط§ظ„ط¨ظٹط§ظ†ط§طھ ط§ظ„ظƒط§ظ…ظ„ط© ط¨ط¹ط¯ Phase 12M
 
-| الصفحة | القراءة | الكتابة | الاتساق |
+| ط§ظ„طµظپط­ط© | ط§ظ„ظ‚ط±ط§ط،ط© | ط§ظ„ظƒطھط§ط¨ط© | ط§ظ„ط§طھط³ط§ظ‚ |
 |---|---|---|---|
-| TopBar | useGatewayUnreadCount | — | ✅ 12K |
-| NotificationsPage | useGatewayNotifications | gw* writes | ✅ 12J |
-| AdminNotifications | useGatewayNotifications | delete→Gateway / send→API | ✅ 12K |
-| CentersNewsPage | useGatewayNews | — | ✅ read-only |
-| CentersJobsPage | useGatewayJobs | — | ✅ read-only |
-| AdminNewsJobs | useGatewayNews + useGatewayJobs | gwCreate/Update/Delete | ✅ 12L |
-| AdminThemes | useGatewayThemes | gwUpdateTheme | ✅ 12M |
-| AdminStory | useGatewayStoryTemplates | gwCreate/Update/Delete | ✅ 12M |
-| AdminMessages | useGatewayDailyMessages | gwCreate/Update/Delete | ✅ 12M |
-| AccountPage | useGatewayThemes | localStorage | ✅ |
-| StoryPage | useGatewayStoryTemplates | localStorage | ✅ |
-| CalendarPage | useGatewayAppointments | gwCreate/Update/Delete Appointment | ✅ 12N |
-| HomePage (upcoming) | useGatewayUpcomingAppointments | gwCreateAppointment | ✅ 12N |
-| FinancePage | useGatewayFinancialCountdown | gwCreate/Update/Delete FinancialEvent | ✅ 12O |
-| HomePage (countdown) | useGatewayFinancialCountdown | — | ✅ 12O |
-| StoryPage (counters) | useGatewayFinancialCountdown | — | ✅ 12O |
+| TopBar | useGatewayUnreadCount | â€” | âœ… 12K |
+| NotificationsPage | useGatewayNotifications | gw* writes | âœ… 12J |
+| AdminNotifications | useGatewayNotifications | deleteâ†’Gateway / sendâ†’API | âœ… 12K |
+| CentersNewsPage | useGatewayNews | â€” | âœ… read-only |
+| CentersJobsPage | useGatewayJobs | â€” | âœ… read-only |
+| AdminNewsJobs | useGatewayNews + useGatewayJobs | gwCreate/Update/Delete | âœ… 12L |
+| AdminThemes | useGatewayThemes | gwUpdateTheme | âœ… 12M |
+| AdminStory | useGatewayStoryTemplates | gwCreate/Update/Delete | âœ… 12M |
+| AdminMessages | useGatewayDailyMessages | gwCreate/Update/Delete | âœ… 12M |
+| AccountPage | useGatewayThemes | localStorage | âœ… |
+| StoryPage | useGatewayStoryTemplates | localStorage | âœ… |
+| CalendarPage | useGatewayAppointments | gwCreate/Update/Delete Appointment | âœ… 12N |
+| HomePage (upcoming) | useGatewayUpcomingAppointments | gwCreateAppointment | âœ… 12N |
+| FinancePage | useGatewayFinancialCountdown | gwCreate/Update/Delete FinancialEvent | âœ… 12O |
+| HomePage (countdown) | useGatewayFinancialCountdown | â€” | âœ… 12O |
+| StoryPage (counters) | useGatewayFinancialCountdown | â€” | âœ… 12O |
 
 ---
 
-## تحديث Phase 12K — Notification System Full Consistency (2026-05-25)
+## طھط­ط¯ظٹط« Phase 12K â€” Notification System Full Consistency (2026-05-25)
 
-### ملفات مُعدَّلة
+### ظ…ظ„ظپط§طھ ظ…ظڈط¹ط¯ظژظ‘ظ„ط©
 
-| الملف | التغيير |
+| ط§ظ„ظ…ظ„ظپ | ط§ظ„طھط؛ظٹظٹط± |
 |---|---|
 | `src/lib/supabaseData.ts` | `getUnreadNotificationsCountFromSupabase()` |
 | `src/lib/dataGateway.ts` | `gwGetUnreadNotificationsCount()` |
 | `src/hooks/useGatewayData.ts` | `gwQueryKeys.unreadCount` + `useGatewayUnreadCount()` |
-| `src/components/layout/TopBar.tsx` | Gateway hook للعداد |
+| `src/components/layout/TopBar.tsx` | Gateway hook ظ„ظ„ط¹ط¯ط§ط¯ |
 | `src/features/admin/AdminNotifications.tsx` | Gateway read + delete |
 
-### خريطة نظام الإشعارات الكاملة
+### ط®ط±ظٹط·ط© ظ†ط¸ط§ظ… ط§ظ„ط¥ط´ط¹ط§ط±ط§طھ ط§ظ„ظƒط§ظ…ظ„ط©
 
-| المكوّن | القراءة | الكتابة | Gateway Key |
+| ط§ظ„ظ…ظƒظˆظ‘ظ† | ط§ظ„ظ‚ط±ط§ط،ط© | ط§ظ„ظƒطھط§ط¨ط© | Gateway Key |
 |---|---|---|---|
-| TopBar | useGatewayUnreadCount | — | ['gw','unread-count'] |
+| TopBar | useGatewayUnreadCount | â€” | ['gw','unread-count'] |
 | NotificationsPage | useGatewayNotifications | gw* functions | ['gw','notifications'] |
 | AdminNotifications | useGatewayNotifications | gwDeleteNotification / useCreateNotification | ['gw','notifications'] |
 
-### خريطة البيانات الكاملة بعد Phase 12K
+### ط®ط±ظٹط·ط© ط§ظ„ط¨ظٹط§ظ†ط§طھ ط§ظ„ظƒط§ظ…ظ„ط© ط¨ط¹ط¯ Phase 12K
 
-| الصفحة | القراءة | الكتابة | الاتساق |
+| ط§ظ„طµظپط­ط© | ط§ظ„ظ‚ط±ط§ط،ط© | ط§ظ„ظƒطھط§ط¨ط© | ط§ظ„ط§طھط³ط§ظ‚ |
 |---|---|---|---|
-| TopBar | Gateway unreadCount | — | ✅ 12K |
-| NotificationsPage | Gateway notifications | Gateway writes | ✅ 12J |
-| AdminNotifications | Gateway notifications | delete→Gateway / send→API | ✅ 12K |
-| CentersNewsPage | Gateway news | — | ✅ read-only |
-| CentersJobsPage | Gateway jobs | — | ✅ read-only |
-| AccountPage | Gateway themes | localStorage | ✅ |
-| StoryPage | Gateway story-templates | localStorage | ✅ |
-| CalendarPage | Orval → API | Orval → API | ⏳ Phase 12L |
-| FinancePage | Orval → API | Orval → API | ⏳ Phase 12L |
+| TopBar | Gateway unreadCount | â€” | âœ… 12K |
+| NotificationsPage | Gateway notifications | Gateway writes | âœ… 12J |
+| AdminNotifications | Gateway notifications | deleteâ†’Gateway / sendâ†’API | âœ… 12K |
+| CentersNewsPage | Gateway news | â€” | âœ… read-only |
+| CentersJobsPage | Gateway jobs | â€” | âœ… read-only |
+| AccountPage | Gateway themes | localStorage | âœ… |
+| StoryPage | Gateway story-templates | localStorage | âœ… |
+| CalendarPage | Orval â†’ API | Orval â†’ API | âڈ³ Phase 12L |
+| FinancePage | Orval â†’ API | Orval â†’ API | âڈ³ Phase 12L |
 
 ---
 
 ## Phase 12P: Final Gateway Coverage Summary (2026-05-25)
 
-### Gateway Complete (قراءة + كتابة — mode-aware)
+### Gateway Complete (ظ‚ط±ط§ط،ط© + ظƒطھط§ط¨ط© â€” mode-aware)
 
-| النطاق | الصفحات | المرحلة |
+| ط§ظ„ظ†ط·ط§ظ‚ | ط§ظ„طµظپط­ط§طھ | ط§ظ„ظ…ط±ط­ظ„ط© |
 |---|---|---|
 | appointments | CalendarPage + HomePage (upcoming) | 12N |
 | financial_events | FinancePage + HomePage (countdown) + StoryPage | 12O |
@@ -495,27 +495,27 @@ mode=supabase:
 | daily_messages | HomePage + StoryPage + AdminMessages | 12H/12M |
 | complaints | AdminDataLayer (read) | 12G |
 
-### API Intentionally (لا تحويل مخطط — موثق)
+### API Intentionally (ظ„ط§ طھط­ظˆظٹظ„ ظ…ط®ط·ط· â€” ظ…ظˆط«ظ‚)
 
-| النطاق | السبب |
+| ط§ظ„ظ†ط·ط§ظ‚ | ط§ظ„ط³ط¨ط¨ |
 |---|---|
-| prayer_times | server-computed — لا مكافئ Supabase |
-| today_message | server-computed — لا مكافئ Supabase |
+| prayer_times | server-computed â€” ظ„ط§ ظ…ظƒط§ظپط¦ Supabase |
+| today_message | server-computed â€” ظ„ط§ ظ…ظƒط§ظپط¦ Supabase |
 | admin stats | server-computed aggregate |
 | audit_logs | server-only trail |
-| public_events | ليس في Supabase schema |
-| AdminFinancial CRUD | admin view كل users — لا RLS |
+| public_events | ظ„ظٹط³ ظپظٹ Supabase schema |
+| AdminFinancial CRUD | admin view ظƒظ„ users â€” ظ„ط§ RLS |
 | notification send | fan-out server-side |
-| complaints write | Orval form → API مباشرة |
+| complaints write | Orval form â†’ API ظ…ط¨ط§ط´ط±ط© |
 
-### Remaining Orval Imports (مقبول — لا data fetching)
+### Remaining Orval Imports (ظ…ظ‚ط¨ظˆظ„ â€” ظ„ط§ data fetching)
 
-| الملف | الاستخدام | السبب |
+| ط§ظ„ظ…ظ„ظپ | ط§ظ„ط§ط³طھط®ط¯ط§ظ… | ط§ظ„ط³ط¨ط¨ |
 |---|---|---|
-| CalendarPage | getListAppointmentsQueryKey, type Appointment | cache invalidation + type فقط |
-| NotificationsPage | getGetUnreadNotificationsCountQueryKey | cache invalidation فقط |
-| AdminMessages/Story/Themes | get*QueryKey | cache invalidation فقط |
-| AdminNewsJobs | getListNewsQueryKey, getListJobsQueryKey | cache invalidation فقط |
+| CalendarPage | getListAppointmentsQueryKey, type Appointment | cache invalidation + type ظپظ‚ط· |
+| NotificationsPage | getGetUnreadNotificationsCountQueryKey | cache invalidation ظپظ‚ط· |
+| AdminMessages/Story/Themes | get*QueryKey | cache invalidation ظپظ‚ط· |
+| AdminNewsJobs | getListNewsQueryKey, getListJobsQueryKey | cache invalidation ظپظ‚ط· |
 
 ## Phase 4 Live Env/RLS Gate - 2026-06-01
 
@@ -535,3 +535,4 @@ Data-source proof status:
 Build/typecheck status: `pnpm install --frozen-lockfile`, `pnpm run typecheck`, and `pnpm run build` pass in this runtime after the Windows-safe package script and platform-native dependency fixes.
 
 Latest live proof update: env, DB, Supabase REST, frontend exposure scan, and guest mutation denial pass. Admin mutation/audit proof remains blocked by live schema drift: `financial_events.name_ar` is required in the live database but not satisfied by the current app/smoke payload.
+

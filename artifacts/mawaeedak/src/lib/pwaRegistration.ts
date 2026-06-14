@@ -1,4 +1,4 @@
-let purged = false;
+﻿let purged = false;
 
 export function registerPwaServiceWorker(): void {
   if (purged || typeof window === "undefined" || !("serviceWorker" in navigator)) {
@@ -22,3 +22,4 @@ export function registerPwaServiceWorker(): void {
       });
   });
 }
+

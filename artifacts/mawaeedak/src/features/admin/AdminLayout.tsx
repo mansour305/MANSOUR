@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState, type FormEvent, type ReactNode } from "react";
+﻿import { useEffect, useMemo, useRef, useState, type FormEvent, type ReactNode } from "react";
 import { Link, useLocation } from "wouter";
 import {
   Bell,
@@ -21,8 +21,6 @@ import {
   Wallet,
   Zap,
 } from "lucide-react";
-import desertHeroImg from "@assets/desert-hero.png";
-
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -78,7 +76,7 @@ function buildAuthSession(user: SupabaseUserLike): AuthSession {
     (typeof user.user_metadata?.display_name === "string" && user.user_metadata.display_name) ||
     (typeof user.user_metadata?.name === "string" && user.user_metadata.name) ||
     user.email?.split("@")[0] ||
-    "مدير";
+    "ظ…ط¯ظٹط±";
 
   return {
     user: {
@@ -93,11 +91,11 @@ function buildAuthSession(user: SupabaseUserLike): AuthSession {
 
 function translateLoginError(err: unknown): string {
   const msg = err instanceof Error ? err.message : String(err);
-  if (msg.startsWith("TIMEOUT:")) return "انتهت مهلة تسجيل الدخول، تحقق من الاتصال وحاول مرة أخرى";
-  if (/invalid.*credentials|wrong.*password|Invalid login/i.test(msg)) return "بيانات الدخول غير صحيحة";
-  if (/email.*confirm|not confirmed/i.test(msg)) return "يرجى تأكيد بريدك الإلكتروني أولاً";
-  if (/fetch|network|Failed to fetch|ERR_/i.test(msg)) return "تعذر الاتصال حالياً، حاول مرة أخرى";
-  return "حدث خطأ في تسجيل الدخول، حاول مرة أخرى";
+  if (msg.startsWith("TIMEOUT:")) return "ط§ظ†طھظ‡طھ ظ…ظ‡ظ„ط© طھط³ط¬ظٹظ„ ط§ظ„ط¯ط®ظˆظ„طŒ طھط­ظ‚ظ‚ ظ…ظ† ط§ظ„ط§طھطµط§ظ„ ظˆط­ط§ظˆظ„ ظ…ط±ط© ط£ط®ط±ظ‰";
+  if (/invalid.*credentials|wrong.*password|Invalid login/i.test(msg)) return "ط¨ظٹط§ظ†ط§طھ ط§ظ„ط¯ط®ظˆظ„ ط؛ظٹط± طµط­ظٹط­ط©";
+  if (/email.*confirm|not confirmed/i.test(msg)) return "ظٹط±ط¬ظ‰ طھط£ظƒظٹط¯ ط¨ط±ظٹط¯ظƒ ط§ظ„ط¥ظ„ظƒطھط±ظˆظ†ظٹ ط£ظˆظ„ط§ظ‹";
+  if (/fetch|network|Failed to fetch|ERR_/i.test(msg)) return "طھط¹ط°ط± ط§ظ„ط§طھطµط§ظ„ ط­ط§ظ„ظٹط§ظ‹طŒ ط­ط§ظˆظ„ ظ…ط±ط© ط£ط®ط±ظ‰";
+  return "ط­ط¯ط« ط®ط·ط£ ظپظٹ طھط³ط¬ظٹظ„ ط§ظ„ط¯ط®ظˆظ„طŒ ط­ط§ظˆظ„ ظ…ط±ط© ط£ط®ط±ظ‰";
 }
 
 function AuthShell({ children }: { children: ReactNode }) {
@@ -153,12 +151,12 @@ function AuthShell({ children }: { children: ReactNode }) {
       >
         {/* Card header with logo */}
         <div className="px-8 py-10 text-center" style={{ background: "linear-gradient(180deg, #FFFFFF 0%, #FAF5EE 100%)" }}>
-          <div className="text-5xl mb-3" style={{ color: "#C9A063" }}>✦</div>
+          <div className="text-5xl mb-3" style={{ color: "#C9A063" }}>âœ¦</div>
           <h1 className="text-4xl font-extrabold tracking-tight mb-2" style={{ color: "#2F2B25" }}>
-            مواعيدك
+            ظ…ظˆط§ط¹ظٹط¯ظƒ
           </h1>
           <p className="text-sm font-medium mb-1" style={{ color: "#8A6B3D" }}>
-            لوحة المالك والإدارة
+            ظ„ظˆط­ط© ط§ظ„ظ…ط§ظ„ظƒ ظˆط§ظ„ط¥ط¯ط§ط±ط©
           </p>
           <div className="h-[1px] w-32 mx-auto mt-4" style={{ background: "linear-gradient(90deg, transparent, #C9A063, transparent)" }} />
         </div>
@@ -171,7 +169,7 @@ function AuthShell({ children }: { children: ReactNode }) {
         {/* Card footer */}
         <div className="px-8 py-4 text-center" style={{ background: "#F3E8D6" }}>
           <p className="text-xs opacity-60" style={{ color: "#6F6557" }}>
-            © 2025 مواعيدك جميع الحقوق محفوظة
+            آ© 2025 ظ…ظˆط§ط¹ظٹط¯ظƒ ط¬ظ…ظٹط¹ ط§ظ„ط­ظ‚ظˆظ‚ ظ…ط­ظپظˆط¸ط©
           </p>
         </div>
       </div>
@@ -195,22 +193,22 @@ function ErrorBox({ message }: { message: string }) {
 }
 
 const navItems: NavItem[] = [
-  { href: "/admin", label: "الرئيسية", icon: LayoutDashboard },
-  { href: "/admin/members", label: "المستخدمون", icon: Users },
-  { href: "/admin/financial", label: "الرواتب والدعم", icon: Wallet },
-  { href: "/admin/official-prayer", label: "مواقيت الصلاة الرسمية", icon: Calendar },
-  { href: "/admin/official-financial", label: "المواعيد المالية الرسمية", icon: Calendar },
-  { href: "/admin/messages", label: "الرسائل اليومية", icon: MessageSquare },
-  { href: "/admin/story", label: "بطاقة اليوم / ستوري اليوم", icon: ImageIcon },
-  { href: "/admin/themes", label: "الثيمات", icon: Paintbrush },
-  { href: "/admin/notifications", label: "الإشعارات", icon: Bell },
-  { href: "/admin/complaints", label: "الشكاوى والاقتراحات", icon: MessageSquare },
-  { href: "/admin/news-jobs", label: "الأخبار والوظائف", icon: Newspaper },
-  { href: "/admin/reports", label: "التقارير", icon: FileText },
-  { href: "/admin/permissions", label: "الصلاحيات", icon: Shield },
-  { href: "/admin/settings", label: "الإعدادات", icon: Settings },
-  { href: "/admin/social", label: "ربط التواصل الاجتماعي والأتمتة", icon: Zap },
-  { href: "/admin/support", label: "الدعم والمساعدة", icon: Headphones },
+  { href: "/admin", label: "ط§ظ„ط±ط¦ظٹط³ظٹط©", icon: LayoutDashboard },
+  { href: "/admin/members", label: "ط§ظ„ظ…ط³طھط®ط¯ظ…ظˆظ†", icon: Users },
+  { href: "/admin/financial", label: "ط§ظ„ط±ظˆط§طھط¨ ظˆط§ظ„ط¯ط¹ظ…", icon: Wallet },
+  { href: "/admin/official-prayer", label: "ظ…ظˆط§ظ‚ظٹطھ ط§ظ„طµظ„ط§ط© ط§ظ„ط±ط³ظ…ظٹط©", icon: Calendar },
+  { href: "/admin/official-financial", label: "ط§ظ„ظ…ظˆط§ط¹ظٹط¯ ط§ظ„ظ…ط§ظ„ظٹط© ط§ظ„ط±ط³ظ…ظٹط©", icon: Calendar },
+  { href: "/admin/messages", label: "ط§ظ„ط±ط³ط§ط¦ظ„ ط§ظ„ظٹظˆظ…ظٹط©", icon: MessageSquare },
+  { href: "/admin/story", label: "ط¨ط·ط§ظ‚ط© ط§ظ„ظٹظˆظ… / ط³طھظˆط±ظٹ ط§ظ„ظٹظˆظ…", icon: ImageIcon },
+  { href: "/admin/themes", label: "ط§ظ„ط«ظٹظ…ط§طھ", icon: Paintbrush },
+  { href: "/admin/notifications", label: "ط§ظ„ط¥ط´ط¹ط§ط±ط§طھ", icon: Bell },
+  { href: "/admin/complaints", label: "ط§ظ„ط´ظƒط§ظˆظ‰ ظˆط§ظ„ط§ظ‚طھط±ط§ط­ط§طھ", icon: MessageSquare },
+  { href: "/admin/news-jobs", label: "ط§ظ„ط£ط®ط¨ط§ط± ظˆط§ظ„ظˆط¸ط§ط¦ظپ", icon: Newspaper },
+  { href: "/admin/reports", label: "ط§ظ„طھظ‚ط§ط±ظٹط±", icon: FileText },
+  { href: "/admin/permissions", label: "ط§ظ„طµظ„ط§ط­ظٹط§طھ", icon: Shield },
+  { href: "/admin/settings", label: "ط§ظ„ط¥ط¹ط¯ط§ط¯ط§طھ", icon: Settings },
+  { href: "/admin/social", label: "ط±ط¨ط· ط§ظ„طھظˆط§طµظ„ ط§ظ„ط§ط¬طھظ…ط§ط¹ظٹ ظˆط§ظ„ط£طھظ…طھط©", icon: Zap },
+  { href: "/admin/support", label: "ط§ظ„ط¯ط¹ظ… ظˆط§ظ„ظ…ط³ط§ط¹ط¯ط©", icon: Headphones },
 ];
 
 function AdminSidebar({ currentPath, onNavigate }: { currentPath: string; onNavigate?: () => void }) {
@@ -233,8 +231,8 @@ function AdminSidebar({ currentPath, onNavigate }: { currentPath: string; onNavi
       />
       
       {/* Golden lantern decorations */}
-      <div className="absolute top-20 left-4 text-xl opacity-20" style={{ color: "#C9A063" }}>✦</div>
-      <div className="absolute top-40 right-4 text-lg opacity-15" style={{ color: "#C9A063" }}>✦</div>
+      <div className="absolute top-20 left-4 text-xl opacity-20" style={{ color: "#C9A063" }}>âœ¦</div>
+      <div className="absolute top-40 right-4 text-lg opacity-15" style={{ color: "#C9A063" }}>âœ¦</div>
       
       {/* Logo Header */}
       <div 
@@ -258,15 +256,15 @@ function AdminSidebar({ currentPath, onNavigate }: { currentPath: string; onNavi
               boxShadow: "0 4px 12px rgba(138,107,61,0.35), inset 0 1px 0 rgba(255,255,255,0.2)",
             }}
           >
-            <span style={{ textShadow: "0 1px 2px rgba(0,0,0,0.2)" }}>م</span>
+            <span style={{ textShadow: "0 1px 2px rgba(0,0,0,0.2)" }}>ظ…</span>
             {/* Inner glow */}
             <div className="absolute inset-0 rounded-xl" style={{
               boxShadow: "inset 0 0 12px rgba(255,255,255,0.15)",
             }} />
           </div>
           <div>
-            <div className="font-extrabold text-lg tracking-wide" style={{ color: "#F5EDDE" }}>مواعيدك</div>
-            <div className="text-xs font-medium" style={{ color: "hsl(38 55% 60%)" }}>لوحة المالك</div>
+            <div className="font-extrabold text-lg tracking-wide" style={{ color: "#F5EDDE" }}>ظ…ظˆط§ط¹ظٹط¯ظƒ</div>
+            <div className="text-xs font-medium" style={{ color: "hsl(38 55% 60%)" }}>ظ„ظˆط­ط© ط§ظ„ظ…ط§ظ„ظƒ</div>
           </div>
         </div>
         
@@ -332,10 +330,10 @@ function AdminSidebar({ currentPath, onNavigate }: { currentPath: string; onNavi
           background: "linear-gradient(90deg, transparent, hsl(38 60% 50%), transparent)",
         }} />
         <p className="text-[10px] font-medium" style={{ color: "hsl(32 18% 42%)" }}>
-          © 2025 مواعيدك — لوحة المالك
+          آ© 2025 ظ…ظˆط§ط¹ظٹط¯ظƒ â€” ظ„ظˆط­ط© ط§ظ„ظ…ط§ظ„ظƒ
         </p>
         <p className="text-[9px] mt-1" style={{ color: "hsl(32 18% 52%)" }}>
-          جميع الحقوق محفوظة
+          ط¬ظ…ظٹط¹ ط§ظ„ط­ظ‚ظˆظ‚ ظ…ط­ظپظˆط¸ط©
         </p>
       </div>
     </aside>
@@ -355,7 +353,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
   const [location] = useLocation();
 
   const userLabel = useMemo(() => {
-    return session?.user.displayName || session?.user.email || "مدير النظام";
+    return session?.user.displayName || session?.user.email || "ظ…ط¯ظٹط± ط§ظ„ظ†ط¸ط§ظ…";
   }, [session]);
 
   useEffect(() => {
@@ -450,7 +448,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
           if (identifier.trim() === DEMO_ADMIN_USERNAME && password === DEMO_ADMIN_PASSWORD) {
             // Demo login success
             const demoSession: AuthSession = {
-              user: { id: "demo-admin", role: "owner", displayName: "مدير النظام" },
+              user: { id: "demo-admin", role: "owner", displayName: "ظ…ط¯ظٹط± ط§ظ„ظ†ط¸ط§ظ…" },
               isDemo: true,
             };
             sessionStorage.setItem("mawaeedak_demo_session", JSON.stringify(demoSession));
@@ -459,12 +457,12 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
             setPassword("");
             return;
           } else {
-            setLoginError("اسم المستخدم أو كلمة المرور غير صحيحة");
+            setLoginError("ط§ط³ظ… ط§ظ„ظ…ط³طھط®ط¯ظ… ط£ظˆ ظƒظ„ظ…ط© ط§ظ„ظ…ط±ظˆط± ط؛ظٹط± طµط­ظٹط­ط©");
             return;
           }
         }
         
-        setLoginError("لوحة المالك تتطلب تفعيل Supabase Auth في بيئة الإنتاج");
+        setLoginError("ظ„ظˆط­ط© ط§ظ„ظ…ط§ظ„ظƒ طھطھط·ظ„ط¨ طھظپط¹ظٹظ„ Supabase Auth ظپظٹ ط¨ظٹط¦ط© ط§ظ„ط¥ظ†طھط§ط¬");
         return;
       }
 
@@ -481,7 +479,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
 
       const { data, error: userError } = await withTimeout(supabase.auth.getUser(), 5000, "getUser");
       if (userError || !data.user) {
-        setLoginError("تعذر قراءة بيانات الحساب، حاول مرة أخرى");
+        setLoginError("طھط¹ط°ط± ظ‚ط±ط§ط،ط© ط¨ظٹط§ظ†ط§طھ ط§ظ„ط­ط³ط§ط¨طŒ ط­ط§ظˆظ„ ظ…ط±ط© ط£ط®ط±ظ‰");
         await supabase.auth.signOut({ scope: "local" });
         return;
       }
@@ -519,7 +517,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
       <AuthShell>
         <div className="flex flex-col items-center gap-3 py-6 text-center">
           <Loader2 className="h-7 w-7 animate-spin" style={{ color: "hsl(38 62% 46%)" }} />
-          <p className="text-sm font-bold" style={{ color: "hsl(24 22% 24%)" }}>يتم التحقق من صلاحيات لوحة المالك...</p>
+          <p className="text-sm font-bold" style={{ color: "hsl(24 22% 24%)" }}>ظٹطھظ… ط§ظ„طھط­ظ‚ظ‚ ظ…ظ† طµظ„ط§ط­ظٹط§طھ ظ„ظˆط­ط© ط§ظ„ظ…ط§ظ„ظƒ...</p>
         </div>
       </AuthShell>
     );
@@ -530,12 +528,12 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
       <AuthShell>
         <div className="space-y-4 text-center">
           <Shield className="h-10 w-10 mx-auto" style={{ color: "hsl(10 55% 48%)" }} />
-          <h2 className="text-xl font-extrabold" style={{ color: "hsl(24 22% 24%)" }}>غير مصرح</h2>
+          <h2 className="text-xl font-extrabold" style={{ color: "hsl(24 22% 24%)" }}>ط؛ظٹط± ظ…طµط±ط­</h2>
           <p className="text-sm leading-7" style={{ color: "hsl(32 18% 38%)" }}>
-            هذا الحساب لا يملك صلاحيات الدخول إلى لوحة المالك.
+            ظ‡ط°ط§ ط§ظ„ط­ط³ط§ط¨ ظ„ط§ ظٹظ…ظ„ظƒ طµظ„ط§ط­ظٹط§طھ ط§ظ„ط¯ط®ظˆظ„ ط¥ظ„ظ‰ ظ„ظˆط­ط© ط§ظ„ظ…ط§ظ„ظƒ.
           </p>
           <Button type="button" onClick={handleLogout} className="w-full">
-            العودة لتسجيل الدخول
+            ط§ظ„ط¹ظˆط¯ط© ظ„طھط³ط¬ظٹظ„ ط§ظ„ط¯ط®ظˆظ„
           </Button>
         </div>
       </AuthShell>
@@ -547,9 +545,9 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
       <AuthShell>
         <form className="space-y-4" onSubmit={handleLoginSubmit}>
           <div className="text-center space-y-1 mb-3">
-            <h2 className="text-lg font-extrabold" style={{ color: "#2F2B25" }}>تسجيل دخول المالك</h2>
+            <h2 className="text-lg font-extrabold" style={{ color: "#2F2B25" }}>طھط³ط¬ظٹظ„ ط¯ط®ظˆظ„ ط§ظ„ظ…ط§ظ„ظƒ</h2>
             <p className="text-[11px]" style={{ color: "#8A6B3D" }}>
-              الدخول مخصص لإدارة لوحة مواعيدك فقط
+              ط§ظ„ط¯ط®ظˆظ„ ظ…ط®طµطµ ظ„ط¥ط¯ط§ط±ط© ظ„ظˆط­ط© ظ…ظˆط§ط¹ظٹط¯ظƒ ظپظ‚ط·
             </p>
           </div>
 
@@ -562,7 +560,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
                 color: "#8A6B3D",
               }}
             >
-              لوحة المالك تتطلب تفعيل Supabase Auth في بيئة الإنتاج
+              ظ„ظˆط­ط© ط§ظ„ظ…ط§ظ„ظƒ طھطھط·ظ„ط¨ طھظپط¹ظٹظ„ Supabase Auth ظپظٹ ط¨ظٹط¦ط© ط§ظ„ط¥ظ†طھط§ط¬
             </div>
           )}
 
@@ -575,7 +573,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
                 color: "#558B2F",
               }}
             >
-              وضع التطوير: استخدم admin / admin123 للدخول
+              ظˆط¶ط¹ ط§ظ„طھط·ظˆظٹط±: ط§ط³طھط®ط¯ظ… admin / admin123 ظ„ظ„ط¯ط®ظˆظ„
             </div>
           )}
 
@@ -588,7 +586,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
             value={identifier}
             onChange={(event) => setIdentifier(event.target.value)}
             autoComplete="email"
-            placeholder="أدخل البريد الإلكتروني"
+            placeholder="ط£ط¯ط®ظ„ ط§ظ„ط¨ط±ظٹط¯ ط§ظ„ط¥ظ„ظƒطھط±ظˆظ†ظٹ"
             required
             className="h-12 rounded-xl bg-white/80 border-0"
             style={{ border: "1px solid rgba(201,160,99,0.25)" }}
@@ -601,7 +599,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
             value={password}
             onChange={(event) => setPassword(event.target.value)}
             autoComplete="current-password"
-            placeholder="أدخل كلمة المرور"
+            placeholder="ط£ط¯ط®ظ„ ظƒظ„ظ…ط© ط§ظ„ظ…ط±ظˆط±"
             required
             className="h-12 rounded-xl bg-white/80 border-0"
             style={{ border: "1px solid rgba(201,160,99,0.25)" }}
@@ -610,9 +608,9 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
           <div className="flex items-center justify-between text-xs">
             <label className="flex items-center gap-2 cursor-pointer" style={{ color: "#8A6B3D" }}>
               <input type="checkbox" className="w-4 h-4 rounded" style={{ accentColor: "#C9A063" }} />
-              تذكرني
+              طھط°ظƒط±ظ†ظٹ
             </label>
-            <a href="#" className="hover:underline" style={{ color: "#C9A063" }}>نسيت كلمة المرور؟</a>
+            <a href="#" className="hover:underline" style={{ color: "#C9A063" }}>ظ†ط³ظٹطھ ظƒظ„ظ…ط© ط§ظ„ظ…ط±ظˆط±طں</a>
           </div>
 
           <Button 
@@ -621,12 +619,12 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
             className="w-full h-12 font-bold rounded-xl"
             style={{ background: "#C9A063", color: "#FFFFFF" }}
           >
-            {submitting ? <Loader2 className="h-4 w-4 animate-spin" /> : "تسجيل الدخول"}
+            {submitting ? <Loader2 className="h-4 w-4 animate-spin" /> : "طھط³ط¬ظٹظ„ ط§ظ„ط¯ط®ظˆظ„"}
           </Button>
 
           <div className="flex items-center gap-3">
             <div className="flex-1 h-px" style={{ background: "rgba(201,160,99,0.3)" }} />
-            <span className="text-[10px] font-medium" style={{ color: "#8A6B3D" }}>أو سجل الدخول باستخدام</span>
+            <span className="text-[10px] font-medium" style={{ color: "#8A6B3D" }}>ط£ظˆ ط³ط¬ظ„ ط§ظ„ط¯ط®ظˆظ„ ط¨ط§ط³طھط®ط¯ط§ظ…</span>
             <div className="flex-1 h-px" style={{ background: "rgba(201,160,99,0.3)" }} />
           </div>
 
@@ -636,7 +634,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
               variant="outline"
               className="h-10 rounded-xl text-xs font-medium"
               style={{ borderColor: "rgba(201,160,99,0.3)", color: "#2F2B25" }}
-              onClick={() => toast({ title: "تسجيل الدخول بـ Apple يحتاج إعداداً إضافياً" })}
+              onClick={() => toast({ title: "طھط³ط¬ظٹظ„ ط§ظ„ط¯ط®ظˆظ„ ط¨ظ€ Apple ظٹط­طھط§ط¬ ط¥ط¹ط¯ط§ط¯ط§ظ‹ ط¥ط¶ط§ظپظٹط§ظ‹" })}
             >
               <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" className="ml-1">
                 <path d="M18.71 19.5C17.88 20.74 17 21.95 15.66 21.97C14.32 22 13.89 21.18 12.37 21.18C10.84 21.18 10.37 21.95 9.09997 22C7.78997 22.05 6.79997 20.68 5.95997 19.47C4.24997 17 2.93997 12.45 4.69997 9.39C5.56997 7.87 7.12997 6.91 8.81997 6.88C10.1 6.86 11.32 7.75 12.11 7.75C12.89 7.75 14.37 6.68 15.92 6.84C16.57 6.87 18.39 7.1 19.56 8.82C19.47 8.88 17.39 10.1 17.41 12.63C17.44 15.65 20.06 16.66 20.09 16.67C20.06 16.67 19.67 18.12 18.71 19.5ZM13 3.5C13.73 2.67 14.94 2.04 15.94 2C16.07 3.17 15.6 4.35 14.9 5.19C14.21 6.04 13.07 6.7 11.95 6.61C11.8 5.46 12.36 4.26 13 3.5Z"/>
@@ -648,7 +646,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
               variant="outline"
               className="h-10 rounded-xl text-xs font-medium"
               style={{ borderColor: "rgba(201,160,99,0.3)", color: "#2F2B25" }}
-              onClick={() => toast({ title: "تسجيل الدخول بـ Google يحتاج إعداداً إضافياً" })}
+              onClick={() => toast({ title: "طھط³ط¬ظٹظ„ ط§ظ„ط¯ط®ظˆظ„ ط¨ظ€ Google ظٹط­طھط§ط¬ ط¥ط¹ط¯ط§ط¯ط§ظ‹ ط¥ط¶ط§ظپظٹط§ظ‹" })}
             >
               <svg width="16" height="16" viewBox="0 0 24 24" className="ml-1">
                 <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -663,12 +661,12 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
               variant="outline"
               className="h-10 rounded-xl text-xs font-medium"
               style={{ borderColor: "rgba(201,160,99,0.3)", color: "#2F2B25" }}
-              onClick={() => toast({ title: "تسجيل الدخول برقم الجوال يحتاج إعداداً إضافياً" })}
+              onClick={() => toast({ title: "طھط³ط¬ظٹظ„ ط§ظ„ط¯ط®ظˆظ„ ط¨ط±ظ‚ظ… ط§ظ„ط¬ظˆط§ظ„ ظٹط­طھط§ط¬ ط¥ط¹ط¯ط§ط¯ط§ظ‹ ط¥ط¶ط§ظپظٹط§ظ‹" })}
             >
               <svg width="16" height="16" viewBox="0 0 24 24" fill="#C9A063" className="ml-1">
                 <path d="M17 4h-3V2h-4v2H7v18h10V4zm-5 16c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-7.1l-1.4-1.4L12 13.4l-1.7-1.7-1.4 1.4L12 16.2l4.1-4.3z"/>
               </svg>
-              الجوال
+              ط§ظ„ط¬ظˆط§ظ„
             </Button>
           </div>
         </form>
@@ -719,7 +717,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
                       borderColor: "rgba(201,160,99,0.3)",
                       background: "linear-gradient(145deg, #FFFBF4, #F5EDDE)",
                     }}
-                    aria-label="فتح القائمة"
+                    aria-label="ظپطھط­ ط§ظ„ظ‚ط§ط¦ظ…ط©"
                   >
                     <Menu className="h-5 w-5" style={{ color: "#A78042" }} />
                   </Button>
@@ -733,10 +731,10 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
             {/* Date & Greeting */}
             <div className="flex-1">
               <div className="font-extrabold text-lg" style={{ color: "hsl(22 62% 22%)" }}>
-                لوحة المالك
+                ظ„ظˆط­ط© ط§ظ„ظ…ط§ظ„ظƒ
               </div>
               <div className="text-xs" style={{ color: "hsl(32 18% 42%)" }}>
-                مرحباً، {userLabel} · {new Date().toLocaleDateString('ar-SA', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+                ظ…ط±ط­ط¨ط§ظ‹طŒ {userLabel} آ· {new Date().toLocaleDateString('ar-SA', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
               </div>
             </div>
 
@@ -754,7 +752,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
                 }}
               >
                 <LogOut className="h-4 w-4" />
-                <span className="hidden sm:inline">تسجيل الخروج</span>
+                <span className="hidden sm:inline">طھط³ط¬ظٹظ„ ط§ظ„ط®ط±ظˆط¬</span>
               </Button>
             </div>
           </div>
@@ -770,10 +768,11 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
         {/* Footer */}
         <footer className="border-t px-8 py-6 text-center" style={{ borderColor: "rgba(201,160,99,0.2)", background: "rgba(201,160,99,0.05)" }}>
           <p className="text-xs" style={{ color: "hsl(32 18% 48%)" }}>
-            © 2025 مواعيدك — جميع الحقوق محفوظة
+            آ© 2025 ظ…ظˆط§ط¹ظٹط¯ظƒ â€” ط¬ظ…ظٹط¹ ط§ظ„ط­ظ‚ظˆظ‚ ظ…ط­ظپظˆط¸ط©
           </p>
         </footer>
       </div>
     </div>
   );
 }
+

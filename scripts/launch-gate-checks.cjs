@@ -1,4 +1,4 @@
-const fs = require("node:fs");
+﻿const fs = require("node:fs");
 const path = require("node:path");
 
 const root = path.resolve(__dirname, "..");
@@ -74,3 +74,4 @@ if (fakeSecrets.length > 0) fail("real-looking secrets must not be committed", f
 if (!process.exitCode) {
   console.log("launch-gate-checks: passed");
 }
+

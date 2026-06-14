@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+﻿import { useEffect, useState } from "react";
 import { useLocation } from "wouter";
 import { supabase } from "@/lib/supabase";
 import { Loader2, CheckCircle2, XCircle } from "lucide-react";
@@ -13,7 +13,7 @@ export default function AuthCallbackPage() {
   useEffect(() => {
     if (!supabase) {
       setStatus("error");
-      setMessage("تعذر الاتصال بخدمة المصادقة");
+      setMessage("طھط¹ط°ط± ط§ظ„ط§طھطµط§ظ„ ط¨ط®ط¯ظ…ط© ط§ظ„ظ…طµط§ط¯ظ‚ط©");
       return;
     }
 
@@ -29,28 +29,28 @@ export default function AuthCallbackPage() {
           ) {
             setStatus("expired");
             setMessage(
-              "رابط التحقق غير صالح أو منتهي الصلاحية. أعد التسجيل أو اطلب رابطاً جديداً."
+              "ط±ط§ط¨ط· ط§ظ„طھط­ظ‚ظ‚ ط؛ظٹط± طµط§ظ„ط­ ط£ظˆ ظ…ظ†طھظ‡ظٹ ط§ظ„طµظ„ط§ط­ظٹط©. ط£ط¹ط¯ ط§ظ„طھط³ط¬ظٹظ„ ط£ظˆ ط§ط·ظ„ط¨ ط±ط§ط¨ط·ط§ظ‹ ط¬ط¯ظٹط¯ط§ظ‹."
             );
           } else {
             setStatus("error");
-            setMessage("تعذر التحقق من الرابط. حاول مرة أخرى.");
+            setMessage("طھط¹ط°ط± ط§ظ„طھط­ظ‚ظ‚ ظ…ظ† ط§ظ„ط±ط§ط¨ط·. ط­ط§ظˆظ„ ظ…ط±ط© ط£ط®ط±ظ‰.");
           }
           return;
         }
 
         if (data.session) {
           setStatus("success");
-          setMessage("تم التحقق من حسابك بنجاح. جار التوجيه...");
+          setMessage("طھظ… ط§ظ„طھط­ظ‚ظ‚ ظ…ظ† ط­ط³ط§ط¨ظƒ ط¨ظ†ط¬ط§ط­. ط¬ط§ط± ط§ظ„طھظˆط¬ظٹظ‡...");
           setTimeout(() => setLocation("/account"), 2000);
         } else {
           setStatus("expired");
           setMessage(
-            "رابط التحقق غير صالح أو منتهي الصلاحية. أعد التسجيل أو اطلب رابطاً جديداً."
+            "ط±ط§ط¨ط· ط§ظ„طھط­ظ‚ظ‚ ط؛ظٹط± طµط§ظ„ط­ ط£ظˆ ظ…ظ†طھظ‡ظٹ ط§ظ„طµظ„ط§ط­ظٹط©. ط£ط¹ط¯ ط§ظ„طھط³ط¬ظٹظ„ ط£ظˆ ط§ط·ظ„ط¨ ط±ط§ط¨ط·ط§ظ‹ ط¬ط¯ظٹط¯ط§ظ‹."
           );
         }
       } catch {
         setStatus("error");
-        setMessage("حدث خطأ غير متوقع. حاول مرة أخرى.");
+        setMessage("ط­ط¯ط« ط®ط·ط£ ط؛ظٹط± ظ…طھظˆظ‚ط¹. ط­ط§ظˆظ„ ظ…ط±ط© ط£ط®ط±ظ‰.");
       }
     };
 
@@ -78,10 +78,10 @@ export default function AuthCallbackPage() {
             className="text-xl font-black tracking-wide"
             style={{ color: "hsl(38 72% 68%)" }}
           >
-            مواعيدك
+            ظ…ظˆط§ط¹ظٹط¯ظƒ
           </h1>
           <p className="text-sm mt-1" style={{ color: "hsl(38 45% 55%)" }}>
-            التحقق من الحساب
+            ط§ظ„طھط­ظ‚ظ‚ ظ…ظ† ط§ظ„ط­ط³ط§ط¨
           </p>
         </div>
 
@@ -99,7 +99,7 @@ export default function AuthCallbackPage() {
                 style={{ color: "hsl(38 72% 52%)" }}
               />
               <p className="text-sm" style={{ color: "hsl(22 30% 45%)" }}>
-                جار التحقق من الرابط...
+                ط¬ط§ط± ط§ظ„طھط­ظ‚ظ‚ ظ…ظ† ط§ظ„ط±ط§ط¨ط·...
               </p>
             </>
           )}
@@ -140,7 +140,7 @@ export default function AuthCallbackPage() {
                   color: "#fff",
                 }}
               >
-                العودة للرئيسية
+                ط§ظ„ط¹ظˆط¯ط© ظ„ظ„ط±ط¦ظٹط³ظٹط©
               </button>
             </>
           )}
@@ -149,3 +149,4 @@ export default function AuthCallbackPage() {
     </div>
   );
 }
+

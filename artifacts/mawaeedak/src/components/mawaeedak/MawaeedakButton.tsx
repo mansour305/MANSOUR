@@ -1,4 +1,4 @@
-import { type ReactNode } from "react";
+﻿import { type ReactNode } from "react";
 import { Loader2 } from "lucide-react";
 
 interface MawaeedakButtonProps {
@@ -51,3 +51,4 @@ export function MawaeedakButton({
     </button>
   );
 }
+

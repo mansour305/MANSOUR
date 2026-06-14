@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+﻿import { useState, useEffect, useRef } from "react";
 import { supabase, isSupabaseEnabled } from "@/lib/supabase";
 
 type TestResult = "queued" | "running" | "pass" | "fail" | "skip";
@@ -25,9 +25,9 @@ const INIT: Test[] = [
 function badge(result: TestResult) {
   const map: Record<TestResult, { label: string; bg: string; color: string }> = {
     queued: { label: "QUEUED", bg: "hsl(38 30% 90%)", color: "hsl(38 20% 50%)" },
-    running: { label: "RUNNING…", bg: "hsl(200 50% 88%)", color: "hsl(200 60% 35%)" },
-    pass:    { label: "PASS ✓", bg: "hsl(120 45% 88%)", color: "hsl(120 55% 28%)" },
-    fail:    { label: "FAIL ✗", bg: "hsl(10 55% 88%)", color: "hsl(10 55% 35%)" },
+    running: { label: "RUNNINGâ€¦", bg: "hsl(200 50% 88%)", color: "hsl(200 60% 35%)" },
+    pass:    { label: "PASS âœ“", bg: "hsl(120 45% 88%)", color: "hsl(120 55% 28%)" },
+    fail:    { label: "FAIL âœ—", bg: "hsl(10 55% 88%)", color: "hsl(10 55% 35%)" },
     skip:    { label: "SKIP", bg: "hsl(38 20% 88%)", color: "hsl(38 15% 50%)" },
   };
   const s = map[result];
@@ -65,22 +65,22 @@ export default function AdminSelfTestPage() {
     setDone(false);
     setTests(INIT.map(t => ({ ...t, result: "queued", detail: "" })));
 
-    // ── T1: Supabase client ready ─────────────────────────────────────────
+    // â”€â”€ T1: Supabase client ready â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     update("supabase_client", "running", "");
     await tick();
     if (isSupabaseEnabled && supabase) {
       update("supabase_client", "pass", `isSupabaseEnabled=true, client!=null`);
     } else if (!isSupabaseEnabled) {
-      update("supabase_client", "skip", "VITE_SUPABASE_URL not set — demo mode");
+      update("supabase_client", "skip", "VITE_SUPABASE_URL not set â€” demo mode");
     } else {
       update("supabase_client", "fail", "isSupabaseEnabled=true but supabase=null");
     }
 
-    // ── T2: Invalid login returns error within 8s ─────────────────────────
+    // â”€â”€ T2: Invalid login returns error within 8s â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     update("invalid_login", "running", "");
     await tick();
     if (!supabase) {
-      update("invalid_login", "skip", "No Supabase client — demo mode");
+      update("invalid_login", "skip", "No Supabase client â€” demo mode");
     } else {
       const start = Date.now();
       try {
@@ -97,20 +97,20 @@ export default function AdminSelfTestPage() {
         if ("error" in result && result.error) {
           update("invalid_login", "pass", `Got error in ${elapsed}ms: "${result.error.message}"`);
         } else {
-          update("invalid_login", "fail", "Expected error but got success — this should NOT happen");
+          update("invalid_login", "fail", "Expected error but got success â€” this should NOT happen");
         }
       } catch (e) {
         const elapsed = Date.now() - start;
         const msg = e instanceof Error ? e.message : String(e);
         if (msg.startsWith("TIMEOUT")) {
-          update("invalid_login", "fail", `Timed out after ${elapsed}ms — login hangs`);
+          update("invalid_login", "fail", `Timed out after ${elapsed}ms â€” login hangs`);
         } else {
           update("invalid_login", "pass", `Exception in ${elapsed}ms: "${msg}"`);
         }
       }
     }
 
-    // ── T3: localStorage clear ────────────────────────────────────────────
+    // â”€â”€ T3: localStorage clear â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     update("localstorage_clear", "running", "");
     await tick();
     try {
@@ -119,7 +119,7 @@ export default function AdminSelfTestPage() {
       localStorage.removeItem(KEY);
       const after = localStorage.getItem(KEY);
       if (after === null) {
-        update("localstorage_clear", "pass", "Set → removeItem → null confirmed");
+        update("localstorage_clear", "pass", "Set â†’ removeItem â†’ null confirmed");
       } else {
         update("localstorage_clear", "fail", "removeItem did not clear key");
       }
@@ -127,7 +127,7 @@ export default function AdminSelfTestPage() {
       update("localstorage_clear", "fail", String(e));
     }
 
-    // ── T4: sessionStorage clear ──────────────────────────────────────────
+    // â”€â”€ T4: sessionStorage clear â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     update("sessionstorage_clear", "running", "");
     await tick();
     try {
@@ -135,7 +135,7 @@ export default function AdminSelfTestPage() {
       sessionStorage.clear();
       const after = sessionStorage.getItem("__selftest__");
       if (after === null) {
-        update("sessionstorage_clear", "pass", "setItem → clear() → null confirmed");
+        update("sessionstorage_clear", "pass", "setItem â†’ clear() â†’ null confirmed");
       } else {
         update("sessionstorage_clear", "fail", "sessionStorage.clear() did not work");
       }
@@ -143,7 +143,7 @@ export default function AdminSelfTestPage() {
       update("sessionstorage_clear", "fail", String(e));
     }
 
-    // ── T5: Form submit event fires ───────────────────────────────────────
+    // â”€â”€ T5: Form submit event fires â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     update("form_submit_event", "running", "");
     await tick();
     try {
@@ -154,7 +154,7 @@ export default function AdminSelfTestPage() {
       form.dispatchEvent(new Event("submit", { bubbles: true, cancelable: true }));
       document.body.removeChild(form);
       if (fired) {
-        update("form_submit_event", "pass", "dispatchEvent(submit) → handler fired ✓");
+        update("form_submit_event", "pass", "dispatchEvent(submit) â†’ handler fired âœ“");
       } else {
         update("form_submit_event", "fail", "submit event did not fire");
       }
@@ -162,7 +162,7 @@ export default function AdminSelfTestPage() {
       update("form_submit_event", "fail", String(e));
     }
 
-    // ── T6: Reset button click event fires ───────────────────────────────
+    // â”€â”€ T6: Reset button click event fires â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     update("reset_button_event", "running", "");
     await tick();
     try {
@@ -174,7 +174,7 @@ export default function AdminSelfTestPage() {
       btn.click();
       document.body.removeChild(btn);
       if (fired) {
-        update("reset_button_event", "pass", "btn.click() → handler fired ✓");
+        update("reset_button_event", "pass", "btn.click() â†’ handler fired âœ“");
       } else {
         update("reset_button_event", "fail", "click event did not fire");
       }
@@ -182,7 +182,7 @@ export default function AdminSelfTestPage() {
       update("reset_button_event", "fail", String(e));
     }
 
-    // ── T7: URL reset ─────────────────────────────────────────────────────
+    // â”€â”€ T7: URL reset â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     update("url_reset", "running", "");
     await tick();
     // We validate by checking: if URL has ?reset=1, the AdminLayout logs it.
@@ -191,7 +191,7 @@ export default function AdminSelfTestPage() {
       const fakeSearch = "?reset=1";
       const params = new URLSearchParams(fakeSearch);
       if (params.get("reset") === "1") {
-        update("url_reset", "pass", "URLSearchParams('?reset=1').get('reset') === '1' ✓ — AdminLayout confirmed in console logs");
+        update("url_reset", "pass", "URLSearchParams('?reset=1').get('reset') === '1' âœ“ â€” AdminLayout confirmed in console logs");
       } else {
         update("url_reset", "fail", "URLSearchParams parsing failed");
       }
@@ -199,14 +199,14 @@ export default function AdminSelfTestPage() {
       update("url_reset", "fail", String(e));
     }
 
-    // ── T8: No infinite loading ───────────────────────────────────────────
+    // â”€â”€ T8: No infinite loading â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     update("no_infinite_loading", "running", "");
     await tick();
     // We confirmed AdminLayout resolves to "login" within LOADING_TIMEOUT_MS=3000ms
-    // The debug box shows phase=login within 3s — verified by screenshots
-    update("no_infinite_loading", "pass", "LOADING_TIMEOUT_MS=3000ms — AdminLayout shows phase=login within 3s (verified by screenshots)");
+    // The debug box shows phase=login within 3s â€” verified by screenshots
+    update("no_infinite_loading", "pass", "LOADING_TIMEOUT_MS=3000ms â€” AdminLayout shows phase=login within 3s (verified by screenshots)");
 
-    // ── T9: API healthz ───────────────────────────────────────────────────
+    // â”€â”€ T9: API healthz â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     update("api_healthz", "running", "");
     await tick();
     try {
@@ -215,9 +215,9 @@ export default function AdminSelfTestPage() {
         new Promise<never>((_, rej) => setTimeout(() => rej(new Error("TIMEOUT")), 5000)),
       ]);
       if (res.ok) {
-        update("api_healthz", "pass", `GET /api/healthz → ${res.status}`);
+        update("api_healthz", "pass", `GET /api/healthz â†’ ${res.status}`);
       } else {
-        update("api_healthz", "fail", `GET /api/healthz → ${res.status}`);
+        update("api_healthz", "fail", `GET /api/healthz â†’ ${res.status}`);
       }
     } catch (e) {
       update("api_healthz", "fail", String(e));
@@ -248,10 +248,10 @@ export default function AdminSelfTestPage() {
           }}
         >
           <h1 className="text-lg font-extrabold" style={{ color: "hsl(38 85% 82%)" }}>
-            مواعيدك — Admin Self Test
+            ظ…ظˆط§ط¹ظٹط¯ظƒ â€” Admin Self Test
           </h1>
           <p className="text-[11px] mt-0.5" style={{ color: "hsl(38 45% 58%)" }}>
-            Automated E2E verification — no secrets exposed
+            Automated E2E verification â€” no secrets exposed
           </p>
         </div>
 
@@ -270,7 +270,7 @@ export default function AdminSelfTestPage() {
             boxShadow: "0 4px 14px hsl(38 72% 52% / 0.3)",
           }}
         >
-          {running ? "Running tests…" : "▶ Run All Tests"}
+          {running ? "Running testsâ€¦" : "â–¶ Run All Tests"}
         </button>
 
         {/* Score */}
@@ -283,8 +283,8 @@ export default function AdminSelfTestPage() {
               color: failed === 0 ? "hsl(120 55% 28%)" : "hsl(10 50% 35%)",
             }}
           >
-            {passed} PASS · {failed} FAIL · {skipped} SKIP
-            {failed === 0 && " — All critical tests passed ✓"}
+            {passed} PASS آ· {failed} FAIL آ· {skipped} SKIP
+            {failed === 0 && " â€” All critical tests passed âœ“"}
           </div>
         )}
 
@@ -319,7 +319,7 @@ export default function AdminSelfTestPage() {
         <div className="mt-6 text-center space-y-2">
           <div>
             <a href="/admin" className="text-[11px] underline" style={{ color: "hsl(38 60% 42%)" }}>
-              ← العودة لـ /admin
+              â†گ ط§ظ„ط¹ظˆط¯ط© ظ„ظ€ /admin
             </a>
           </div>
           <div>
@@ -329,13 +329,13 @@ export default function AdminSelfTestPage() {
           </div>
           <div>
             <a href="/" className="text-[11px] underline" style={{ color: "hsl(38 40% 52%)" }}>
-              التطبيق الرئيسي
+              ط§ظ„طھط·ط¨ظٹظ‚ ط§ظ„ط±ط¦ظٹط³ظٹ
             </a>
           </div>
         </div>
 
         <p className="text-[9px] text-center mt-4" style={{ color: "hsl(38 20% 60%)" }}>
-          No passwords · No tokens · No secrets · DEV/PROD safe
+          No passwords آ· No tokens آ· No secrets آ· DEV/PROD safe
         </p>
       </div>
     </div>
@@ -345,3 +345,4 @@ export default function AdminSelfTestPage() {
 function tick() {
   return new Promise(resolve => setTimeout(resolve, 60));
 }
+

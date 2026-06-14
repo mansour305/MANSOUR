@@ -1,4 +1,4 @@
-import { pgTable, serial, text, timestamp, integer } from "drizzle-orm/pg-core";
+﻿import { pgTable, serial, text, timestamp, integer } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod/v4";
 
@@ -15,3 +15,4 @@ export const automationLogsTable = pgTable("automation_logs", {
 export const insertAutomationLogSchema = createInsertSchema(automationLogsTable).omit({ id: true, created_at: true });
 export type InsertAutomationLog = z.infer<typeof insertAutomationLogSchema>;
 export type AutomationLog = typeof automationLogsTable.$inferSelect;
+

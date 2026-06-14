@@ -1,5 +1,5 @@
-/**
- * Admin Actions — Centralized Admin Panel Action Handlers
+﻿/**
+ * Admin Actions â€” Centralized Admin Panel Action Handlers
  * 
  * PHASE 2: Admin Recovery - All actions now use adminGateway (Supabase)
  * 
@@ -9,7 +9,7 @@
  * 
  * DEPRECATION NOTICE:
  * The old admin-storage.ts (localStorage-based) is no longer used.
- * All operations now go through adminGateway → Supabase.
+ * All operations now go through adminGateway â†’ Supabase.
  */
 
 import { adminGateway, type AdminUser, type FinancialEvent, type OfficialPrayerTime, type OfficialFinancialDate, type DailyMessage, type StoryTemplate, type Theme, type AdminNotification, type NewsItem, type JobItem, type ReportLog } from "./admin-gateway";
@@ -41,13 +41,13 @@ export function withLoadingState<T>(
       const result = await action();
       if (result.success) {
         onSuccess?.(result.data as T);
-        showTopNotification(result.success ? "تم بنجاح" : "حدث خطأ", result.success ? "success" : "error");
+        showTopNotification(result.success ? "طھظ… ط¨ظ†ط¬ط§ط­" : "ط­ط¯ط« ط®ط·ط£", result.success ? "success" : "error");
       } else {
-        onError?.(result.error || "حدث خطأ غير معروف");
-        showTopNotification(result.error || "حدث خطأ", "error");
+        onError?.(result.error || "ط­ط¯ط« ط®ط·ط£ ط؛ظٹط± ظ…ط¹ط±ظˆظپ");
+        showTopNotification(result.error || "ط­ط¯ط« ط®ط·ط£", "error");
       }
     } catch (err) {
-      const errorMsg = err instanceof Error ? err.message : "حدث خطأ غير متوقع";
+      const errorMsg = err instanceof Error ? err.message : "ط­ط¯ط« ط®ط·ط£ ط؛ظٹط± ظ…طھظˆظ‚ط¹";
       onError?.(errorMsg);
       showTopNotification(errorMsg, "error");
     } finally {
@@ -306,7 +306,7 @@ export async function addReportLog(action: string, entityType: string, entityId:
 }
 
 export function exportReportsToCSV(logs: ReportLog[]): void {
-  const headers = ["التاريخ", "الإجراء", "الكيان", "التفاصيل"];
+  const headers = ["ط§ظ„طھط§ط±ظٹط®", "ط§ظ„ط¥ط¬ط±ط§ط،", "ط§ظ„ظƒظٹط§ظ†", "ط§ظ„طھظپط§طµظٹظ„"];
   const rows = logs.map(log => [
     new Date(log.created_at).toLocaleDateString("ar-SA"),
     log.action,
@@ -326,7 +326,7 @@ export function exportReportsToCSV(logs: ReportLog[]): void {
 // USERS ACTIONS (server admin endpoint required)
 // ============================================
 
-const USER_ADMIN_ENDPOINT_REQUIRED = "إدارة المستخدمين تتطلب endpoint إداري server-side مع صلاحيات service role ولا تُنفّذ من المتصفح.";
+const USER_ADMIN_ENDPOINT_REQUIRED = "ط¥ط¯ط§ط±ط© ط§ظ„ظ…ط³طھط®ط¯ظ…ظٹظ† طھطھط·ظ„ط¨ endpoint ط¥ط¯ط§ط±ظٹ server-side ظ…ط¹ طµظ„ط§ط­ظٹط§طھ service role ظˆظ„ط§ طھظڈظ†ظپظ‘ط° ظ…ظ† ط§ظ„ظ…طھطµظپط­.";
 
 export async function fetchUsers(): Promise<ActionResult<AdminUser[]>> {
   return { success: false, error: USER_ADMIN_ENDPOINT_REQUIRED };
@@ -466,3 +466,4 @@ export default {
   updatePublicEvent,
   deletePublicEvent,
 };
+

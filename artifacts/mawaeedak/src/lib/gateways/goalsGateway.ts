@@ -1,5 +1,5 @@
-/**
- * goalsGateway.ts — Phase 16 Production Hardening
+﻿/**
+ * goalsGateway.ts â€” Phase 16 Production Hardening
  *
  * Unified data gateway for Goals.
  * - Supabase sync when user is logged in
@@ -117,22 +117,22 @@ function toGoalUpdate(goal: Goal): Record<string, unknown> {
 
 function assertValidGoalInput(goal: Omit<Goal, "id" | "createdAt" | "completedAt"> | Goal): void {
   const name = goal.name.trim();
-  if (!name) throw new Error("الرجاء إدخال اسم الهدف");
+  if (!name) throw new Error("ط§ظ„ط±ط¬ط§ط، ط¥ط¯ط®ط§ظ„ ط§ط³ظ… ط§ظ„ظ‡ط¯ظپ");
 
   if (goal.type === "financial") {
     if (goal.targetAmount === null || !Number.isFinite(goal.targetAmount) || goal.targetAmount <= 0) {
-      throw new Error("المبلغ المستهدف يجب أن يكون أكبر من صفر");
+      throw new Error("ط§ظ„ظ…ط¨ظ„ط؛ ط§ظ„ظ…ط³طھظ‡ط¯ظپ ظٹط¬ط¨ ط£ظ† ظٹظƒظˆظ† ط£ظƒط¨ط± ظ…ظ† طµظپط±");
     }
   }
 
   if (!Number.isFinite(goal.currentProgress) || goal.currentProgress < 0) {
-    throw new Error("التقدم الحالي يجب أن يكون رقماً صحيحاً لا يقل عن صفر");
+    throw new Error("ط§ظ„طھظ‚ط¯ظ… ط§ظ„ط­ط§ظ„ظٹ ظٹط¬ط¨ ط£ظ† ظٹظƒظˆظ† ط±ظ‚ظ…ط§ظ‹ طµط­ظٹط­ط§ظ‹ ظ„ط§ ظٹظ‚ظ„ ط¹ظ† طµظپط±");
   }
 }
 
 function assertValidProgress(progress: number): void {
   if (!Number.isFinite(progress) || progress < 0) {
-    throw new Error("التقدم الحالي يجب أن يكون رقماً صحيحاً لا يقل عن صفر");
+    throw new Error("ط§ظ„طھظ‚ط¯ظ… ط§ظ„ط­ط§ظ„ظٹ ظٹط¬ط¨ ط£ظ† ظٹظƒظˆظ† ط±ظ‚ظ…ط§ظ‹ طµط­ظٹط­ط§ظ‹ ظ„ط§ ظٹظ‚ظ„ ط¹ظ† طµظپط±");
   }
 }
 
@@ -216,7 +216,7 @@ export function useGoalsGateway() {
 
     if (state.isSynced) {
       if (!userId || !supabase) {
-        throw new Error("تعذر حفظ الهدف في السحابة: جلسة المستخدم غير متاحة");
+        throw new Error("طھط¹ط°ط± ط­ظپط¸ ط§ظ„ظ‡ط¯ظپ ظپظٹ ط§ظ„ط³ط­ط§ط¨ط©: ط¬ظ„ط³ط© ط§ظ„ظ…ط³طھط®ط¯ظ… ط؛ظٹط± ظ…طھط§ط­ط©");
       }
 
       const { data, error } = await supabase
@@ -228,7 +228,7 @@ export function useGoalsGateway() {
       if (error) {
         console.error("[GoalsGateway] Add cloud error:", error);
         setState((current) => ({ ...current, isError: true }));
-        throw new Error("فشل حفظ الهدف في السحابة");
+        throw new Error("ظپط´ظ„ ط­ظپط¸ ط§ظ„ظ‡ط¯ظپ ظپظٹ ط§ظ„ط³ط­ط§ط¨ط©");
       }
 
       const createdGoal = toGoal(data as GoalRow);
@@ -256,7 +256,7 @@ export function useGoalsGateway() {
 
     if (state.isSynced) {
       if (!userId || !supabase) {
-        throw new Error("تعذر تحديث الهدف في السحابة: جلسة المستخدم غير متاحة");
+        throw new Error("طھط¹ط°ط± طھط­ط¯ظٹط« ط§ظ„ظ‡ط¯ظپ ظپظٹ ط§ظ„ط³ط­ط§ط¨ط©: ط¬ظ„ط³ط© ط§ظ„ظ…ط³طھط®ط¯ظ… ط؛ظٹط± ظ…طھط§ط­ط©");
       }
 
       const { error } = await supabase
@@ -268,7 +268,7 @@ export function useGoalsGateway() {
       if (error) {
         console.error("[GoalsGateway] Update cloud error:", error);
         setState((current) => ({ ...current, isError: true }));
-        throw new Error("فشل تحديث الهدف في السحابة");
+        throw new Error("ظپط´ظ„ طھط­ط¯ظٹط« ط§ظ„ظ‡ط¯ظپ ظپظٹ ط§ظ„ط³ط­ط§ط¨ط©");
       }
 
       setGoals((goals) => goals.map((item) => (item.id === goal.id ? goal : item)), false);
@@ -284,7 +284,7 @@ export function useGoalsGateway() {
 
     if (state.isSynced) {
       if (!userId || !supabase) {
-        throw new Error("تعذر حذف الهدف من السحابة: جلسة المستخدم غير متاحة");
+        throw new Error("طھط¹ط°ط± ط­ط°ظپ ط§ظ„ظ‡ط¯ظپ ظ…ظ† ط§ظ„ط³ط­ط§ط¨ط©: ط¬ظ„ط³ط© ط§ظ„ظ…ط³طھط®ط¯ظ… ط؛ظٹط± ظ…طھط§ط­ط©");
       }
 
       const { error } = await supabase
@@ -296,7 +296,7 @@ export function useGoalsGateway() {
       if (error) {
         console.error("[GoalsGateway] Delete cloud error:", error);
         setState((current) => ({ ...current, isError: true }));
-        throw new Error("فشل حذف الهدف من السحابة");
+        throw new Error("ظپط´ظ„ ط­ط°ظپ ط§ظ„ظ‡ط¯ظپ ظ…ظ† ط§ظ„ط³ط­ط§ط¨ط©");
       }
 
       setGoals((goals) => goals.filter((goal) => goal.id !== id), false);
@@ -313,7 +313,7 @@ export function useGoalsGateway() {
 
     if (state.isSynced) {
       if (!userId || !supabase) {
-        throw new Error("تعذر إكمال الهدف في السحابة: جلسة المستخدم غير متاحة");
+        throw new Error("طھط¹ط°ط± ط¥ظƒظ…ط§ظ„ ط§ظ„ظ‡ط¯ظپ ظپظٹ ط§ظ„ط³ط­ط§ط¨ط©: ط¬ظ„ط³ط© ط§ظ„ظ…ط³طھط®ط¯ظ… ط؛ظٹط± ظ…طھط§ط­ط©");
       }
 
       const { error } = await supabase
@@ -325,7 +325,7 @@ export function useGoalsGateway() {
       if (error) {
         console.error("[GoalsGateway] Complete cloud error:", error);
         setState((current) => ({ ...current, isError: true }));
-        throw new Error("فشل إكمال الهدف في السحابة");
+        throw new Error("ظپط´ظ„ ط¥ظƒظ…ط§ظ„ ط§ظ„ظ‡ط¯ظپ ظپظٹ ط§ظ„ط³ط­ط§ط¨ط©");
       }
 
       setGoals((goals) => goals.map((goal) => (goal.id === id ? { ...goal, completedAt } : goal)), false);
@@ -343,7 +343,7 @@ export function useGoalsGateway() {
 
     if (state.isSynced) {
       if (!userId || !supabase) {
-        throw new Error("تعذر تحديث تقدم الهدف في السحابة: جلسة المستخدم غير متاحة");
+        throw new Error("طھط¹ط°ط± طھط­ط¯ظٹط« طھظ‚ط¯ظ… ط§ظ„ظ‡ط¯ظپ ظپظٹ ط§ظ„ط³ط­ط§ط¨ط©: ط¬ظ„ط³ط© ط§ظ„ظ…ط³طھط®ط¯ظ… ط؛ظٹط± ظ…طھط§ط­ط©");
       }
 
       const { error } = await supabase
@@ -355,7 +355,7 @@ export function useGoalsGateway() {
       if (error) {
         console.error("[GoalsGateway] Update progress cloud error:", error);
         setState((current) => ({ ...current, isError: true }));
-        throw new Error("فشل تحديث تقدم الهدف في السحابة");
+        throw new Error("ظپط´ظ„ طھط­ط¯ظٹط« طھظ‚ط¯ظ… ط§ظ„ظ‡ط¯ظپ ظپظٹ ط§ظ„ط³ط­ط§ط¨ط©");
       }
 
       setGoals((goals) => goals.map((goal) => (goal.id === id ? { ...goal, currentProgress: progress } : goal)), false);
@@ -376,3 +376,4 @@ export function useGoalsGateway() {
     updateProgress,
   };
 }
+

@@ -1,4 +1,4 @@
-# AGENTS.md — Mawaeedak OpenHands Instructions
+﻿# AGENTS.md â€” Mawaeedak OpenHands Instructions
 
 ## Project Identity
 
@@ -54,9 +54,9 @@ Required routes in `artifacts/mawaeedak/src/App.tsx`:
 
 Required service links in `artifacts/mawaeedak/src/features/centers/CentersPage.tsx`:
 
-- `احسب هدفك` -> `/services/goals`
-- `حساب التكاليف` -> `/services/costs`
-- `ذكرني` -> `/services/reminders`
+- `ط§ط­ط³ط¨ ظ‡ط¯ظپظƒ` -> `/services/goals`
+- `ط­ط³ط§ط¨ ط§ظ„طھظƒط§ظ„ظٹظپ` -> `/services/costs`
+- `ط°ظƒط±ظ†ظٹ` -> `/services/reminders`
 
 These must not route to `/centers/work`.
 
@@ -145,3 +145,4 @@ Allowed final verdicts for this task:
 
 - `READY`
 - `NOT READY`
+

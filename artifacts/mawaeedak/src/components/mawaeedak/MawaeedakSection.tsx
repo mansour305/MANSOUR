@@ -1,4 +1,4 @@
-import { type ReactNode } from "react";
+﻿import { type ReactNode } from "react";
 
 interface MawaeedakSectionProps {
   title: string;
@@ -63,3 +63,4 @@ export function MawaeedakSection({ title, subtitle, action, className = "" }: Ma
     </div>
   );
 }
+

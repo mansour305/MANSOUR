@@ -1,5 +1,5 @@
-/**
- * useLocationPrefs — Phase 13G
+﻿/**
+ * useLocationPrefs â€” Phase 13G
  * Manages user location & timezone preferences:
  * - Browser GPS (navigator.geolocation)
  * - Auto timezone detection (Intl.DateTimeFormat)
@@ -120,7 +120,7 @@ export function useLocationPrefs() {
   const requestGPS = useCallback((): Promise<string> => {
     return new Promise((resolve, reject) => {
       if (!navigator.geolocation) {
-        const msg = "المتصفح لا يدعم تحديد الموقع";
+        const msg = "ط§ظ„ظ…طھطµظپط­ ظ„ط§ ظٹط¯ط¹ظ… طھط­ط¯ظٹط¯ ط§ظ„ظ…ظˆظ‚ط¹";
         setGpsError(msg);
         update({ permissionStatus: "denied" });
         reject(new Error(msg));
@@ -150,10 +150,10 @@ export function useLocationPrefs() {
         },
         (err) => {
           const msg = err.code === 1
-            ? "تم رفض إذن الموقع"
+            ? "طھظ… ط±ظپط¶ ط¥ط°ظ† ط§ظ„ظ…ظˆظ‚ط¹"
             : err.code === 2
-            ? "تعذّر تحديد الموقع"
-            : "انتهت مهلة تحديد الموقع";
+            ? "طھط¹ط°ظ‘ط± طھط­ط¯ظٹط¯ ط§ظ„ظ…ظˆظ‚ط¹"
+            : "ط§ظ†طھظ‡طھ ظ…ظ‡ظ„ط© طھط­ط¯ظٹط¯ ط§ظ„ظ…ظˆظ‚ط¹";
           setGpsError(msg);
           setGpsLoading(false);
           update({ permissionStatus: err.code === 1 ? "denied" : "prompt" });
@@ -188,3 +188,4 @@ export function useLocationPrefs() {
     resetToDefault,
   };
 }
+

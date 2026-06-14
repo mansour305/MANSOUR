@@ -1,8 +1,8 @@
-/**
- * Profile Service — مواعيدك
+﻿/**
+ * Profile Service â€” ظ…ظˆط§ط¹ظٹط¯ظƒ
  * 
- * واجهة موحدة لإدارة ملفات المستخدمين
- * القراءة: user_profiles أولاً، ثم app_metadata كـ fallback
+ * ظˆط§ط¬ظ‡ط© ظ…ظˆط­ط¯ط© ظ„ط¥ط¯ط§ط±ط© ظ…ظ„ظپط§طھ ط§ظ„ظ…ط³طھط®ط¯ظ…ظٹظ†
+ * ط§ظ„ظ‚ط±ط§ط،ط©: user_profiles ط£ظˆظ„ط§ظ‹طŒ ط«ظ… app_metadata ظƒظ€ fallback
  */
 
 import { supabase, isSupabaseEnabled } from "./supabase";
@@ -29,7 +29,7 @@ export type UserRole = "user" | "admin" | "super_admin" | "owner";
 const ADMIN_ROLES: UserRole[] = ["admin", "super_admin", "owner"];
 
 /**
- * getUserProfile — جلب ملف المستخدم من user_profiles
+ * getUserProfile â€” ط¬ظ„ط¨ ظ…ظ„ظپ ط§ظ„ظ…ط³طھط®ط¯ظ… ظ…ظ† user_profiles
  */
 export async function getUserProfile(userId: string): Promise<UserProfile | null> {
   if (!isSupabaseEnabled || !supabase) return null;
@@ -45,8 +45,8 @@ export async function getUserProfile(userId: string): Promise<UserProfile | null
 }
 
 /**
- * getRoleFromProfile — قراءة الدور من user_profiles.role
- * هذا هو المصدر الأول للدور
+ * getRoleFromProfile â€” ظ‚ط±ط§ط،ط© ط§ظ„ط¯ظˆط± ظ…ظ† user_profiles.role
+ * ظ‡ط°ط§ ظ‡ظˆ ط§ظ„ظ…طµط¯ط± ط§ظ„ط£ظˆظ„ ظ„ظ„ط¯ظˆط±
  */
 export async function getRoleFromProfile(userId: string): Promise<UserRole> {
   const profile = await getUserProfile(userId);
@@ -55,13 +55,13 @@ export async function getRoleFromProfile(userId: string): Promise<UserRole> {
 }
 
 /**
- * getRoleWithFallback — قراءة الدور مع fallback لـ app_metadata
- * الترتيب:
- * 1. user_profiles.role (المصدر الأول)
+ * getRoleWithFallback â€” ظ‚ط±ط§ط،ط© ط§ظ„ط¯ظˆط± ظ…ط¹ fallback ظ„ظ€ app_metadata
+ * ط§ظ„طھط±طھظٹط¨:
+ * 1. user_profiles.role (ط§ظ„ظ…طµط¯ط± ط§ظ„ط£ظˆظ„)
  * 2. auth.user.app_metadata.role (fallback)
  */
 export async function getRoleWithFallback(supabaseUser: any): Promise<UserRole> {
-  // المصدر الأول: user_profiles
+  // ط§ظ„ظ…طµط¯ط± ط§ظ„ط£ظˆظ„: user_profiles
   if (supabaseUser?.id) {
     const profileRole = await getRoleFromProfile(supabaseUser.id);
     if (profileRole !== "user" && ADMIN_ROLES.includes(profileRole)) {
@@ -69,7 +69,7 @@ export async function getRoleWithFallback(supabaseUser: any): Promise<UserRole> 
     }
   }
   
-  // المصدر الثاني: app_metadata.role
+  // ط§ظ„ظ…طµط¯ط± ط§ظ„ط«ط§ظ†ظٹ: app_metadata.role
   const metaRole = supabaseUser?.app_metadata?.role as UserRole | undefined;
   if (metaRole && ADMIN_ROLES.includes(metaRole)) {
     return metaRole;
@@ -79,14 +79,14 @@ export async function getRoleWithFallback(supabaseUser: any): Promise<UserRole> 
 }
 
 /**
- * updateUserProfile — تحديث ملف المستخدم
+ * updateUserProfile â€” طھط­ط¯ظٹط« ظ…ظ„ظپ ط§ظ„ظ…ط³طھط®ط¯ظ…
  */
 export async function updateUserProfile(
   userId: string,
   updates: Partial<Omit<UserProfile, "id" | "user_id" | "created_at">>
 ): Promise<{ success: boolean; error?: string }> {
   if (!isSupabaseEnabled || !supabase) {
-    return { success: false, error: "Supabase غير مهيأ" };
+    return { success: false, error: "Supabase ط؛ظٹط± ظ…ظ‡ظٹط£" };
   }
   
   const { error } = await supabase
@@ -99,7 +99,7 @@ export async function updateUserProfile(
 }
 
 /**
- * updateUserRole — تحديث دور المستخدم (للأدمن فقط)
+ * updateUserRole â€” طھط­ط¯ظٹط« ط¯ظˆط± ط§ظ„ظ…ط³طھط®ط¯ظ… (ظ„ظ„ط£ط¯ظ…ظ† ظپظ‚ط·)
  */
 export async function updateUserRole(
   userId: string,
@@ -109,8 +109,8 @@ export async function updateUserRole(
 }
 
 /**
- * isAdmin — هل المستخدم أدمن؟
- * يستخدم getRoleWithFallback للتوحيد
+ * isAdmin â€” ظ‡ظ„ ط§ظ„ظ…ط³طھط®ط¯ظ… ط£ط¯ظ…ظ†طں
+ * ظٹط³طھط®ط¯ظ… getRoleWithFallback ظ„ظ„طھظˆط­ظٹط¯
  */
 export async function isAdmin(supabaseUser: any): Promise<boolean> {
   const role = await getRoleWithFallback(supabaseUser);
@@ -118,7 +118,7 @@ export async function isAdmin(supabaseUser: any): Promise<boolean> {
 }
 
 /**
- * getAllProfiles — جلب كل الملفات (للأدمن)
+ * getAllProfiles â€” ط¬ظ„ط¨ ظƒظ„ ط§ظ„ظ…ظ„ظپط§طھ (ظ„ظ„ط£ط¯ظ…ظ†)
  */
 export async function getAllProfiles(): Promise<UserProfile[]> {
   if (!isSupabaseEnabled || !supabase) return [];
@@ -133,7 +133,7 @@ export async function getAllProfiles(): Promise<UserProfile[]> {
 }
 
 /**
- * updateCityKey — تحديث المدينة للمستخدم
+ * updateCityKey â€” طھط­ط¯ظٹط« ط§ظ„ظ…ط¯ظٹظ†ط© ظ„ظ„ظ…ط³طھط®ط¯ظ…
  */
 export async function updateCityKey(
   userId: string,
@@ -148,21 +148,21 @@ export async function updateCityKey(
 }
 
 /**
- * setOnboardingComplete — تحديد اكتمال التسجيل
+ * setOnboardingComplete â€” طھط­ط¯ظٹط¯ ط§ظƒطھظ…ط§ظ„ ط§ظ„طھط³ط¬ظٹظ„
  */
 export async function setOnboardingComplete(userId: string): Promise<{ success: boolean; error?: string }> {
   return updateUserProfile(userId, { onboarding_complete: true });
 }
 
 /**
- * setLocationConsent — حفظ موافقة الموقع
+ * setLocationConsent â€” ط­ظپط¸ ظ…ظˆط§ظپظ‚ط© ط§ظ„ظ…ظˆظ‚ط¹
  */
 export async function setLocationConsent(userId: string, consent: boolean): Promise<{ success: boolean; error?: string }> {
   return updateUserProfile(userId, { location_consent: consent });
 }
 
 /**
- * setNotificationConsent — حفظ موافقة الإشعارات
+ * setNotificationConsent â€” ط­ظپط¸ ظ…ظˆط§ظپظ‚ط© ط§ظ„ط¥ط´ط¹ط§ط±ط§طھ
  */
 export async function setNotificationConsent(userId: string, consent: boolean): Promise<{ success: boolean; error?: string }> {
   return updateUserProfile(userId, { notification_consent: consent });

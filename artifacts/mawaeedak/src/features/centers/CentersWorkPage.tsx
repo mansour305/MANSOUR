@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+﻿import { useState, useEffect } from "react";
 import { AppShell } from "@/components/layout/AppShell";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -25,10 +25,10 @@ interface Task {
 }
 
 const TYPE_LABELS: Record<TaskType, string> = {
-  task: "مهمة",
-  meeting: "اجتماع",
-  project: "مشروع",
-  followup: "متابعة",
+  task: "ظ…ظ‡ظ…ط©",
+  meeting: "ط§ط¬طھظ…ط§ط¹",
+  project: "ظ…ط´ط±ظˆط¹",
+  followup: "ظ…طھط§ط¨ط¹ط©",
 };
 
 const TYPE_ICONS: Record<TaskType, typeof Briefcase> = {
@@ -90,12 +90,12 @@ export default function CentersWorkPage() {
 
   const handleSave = () => {
     if (!title.trim()) {
-      toast({ title: "خطأ", description: "عنوان المهمة مطلوب", variant: "destructive" });
+      toast({ title: "ط®ط·ط£", description: "ط¹ظ†ظˆط§ظ† ط§ظ„ظ…ظ‡ظ…ط© ظ…ط·ظ„ظˆط¨", variant: "destructive" });
       return;
     }
     if (editId) {
       setTasks(prev => prev.map(t => t.id === editId ? { ...t, title: title.trim(), type, dueDate } : t));
-      toast({ title: "تم التعديل" });
+      toast({ title: "طھظ… ط§ظ„طھط¹ط¯ظٹظ„" });
     } else {
       const newTask: Task = {
         id: Date.now().toString(),
@@ -106,7 +106,7 @@ export default function CentersWorkPage() {
         createdAt: new Date().toISOString(),
       };
       setTasks(prev => [newTask, ...prev]);
-      toast({ title: "تمت الإضافة" });
+      toast({ title: "طھظ…طھ ط§ظ„ط¥ط¶ط§ظپط©" });
     }
     setIsFormOpen(false);
   };
@@ -121,7 +121,7 @@ export default function CentersWorkPage() {
     if (!deleteId) return;
     setTasks(prev => prev.filter(t => t.id !== deleteId));
     setDeleteId(null);
-    toast({ title: "تم الحذف" });
+    toast({ title: "طھظ… ط§ظ„ط­ط°ظپ" });
   };
 
   const filtered = tasks.filter(t => {
@@ -134,7 +134,7 @@ export default function CentersWorkPage() {
   const completedCount = tasks.filter(t => t.status === "completed").length;
 
   return (
-    <AppShell title="مركز الأعمال" showBack>
+    <AppShell title="ظ…ط±ظƒط² ط§ظ„ط£ط¹ظ…ط§ظ„" showBack>
       <div className="space-y-4">
 
         {/* Header */}
@@ -145,15 +145,15 @@ export default function CentersWorkPage() {
                 <Briefcase className="w-5 h-5" />
               </div>
               <div>
-                <h2 className="font-bold text-foreground">مساحة العمل</h2>
+                <h2 className="font-bold text-foreground">ظ…ط³ط§ط­ط© ط§ظ„ط¹ظ…ظ„</h2>
                 <p className="text-xs text-muted-foreground">
-                  {pendingCount} قيد التنفيذ · {completedCount} مكتملة
+                  {pendingCount} ظ‚ظٹط¯ ط§ظ„طھظ†ظپظٹط° آ· {completedCount} ظ…ظƒطھظ…ظ„ط©
                 </p>
               </div>
             </div>
             <Button size="sm" className="h-9 rounded-xl" onClick={openAdd}>
               <Plus className="w-4 h-4 ml-1" />
-              إضافة
+              ط¥ط¶ط§ظپط©
             </Button>
           </CardContent>
         </Card>
@@ -170,7 +170,7 @@ export default function CentersWorkPage() {
                   : "bg-card text-muted-foreground border-border hover:border-primary/40"
               }`}
             >
-              {f === "all" ? `الكل (${tasks.length})` : f === "pending" ? `قيد التنفيذ (${pendingCount})` : `مكتملة (${completedCount})`}
+              {f === "all" ? `ط§ظ„ظƒظ„ (${tasks.length})` : f === "pending" ? `ظ‚ظٹط¯ ط§ظ„طھظ†ظپظٹط° (${pendingCount})` : `ظ…ظƒطھظ…ظ„ط© (${completedCount})`}
             </button>
           ))}
         </div>
@@ -208,7 +208,7 @@ export default function CentersWorkPage() {
                           <span className={`text-[10px] ${isOverdue ? "text-red-500 font-bold" : "text-muted-foreground"}`}>
                             <Clock className="w-2.5 h-2.5 inline ml-0.5" />
                             {new Date(task.dueDate).toLocaleDateString("ar-SA-u-ca-gregory")}
-                            {isOverdue && " (متأخر)"}
+                            {isOverdue && " (ظ…طھط£ط®ط±)"}
                           </span>
                         )}
                       </div>
@@ -239,7 +239,7 @@ export default function CentersWorkPage() {
           <div className="text-center py-12 text-muted-foreground bg-card rounded-xl border border-dashed border-border">
             <Briefcase className="w-10 h-10 mx-auto mb-3 opacity-30" />
             <p className="font-medium">
-              {filter === "completed" ? "لا توجد مهام مكتملة" : filter === "pending" ? "لا توجد مهام قيد التنفيذ" : "لا توجد مهام — أضف أولى مهامك!"}
+              {filter === "completed" ? "ظ„ط§ طھظˆط¬ط¯ ظ…ظ‡ط§ظ… ظ…ظƒطھظ…ظ„ط©" : filter === "pending" ? "ظ„ط§ طھظˆط¬ط¯ ظ…ظ‡ط§ظ… ظ‚ظٹط¯ ط§ظ„طھظ†ظپظٹط°" : "ظ„ط§ طھظˆط¬ط¯ ظ…ظ‡ط§ظ… â€” ط£ط¶ظپ ط£ظˆظ„ظ‰ ظ…ظ‡ط§ظ…ظƒ!"}
             </p>
           </div>
         )}
@@ -248,20 +248,20 @@ export default function CentersWorkPage() {
         <Dialog open={isFormOpen} onOpenChange={setIsFormOpen}>
           <DialogContent className="rtl max-w-[400px] rounded-xl">
             <DialogHeader>
-              <DialogTitle>{editId ? "تعديل المهمة" : "إضافة مهمة جديدة"}</DialogTitle>
+              <DialogTitle>{editId ? "طھط¹ط¯ظٹظ„ ط§ظ„ظ…ظ‡ظ…ط©" : "ط¥ط¶ط§ظپط© ظ…ظ‡ظ…ط© ط¬ط¯ظٹط¯ط©"}</DialogTitle>
             </DialogHeader>
             <div className="space-y-4 py-4">
               <div className="space-y-2">
-                <Label>عنوان المهمة <span className="text-destructive">*</span></Label>
+                <Label>ط¹ظ†ظˆط§ظ† ط§ظ„ظ…ظ‡ظ…ط© <span className="text-destructive">*</span></Label>
                 <Input
                   value={title}
                   onChange={e => setTitle(e.target.value)}
                   onKeyDown={e => e.key === "Enter" && handleSave()}
-                  placeholder="مثال: مراجعة تقرير المبيعات"
+                  placeholder="ظ…ط«ط§ظ„: ظ…ط±ط§ط¬ط¹ط© طھظ‚ط±ظٹط± ط§ظ„ظ…ط¨ظٹط¹ط§طھ"
                 />
               </div>
               <div className="space-y-2">
-                <Label>النوع</Label>
+                <Label>ط§ظ„ظ†ظˆط¹</Label>
                 <div className="grid grid-cols-2 gap-2">
                   {(Object.entries(TYPE_LABELS) as [TaskType, string][]).map(([k, v]) => {
                     const Icon = TYPE_ICONS[k];
@@ -281,7 +281,7 @@ export default function CentersWorkPage() {
                 </div>
               </div>
               <div className="space-y-2">
-                <Label>تاريخ التسليم (اختياري)</Label>
+                <Label>طھط§ط±ظٹط® ط§ظ„طھط³ظ„ظٹظ… (ط§ط®طھظٹط§ط±ظٹ)</Label>
                 <Input
                   type="date"
                   value={dueDate}
@@ -290,7 +290,7 @@ export default function CentersWorkPage() {
                 />
               </div>
               <Button className="w-full h-11 font-bold" onClick={handleSave}>
-                {editId ? "حفظ التعديلات" : "إضافة المهمة"}
+                {editId ? "ط­ظپط¸ ط§ظ„طھط¹ط¯ظٹظ„ط§طھ" : "ط¥ط¶ط§ظپط© ط§ظ„ظ…ظ‡ظ…ط©"}
               </Button>
             </div>
           </DialogContent>
@@ -300,9 +300,9 @@ export default function CentersWorkPage() {
         <ConfirmDialog
           open={!!deleteId}
           onOpenChange={open => !open && setDeleteId(null)}
-          title="حذف المهمة"
-          description="هل أنت متأكد من حذف هذه المهمة؟ لا يمكن التراجع عن هذا الإجراء."
-          confirmText="حذف"
+          title="ط­ط°ظپ ط§ظ„ظ…ظ‡ظ…ط©"
+          description="ظ‡ظ„ ط£ظ†طھ ظ…طھط£ظƒط¯ ظ…ظ† ط­ط°ظپ ظ‡ط°ظ‡ ط§ظ„ظ…ظ‡ظ…ط©طں ظ„ط§ ظٹظ…ظƒظ† ط§ظ„طھط±ط§ط¬ط¹ ط¹ظ† ظ‡ط°ط§ ط§ظ„ط¥ط¬ط±ط§ط،."
+          confirmText="ط­ط°ظپ"
           onConfirm={handleDelete}
           destructive
         />
@@ -310,3 +310,4 @@ export default function CentersWorkPage() {
     </AppShell>
   );
 }
+

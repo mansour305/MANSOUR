@@ -1,4 +1,4 @@
-import {
+﻿import {
   AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
@@ -26,8 +26,8 @@ export function ConfirmDialog({
   title,
   description,
   onConfirm,
-  confirmText = "تأكيد",
-  cancelText = "إلغاء",
+  confirmText = "طھط£ظƒظٹط¯",
+  cancelText = "ط¥ظ„ط؛ط§ط،",
   destructive = true,
 }: ConfirmDialogProps) {
   return (
@@ -56,3 +56,4 @@ export function ConfirmDialog({
     </AlertDialog>
   );
 }
+

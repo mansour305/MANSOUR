@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -17,7 +17,7 @@ import {
 import { Plus, Edit2, Trash2, Loader2, AlertTriangle } from "lucide-react";
 
 /**
- * AdminOfficialPrayer — admin page to manage official prayer times. It lists
+ * AdminOfficialPrayer â€” admin page to manage official prayer times. It lists
  * all records (confirmed and unconfirmed) and allows adding, editing and
  * deleting entries. Each prayer time record includes city, date and six
  * prayer times with metadata and confirmation status.
@@ -29,7 +29,7 @@ export default function AdminOfficialPrayer() {
   const { data: events, isLoading } = useQuery({
     queryKey: ["admin-official-prayer"],
     queryFn: async () => {
-      if (!isSupabaseEnabled || !supabase) throw new Error("Supabase غير مفعّل");
+      if (!isSupabaseEnabled || !supabase) throw new Error("Supabase ط؛ظٹط± ظ…ظپط¹ظ‘ظ„");
       const { data, error } = await supabase
         .from("official_prayer_times")
         .select("*")
@@ -108,7 +108,7 @@ export default function AdminOfficialPrayer() {
 
   const handleSave = () => {
     if (!cityKey || !cityName || !dateGreg || !fajr || !sunrise || !dhuhr || !asr || !maghrib || !isha) {
-      toast({ title: "خطأ", description: "يجب تعبئة كافة الحقول الأساسية", variant: "destructive" });
+      toast({ title: "ط®ط·ط£", description: "ظٹط¬ط¨ طھط¹ط¨ط¦ط© ظƒط§ظپط© ط§ظ„ط­ظ‚ظˆظ„ ط§ظ„ط£ط³ط§ط³ظٹط©", variant: "destructive" });
       return;
     }
     const data = {
@@ -129,21 +129,21 @@ export default function AdminOfficialPrayer() {
     if (isEdit && editId) {
       updateEvent.mutate({ id: editId, data }, {
         onSuccess: () => {
-          toast({ title: "تم التعديل" });
+          toast({ title: "طھظ… ط§ظ„طھط¹ط¯ظٹظ„" });
           setIsOpen(false);
         },
         onError: (error: any) => {
-          toast({ title: "فشل التعديل", description: error.message || "خطأ غير معروف", variant: "destructive" });
+          toast({ title: "ظپط´ظ„ ط§ظ„طھط¹ط¯ظٹظ„", description: error.message || "ط®ط·ط£ ط؛ظٹط± ظ…ط¹ط±ظˆظپ", variant: "destructive" });
         },
       });
     } else {
       createEvent.mutate(data, {
         onSuccess: () => {
-          toast({ title: "تمت الإضافة" });
+          toast({ title: "طھظ…طھ ط§ظ„ط¥ط¶ط§ظپط©" });
           setIsOpen(false);
         },
         onError: (error: any) => {
-          toast({ title: "فشل الإضافة", description: error.message || "خطأ غير معروف", variant: "destructive" });
+          toast({ title: "ظپط´ظ„ ط§ظ„ط¥ط¶ط§ظپط©", description: error.message || "ط®ط·ط£ ط؛ظٹط± ظ…ط¹ط±ظˆظپ", variant: "destructive" });
         },
       });
     }
@@ -153,11 +153,11 @@ export default function AdminOfficialPrayer() {
     if (!deleteId) return;
     deleteEvent.mutate(deleteId, {
       onSuccess: () => {
-        toast({ title: "تم الحذف" });
+        toast({ title: "طھظ… ط§ظ„ط­ط°ظپ" });
         setIsDeleteOpen(false);
       },
       onError: (error: any) => {
-        toast({ title: "فشل الحذف", description: error.message || "خطأ غير معروف", variant: "destructive" });
+        toast({ title: "ظپط´ظ„ ط§ظ„ط­ط°ظپ", description: error.message || "ط®ط·ط£ ط؛ظٹط± ظ…ط¹ط±ظˆظپ", variant: "destructive" });
       },
     });
   };
@@ -172,82 +172,82 @@ export default function AdminOfficialPrayer() {
             style={{ background: "linear-gradient(180deg, hsl(38 62% 52%), hsl(32 55% 42%))" }}
           />
           <h1 className="text-2xl font-extrabold" style={{ color: "hsl(22 62% 18%)" }}>
-            أوقات الصلاة الرسمية
+            ط£ظˆظ‚ط§طھ ط§ظ„طµظ„ط§ط© ط§ظ„ط±ط³ظ…ظٹط©
           </h1>
         </div>
         <Button onClick={openAdd} size="sm">
-          <Plus className="w-4 h-4 ml-1" /> إضافة وقت
+          <Plus className="w-4 h-4 ml-1" /> ط¥ط¶ط§ظپط© ظˆظ‚طھ
         </Button>
       </div>
 
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogContent className="rtl max-w-[550px] rounded-xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>{isEdit ? "تعديل وقت الصلاة" : "وقت صلاة جديد"}</DialogTitle>
+            <DialogTitle>{isEdit ? "طھط¹ط¯ظٹظ„ ظˆظ‚طھ ط§ظ„طµظ„ط§ط©" : "ظˆظ‚طھ طµظ„ط§ط© ط¬ط¯ظٹط¯"}</DialogTitle>
           </DialogHeader>
           <div className="space-y-3 py-4">
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label>المفتاح (بالإنجليزية)</Label>
-                <Input value={cityKey} onChange={e => setCityKey(e.target.value)} placeholder="مثال: riyadh" />
+                <Label>ط§ظ„ظ…ظپطھط§ط­ (ط¨ط§ظ„ط¥ظ†ط¬ظ„ظٹط²ظٹط©)</Label>
+                <Input value={cityKey} onChange={e => setCityKey(e.target.value)} placeholder="ظ…ط«ط§ظ„: riyadh" />
               </div>
               <div className="space-y-2">
-                <Label>اسم المدينة (بالعربية)</Label>
-                <Input value={cityName} onChange={e => setCityName(e.target.value)} placeholder="مثال: الرياض" />
+                <Label>ط§ط³ظ… ط§ظ„ظ…ط¯ظٹظ†ط© (ط¨ط§ظ„ط¹ط±ط¨ظٹط©)</Label>
+                <Input value={cityName} onChange={e => setCityName(e.target.value)} placeholder="ظ…ط«ط§ظ„: ط§ظ„ط±ظٹط§ط¶" />
               </div>
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label>التاريخ الميلادي</Label>
+                <Label>ط§ظ„طھط§ط±ظٹط® ط§ظ„ظ…ظٹظ„ط§ط¯ظٹ</Label>
                 <Input type="date" value={dateGreg} onChange={e => setDateGreg(e.target.value)} />
               </div>
               <div className="space-y-2">
-                <Label>التاريخ الهجري (اختياري)</Label>
-                <Input value={dateHijri} onChange={e => setDateHijri(e.target.value)} placeholder="مثال: 1448-01-27" />
+                <Label>ط§ظ„طھط§ط±ظٹط® ط§ظ„ظ‡ط¬ط±ظٹ (ط§ط®طھظٹط§ط±ظٹ)</Label>
+                <Input value={dateHijri} onChange={e => setDateHijri(e.target.value)} placeholder="ظ…ط«ط§ظ„: 1448-01-27" />
               </div>
             </div>
             <div className="grid grid-cols-3 gap-4">
               <div className="space-y-2">
-                <Label>الفجر</Label>
+                <Label>ط§ظ„ظپط¬ط±</Label>
                 <Input type="time" value={fajr} onChange={e => setFajr(e.target.value)} />
               </div>
               <div className="space-y-2">
-                <Label>الشروق</Label>
+                <Label>ط§ظ„ط´ط±ظˆظ‚</Label>
                 <Input type="time" value={sunrise} onChange={e => setSunrise(e.target.value)} />
               </div>
               <div className="space-y-2">
-                <Label>الظهر</Label>
+                <Label>ط§ظ„ط¸ظ‡ط±</Label>
                 <Input type="time" value={dhuhr} onChange={e => setDhuhr(e.target.value)} />
               </div>
             </div>
             <div className="grid grid-cols-3 gap-4">
               <div className="space-y-2">
-                <Label>العصر</Label>
+                <Label>ط§ظ„ط¹طµط±</Label>
                 <Input type="time" value={asr} onChange={e => setAsr(e.target.value)} />
               </div>
               <div className="space-y-2">
-                <Label>المغرب</Label>
+                <Label>ط§ظ„ظ…ط؛ط±ط¨</Label>
                 <Input type="time" value={maghrib} onChange={e => setMaghrib(e.target.value)} />
               </div>
               <div className="space-y-2">
-                <Label>العشاء</Label>
+                <Label>ط§ظ„ط¹ط´ط§ط،</Label>
                 <Input type="time" value={isha} onChange={e => setIsha(e.target.value)} />
               </div>
             </div>
             <div className="space-y-2">
-              <Label>الجهة الرسمية (اختياري)</Label>
-              <Input value={sourceAuthority} onChange={e => setSourceAuthority(e.target.value)} placeholder="مثال: وزارة الشؤون الإسلامية" />
+              <Label>ط§ظ„ط¬ظ‡ط© ط§ظ„ط±ط³ظ…ظٹط© (ط§ط®طھظٹط§ط±ظٹ)</Label>
+              <Input value={sourceAuthority} onChange={e => setSourceAuthority(e.target.value)} placeholder="ظ…ط«ط§ظ„: ظˆط²ط§ط±ط© ط§ظ„ط´ط¤ظˆظ† ط§ظ„ط¥ط³ظ„ط§ظ…ظٹط©" />
             </div>
             <div className="space-y-2">
-              <Label>رابط المصدر (اختياري)</Label>
+              <Label>ط±ط§ط¨ط· ط§ظ„ظ…طµط¯ط± (ط§ط®طھظٹط§ط±ظٹ)</Label>
               <Input value={sourceUrl} onChange={e => setSourceUrl(e.target.value)} placeholder="https://" />
             </div>
             <div className="flex items-center justify-between">
-              <Label>مؤكد</Label>
+              <Label>ظ…ط¤ظƒط¯</Label>
               <Switch checked={isConfirmed} onCheckedChange={setIsConfirmed} />
             </div>
             <Button className="w-full" onClick={handleSave} disabled={createEvent.isPending || updateEvent.isPending}>
-              {createEvent.isPending || updateEvent.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : "حفظ"}
+              {createEvent.isPending || updateEvent.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : "ط­ظپط¸"}
             </Button>
           </div>
         </DialogContent>
@@ -269,10 +269,10 @@ export default function AdminOfficialPrayer() {
                   <span className="text-xs font-bold text-primary">{ev.date_gregorian}</span>
                 </div>
                 <div className="text-[11px] text-muted-foreground mb-1">
-                  الفجر {ev.fajr_time} · الشروق {ev.sunrise_time} · الظهر {ev.dhuhr_time} · العصر {ev.asr_time} · المغرب {ev.maghrib_time} · العشاء {ev.isha_time}
+                  ط§ظ„ظپط¬ط± {ev.fajr_time} آ· ط§ظ„ط´ط±ظˆظ‚ {ev.sunrise_time} آ· ط§ظ„ط¸ظ‡ط± {ev.dhuhr_time} آ· ط§ظ„ط¹طµط± {ev.asr_time} آ· ط§ظ„ظ…ط؛ط±ط¨ {ev.maghrib_time} آ· ط§ظ„ط¹ط´ط§ط، {ev.isha_time}
                 </div>
                 <div className="flex justify-between items-center border-t border-border pt-3 mt-2">
-                  <div className="text-xs text-muted-foreground">{ev.is_confirmed ? "مؤكد" : "غير مؤكد"}</div>
+                  <div className="text-xs text-muted-foreground">{ev.is_confirmed ? "ظ…ط¤ظƒط¯" : "ط؛ظٹط± ظ…ط¤ظƒط¯"}</div>
                   <div className="flex gap-1">
                     <Button variant="ghost" size="icon" className="h-8 w-8 text-primary" onClick={() => openEdit(ev)}>
                       <Edit2 className="w-4 h-4" />
@@ -288,15 +288,15 @@ export default function AdminOfficialPrayer() {
         </div>
       ) : (
         <div className="text-center p-8 bg-card rounded-xl border border-dashed border-border text-muted-foreground">
-          لا توجد سجلات أوقات صلاة
+          ظ„ط§ طھظˆط¬ط¯ ط³ط¬ظ„ط§طھ ط£ظˆظ‚ط§طھ طµظ„ط§ط©
         </div>
       )}
 
       <ConfirmDialog
         open={isDeleteOpen}
         onOpenChange={setIsDeleteOpen}
-        title="حذف الوقت الرسمي"
-        description="هل أنت متأكد من الحذف؟"
+        title="ط­ط°ظپ ط§ظ„ظˆظ‚طھ ط§ظ„ط±ط³ظ…ظٹ"
+        description="ظ‡ظ„ ط£ظ†طھ ظ…طھط£ظƒط¯ ظ…ظ† ط§ظ„ط­ط°ظپطں"
         onConfirm={handleDelete}
       />
     </div>

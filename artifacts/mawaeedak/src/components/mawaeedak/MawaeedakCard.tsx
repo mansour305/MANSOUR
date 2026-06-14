@@ -1,4 +1,4 @@
-import { type ReactNode } from "react";
+﻿import { type ReactNode } from "react";
 
 interface MawaeedakCardProps {
   children: ReactNode;
@@ -31,3 +31,4 @@ export function MawaeedakCard({
     </div>
   );
 }
+

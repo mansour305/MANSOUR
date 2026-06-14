@@ -1,4 +1,4 @@
-# Mawaeedak Launch Readiness Closure Matrix
+﻿# Mawaeedak Launch Readiness Closure Matrix
 
 This file tracks the production closure of Issue #60 after PR #59 was merged.
 
@@ -7,12 +7,12 @@ This file tracks the production closure of Issue #60 after PR #59 was merged.
 Allowed final verdict values only:
 
 - `READY`
-- `Code Ready — Deployment Setup Required`
+- `Code Ready â€” Deployment Setup Required`
 - `NOT READY`
 
 The current verdict remains:
 
-`Code Ready — Deployment Setup Required`
+`Code Ready â€” Deployment Setup Required`
 
 The app must not be declared public-launch ready until every P0 gate below is closed with evidence.
 
@@ -41,7 +41,7 @@ The app must not be declared public-launch ready until every P0 gate below is cl
 
 ### 3. Services
 
-- [ ] Services order matches: احسب هدفك، حساب التكاليف، ذكرني، السفر، الدراسة والإجازات، الوظائف والأخبار، بطاقة اليوم، صوتك مسموع.
+- [ ] Services order matches: ط§ط­ط³ط¨ ظ‡ط¯ظپظƒطŒ ط­ط³ط§ط¨ ط§ظ„طھظƒط§ظ„ظٹظپطŒ ط°ظƒط±ظ†ظٹطŒ ط§ظ„ط³ظپط±طŒ ط§ظ„ط¯ط±ط§ط³ط© ظˆط§ظ„ط¥ط¬ط§ط²ط§طھطŒ ط§ظ„ظˆط¸ط§ط¦ظپ ظˆط§ظ„ط£ط®ط¨ط§ط±طŒ ط¨ط·ط§ظ‚ط© ط§ظ„ظٹظˆظ…طŒ طµظˆطھظƒ ظ…ط³ظ…ظˆط¹.
 - [ ] Every visible service opens a real page.
 - [ ] Incomplete services are hidden or clearly disabled.
 - [ ] Goals service cloud sync verified.
@@ -98,3 +98,4 @@ Every PR that claims to close part of this matrix must include:
 - checklist items closed
 - remaining risks
 - final verdict
+

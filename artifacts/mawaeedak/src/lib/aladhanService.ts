@@ -1,4 +1,4 @@
-import { getRiyadhTodayKey } from "./riyadhTime";
+﻿import { getRiyadhTodayKey } from "./riyadhTime";
 import { normalizeCityKey } from "./prayerTimesService";
 
 export type AlAdhanTimings = {
@@ -221,3 +221,4 @@ export function clearPrayerCache(): void {
     // Cache is best effort.
   }
 }
+

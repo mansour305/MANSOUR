@@ -1,14 +1,14 @@
-/**
- * Supabase Client — مواعيدك
+﻿/**
+ * Supabase Client â€” ظ…ظˆط§ط¹ظٹط¯ظƒ
  *
- * الحالة الحالية: جاهز للربط الفعلي
- * عند إضافة VITE_SUPABASE_URL و VITE_SUPABASE_ANON_KEY،
- * يُفعَّل الاتصال تلقائياً.
+ * ط§ظ„ط­ط§ظ„ط© ط§ظ„ط­ط§ظ„ظٹط©: ط¬ط§ظ‡ط² ظ„ظ„ط±ط¨ط· ط§ظ„ظپط¹ظ„ظٹ
+ * ط¹ظ†ط¯ ط¥ط¶ط§ظپط© VITE_SUPABASE_URL ظˆ VITE_SUPABASE_ANON_KEYطŒ
+ * ظٹظڈظپط¹ظژظ‘ظ„ ط§ظ„ط§طھطµط§ظ„ طھظ„ظ‚ط§ط¦ظٹط§ظ‹.
  *
- * تحذير أمني:
- * - استخدم VITE_SUPABASE_ANON_KEY فقط هنا (client-side)
- * - لا تضع مفاتيح الخادم عالية الصلاحية هنا أبداً
- * - RLS يحمي البيانات من جانب قاعدة البيانات
+ * طھط­ط°ظٹط± ط£ظ…ظ†ظٹ:
+ * - ط§ط³طھط®ط¯ظ… VITE_SUPABASE_ANON_KEY ظپظ‚ط· ظ‡ظ†ط§ (client-side)
+ * - ظ„ط§ طھط¶ط¹ ظ…ظپط§طھظٹط­ ط§ظ„ط®ط§ط¯ظ… ط¹ط§ظ„ظٹط© ط§ظ„طµظ„ط§ط­ظٹط© ظ‡ظ†ط§ ط£ط¨ط¯ط§ظ‹
+ * - RLS ظٹط­ظ…ظٹ ط§ظ„ط¨ظٹط§ظ†ط§طھ ظ…ظ† ط¬ط§ظ†ط¨ ظ‚ط§ط¹ط¯ط© ط§ظ„ط¨ظٹط§ظ†ط§طھ
  */
 
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
@@ -17,18 +17,18 @@ const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string | undefined;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string | undefined;
 
 /**
- * isProduction — هل نحن في بيئة الإنتاج؟
+ * isProduction â€” ظ‡ظ„ ظ†ط­ظ† ظپظٹ ط¨ظٹط¦ط© ط§ظ„ط¥ظ†طھط§ط¬طں
  */
 export const isProduction = import.meta.env.PROD || import.meta.env.NODE_ENV === "production";
 
 /**
- * isSupabaseConfigured — هل Supabase مفعل؟
+ * isSupabaseConfigured â€” ظ‡ظ„ Supabase ظ…ظپط¹ظ„طں
  */
 export const isSupabaseEnabled = Boolean(supabaseUrl && supabaseAnonKey);
 
 /**
- * supabase — null إذا المفاتيح غير موجودة (demo/fallback mode)
- * يُستخدم Supabase فقط إذا كان الاتصال متاحاً
+ * supabase â€” null ط¥ط°ط§ ط§ظ„ظ…ظپط§طھظٹط­ ط؛ظٹط± ظ…ظˆط¬ظˆط¯ط© (demo/fallback mode)
+ * ظٹظڈط³طھط®ط¯ظ… Supabase ظپظ‚ط· ط¥ط°ط§ ظƒط§ظ† ط§ظ„ط§طھطµط§ظ„ ظ…طھط§ط­ط§ظ‹
  */
 export const supabase: SupabaseClient | null =
   isSupabaseEnabled && supabaseUrl && supabaseAnonKey
@@ -43,39 +43,40 @@ export const supabase: SupabaseClient | null =
 
 /**
  * PRODUCTION VALIDATION
- * لا يُعرض التطبيق كـ "جاهز" في الإنتاج بدون Supabase
+ * ظ„ط§ ظٹظڈط¹ط±ط¶ ط§ظ„طھط·ط¨ظٹظ‚ ظƒظ€ "ط¬ط§ظ‡ط²" ظپظٹ ط§ظ„ط¥ظ†طھط§ط¬ ط¨ط¯ظˆظ† Supabase
  */
 if (isProduction && !isSupabaseEnabled) {
   console.error(
-    "[مواعيدك] خطأ إعداد: التطبيق في وضع الإنتاج لكن مفاتيح Supabase غير موجودة.\n" +
-    "VITE_SUPABASE_URL و VITE_SUPABASE_ANON_KEY مطلوبة.\n" +
-    "التطبيق لا يعمل بدون Supabase في بيئة الإنتاج."
+    "[ظ…ظˆط§ط¹ظٹط¯ظƒ] ط®ط·ط£ ط¥ط¹ط¯ط§ط¯: ط§ظ„طھط·ط¨ظٹظ‚ ظپظٹ ظˆط¶ط¹ ط§ظ„ط¥ظ†طھط§ط¬ ظ„ظƒظ† ظ…ظپط§طھظٹط­ Supabase ط؛ظٹط± ظ…ظˆط¬ظˆط¯ط©.\n" +
+    "VITE_SUPABASE_URL ظˆ VITE_SUPABASE_ANON_KEY ظ…ط·ظ„ظˆط¨ط©.\n" +
+    "ط§ظ„طھط·ط¨ظٹظ‚ ظ„ط§ ظٹط¹ظ…ظ„ ط¨ط¯ظˆظ† Supabase ظپظٹ ط¨ظٹط¦ط© ط§ظ„ط¥ظ†طھط§ط¬."
   );
 }
 
 if (import.meta.env.DEV) {
   if (!isSupabaseEnabled) {
     console.info(
-      "[Supabase] غير مفعّل — VITE_SUPABASE_URL أو VITE_SUPABASE_ANON_KEY غير موجودان. " +
-        "التطبيق يعمل بـ demo/fallback mode (development فقط)."
+      "[Supabase] ط؛ظٹط± ظ…ظپط¹ظ‘ظ„ â€” VITE_SUPABASE_URL ط£ظˆ VITE_SUPABASE_ANON_KEY ط؛ظٹط± ظ…ظˆط¬ظˆط¯ط§ظ†. " +
+        "ط§ظ„طھط·ط¨ظٹظ‚ ظٹط¹ظ…ظ„ ط¨ظ€ demo/fallback mode (development ظپظ‚ط·)."
     );
   } else {
-    console.info("[Supabase] متصل ✅");
+    console.info("[Supabase] ظ…طھطµظ„ âœ…");
   }
 }
 
 /**
- * PRODUCTION BLOCK: يمنع التطبيق من العمل بدون Supabase في الإنتاج
+ * PRODUCTION BLOCK: ظٹظ…ظ†ط¹ ط§ظ„طھط·ط¨ظٹظ‚ ظ…ظ† ط§ظ„ط¹ظ…ظ„ ط¨ط¯ظˆظ† Supabase ظپظٹ ط§ظ„ط¥ظ†طھط§ط¬
  */
 export function requireSupabase(): SupabaseClient {
   if (!supabase) {
     if (isProduction) {
       throw new Error(
-        "خطأ إعداد: التطبيق يتطلب Supabase في بيئة الإنتاج. " +
-        "أضف VITE_SUPABASE_URL و VITE_SUPABASE_ANON_KEY في ملف .env"
+        "ط®ط·ط£ ط¥ط¹ط¯ط§ط¯: ط§ظ„طھط·ط¨ظٹظ‚ ظٹطھط·ظ„ط¨ Supabase ظپظٹ ط¨ظٹط¦ط© ط§ظ„ط¥ظ†طھط§ط¬. " +
+        "ط£ط¶ظپ VITE_SUPABASE_URL ظˆ VITE_SUPABASE_ANON_KEY ظپظٹ ظ…ظ„ظپ .env"
       );
     }
-    throw new Error("Supabase غير مهيأ. أضف مفاتيح Supabase في .env");
+    throw new Error("Supabase ط؛ظٹط± ظ…ظ‡ظٹط£. ط£ط¶ظپ ظ…ظپط§طھظٹط­ Supabase ظپظٹ .env");
   }
   return supabase;
 }
+

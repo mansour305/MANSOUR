@@ -1,9 +1,9 @@
-/**
- * Admin Storage — DEPRECATED ⚠️
+﻿/**
+ * Admin Storage â€” DEPRECATED âڑ ï¸ڈ
  * 
  * PHASE 2: Admin Recovery
  * 
- * ⚠️ WARNING: This module is DEPRECATED for production use!
+ * âڑ ï¸ڈ WARNING: This module is DEPRECATED for production use!
  * 
  * All admin operations should now use adminGateway (admin-gateway.ts)
  * which connects directly to Supabase.
@@ -812,16 +812,16 @@ export const adminStorage = {
 // Default data generators
 function getDefaultUsers(): AdminUser[] {
   return [
-    { id: "1", email: "admin@mawaeedak.local", name: "مدير النظام", role: "admin", status: "active", created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
-    { id: "2", email: "user@mawaeedak.local", name: "مستخدم تجريبي", role: "user", status: "active", created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+    { id: "1", email: "admin@mawaeedak.local", name: "ظ…ط¯ظٹط± ط§ظ„ظ†ط¸ط§ظ…", role: "admin", status: "active", created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+    { id: "2", email: "user@mawaeedak.local", name: "ظ…ط³طھط®ط¯ظ… طھط¬ط±ظٹط¨ظٹ", role: "user", status: "active", created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
   ];
 }
 
 function getDefaultFinancialEvents(): FinancialEvent[] {
   return [
-    { id: "1", title: "رواتب الشهر", amount: "5,000", date: "2026-07-25", type: "salary", status: "published", created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
-    { id: "2", title: "دعم الإيجار", amount: "2,000", date: "2026-07-20", type: "housing", status: "published", created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
-    { id: "3", title: "حساب المواطن", amount: "1,000", date: "2026-07-10", type: "support", status: "draft", created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+    { id: "1", title: "ط±ظˆط§طھط¨ ط§ظ„ط´ظ‡ط±", amount: "5,000", date: "2026-07-25", type: "salary", status: "published", created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+    { id: "2", title: "ط¯ط¹ظ… ط§ظ„ط¥ظٹط¬ط§ط±", amount: "2,000", date: "2026-07-20", type: "housing", status: "published", created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+    { id: "3", title: "ط­ط³ط§ط¨ ط§ظ„ظ…ظˆط§ط·ظ†", amount: "1,000", date: "2026-07-10", type: "support", status: "draft", created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
   ];
 }
 
@@ -830,11 +830,11 @@ function getDefaultOfficialFinancialDates(): OfficialFinancialDate[] {
     {
       id: "1",
       event_key: "salary",
-      event_name_ar: "صرف الراتب",
+      event_name_ar: "طµط±ظپ ط§ظ„ط±ط§طھط¨",
       occurrence_date_gregorian: "2026-07-25",
       occurrence_date_hijri: "1448-01-20",
-      owning_authority_name: "وزارة المالية",
-      source_name: "تقويم أم القرى",
+      owning_authority_name: "ظˆط²ط§ط±ط© ط§ظ„ظ…ط§ظ„ظٹط©",
+      source_name: "طھظ‚ظˆظٹظ… ط£ظ… ط§ظ„ظ‚ط±ظ‰",
       source_url: "https://www.ummulqura.org.sa",
       approval_status: "approved",
       created_at: new Date().toISOString(),
@@ -843,11 +843,11 @@ function getDefaultOfficialFinancialDates(): OfficialFinancialDate[] {
     {
       id: "2",
       event_key: "citizen_account",
-      event_name_ar: "حساب المواطن",
+      event_name_ar: "ط­ط³ط§ط¨ ط§ظ„ظ…ظˆط§ط·ظ†",
       occurrence_date_gregorian: "2026-07-10",
       occurrence_date_hijri: "1448-01-05",
-      owning_authority_name: "برنامج حساب المواطن",
-      source_name: "حساب المواطن",
+      owning_authority_name: "ط¨ط±ظ†ط§ظ…ط¬ ط­ط³ط§ط¨ ط§ظ„ظ…ظˆط§ط·ظ†",
+      source_name: "ط­ط³ط§ط¨ ط§ظ„ظ…ظˆط§ط·ظ†",
       source_url: "https://c.gov.sa",
       approval_status: "pending",
       created_at: new Date().toISOString(),
@@ -860,7 +860,7 @@ function getDefaultThemes(): Theme[] {
   return [
     {
       id: "1",
-      name: "الافتراضي",
+      name: "ط§ظ„ط§ظپطھط±ط§ط¶ظٹ",
       colors: { primary: "#C9A063", secondary: "#8A6B3D", accent: "#2F2B25", background: "#FAF7F2" },
       is_active: true,
       created_at: new Date().toISOString(),
@@ -868,7 +868,7 @@ function getDefaultThemes(): Theme[] {
     },
     {
       id: "2",
-      name: "العيد",
+      name: "ط§ظ„ط¹ظٹط¯",
       colors: { primary: "#22C55E", secondary: "#15803D", accent: "#1F2937", background: "#F0FDF4" },
       is_active: false,
       created_at: new Date().toISOString(),
@@ -879,7 +879,7 @@ function getDefaultThemes(): Theme[] {
 
 function getDefaultSettings(): AdminSettings {
   return {
-    app_name: "مواعيدك",
+    app_name: "ظ…ظˆط§ط¹ظٹط¯ظƒ",
     maintenance_mode: false,
     time_format: "24h",
     notifications_enabled: true,

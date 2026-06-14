@@ -1,10 +1,10 @@
-/**
- * AdminStory — Phase 12M
+﻿/**
+ * AdminStory â€” Phase 12M
  *
- * Read:   useGatewayStoryTemplates → API (mode=api/shadow) | Supabase (mode=supabase)
+ * Read:   useGatewayStoryTemplates â†’ API (mode=api/shadow) | Supabase (mode=supabase)
  * Write:  gwCreateStoryTemplate / gwUpdateStoryTemplate / gwDeleteStoryTemplate
- *           mode=api/shadow → /api/story-templates/:id
- *           mode=supabase   → Supabase INSERT/UPDATE/DELETE
+ *           mode=api/shadow â†’ /api/story-templates/:id
+ *           mode=supabase   â†’ Supabase INSERT/UPDATE/DELETE
  *
  * Invalidation: gwQueryKeys.storyTemplates + getListStoryTemplatesQueryKey
  */
@@ -94,12 +94,12 @@ export default function AdminStory() {
         ? await gwUpdateStoryTemplate(editId, payload)
         : await gwCreateStoryTemplate({ ...payload, name });
       if (result.success) {
-        toast({ title: isEdit ? "تم تعديل القالب" : "تم إضافة القالب" });
+        toast({ title: isEdit ? "طھظ… طھط¹ط¯ظٹظ„ ط§ظ„ظ‚ط§ظ„ط¨" : "طھظ… ط¥ط¶ط§ظپط© ط§ظ„ظ‚ط§ظ„ط¨" });
         setIsOpen(false);
         resetForm();
         invalidateTemplates();
       } else {
-        toast({ title: isEdit ? "فشل التعديل" : "فشل الإضافة", description: result.error ?? "خطأ غير معروف", variant: "destructive" });
+        toast({ title: isEdit ? "ظپط´ظ„ ط§ظ„طھط¹ط¯ظٹظ„" : "ظپط´ظ„ ط§ظ„ط¥ط¶ط§ظپط©", description: result.error ?? "ط®ط·ط£ ط؛ظٹط± ظ…ط¹ط±ظˆظپ", variant: "destructive" });
       }
     } finally {
       setSavePending(false);
@@ -112,12 +112,12 @@ export default function AdminStory() {
     try {
       const result = await gwDeleteStoryTemplate(deleteId);
       if (result.success) {
-        toast({ title: "تم الحذف" });
+        toast({ title: "طھظ… ط§ظ„ط­ط°ظپ" });
         setIsDeleteOpen(false);
         setDeleteId(null);
         invalidateTemplates();
       } else {
-        toast({ title: "فشل الحذف", description: result.error ?? "خطأ غير معروف", variant: "destructive" });
+        toast({ title: "ظپط´ظ„ ط§ظ„ط­ط°ظپ", description: result.error ?? "ط®ط·ط£ ط؛ظٹط± ظ…ط¹ط±ظˆظپ", variant: "destructive" });
         setIsDeleteOpen(false);
       }
     } finally {
@@ -128,10 +128,10 @@ export default function AdminStory() {
   const handleToggleActive = async (tpl: { id: number; is_active: boolean }) => {
     const result = await gwUpdateStoryTemplate(tpl.id, { is_active: !tpl.is_active });
     if (result.success) {
-      toast({ title: tpl.is_active ? "تم تعطيل القالب" : "تم تفعيل القالب" });
+      toast({ title: tpl.is_active ? "طھظ… طھط¹ط·ظٹظ„ ط§ظ„ظ‚ط§ظ„ط¨" : "طھظ… طھظپط¹ظٹظ„ ط§ظ„ظ‚ط§ظ„ط¨" });
       invalidateTemplates();
     } else {
-      toast({ title: "فشل التحديث", description: result.error ?? "خطأ غير معروف", variant: "destructive" });
+      toast({ title: "ظپط´ظ„ ط§ظ„طھط­ط¯ظٹط«", description: result.error ?? "ط®ط·ط£ ط؛ظٹط± ظ…ط¹ط±ظˆظپ", variant: "destructive" });
     }
   };
 
@@ -145,45 +145,45 @@ export default function AdminStory() {
             style={{ background: "linear-gradient(180deg, hsl(38 62% 52%), hsl(32 55% 42%))" }}
           />
           <h1 className="text-2xl font-extrabold" style={{ color: "hsl(22 62% 18%)" }}>
-            بطاقة اليوم / ستوري اليوم
+            ط¨ط·ط§ظ‚ط© ط§ظ„ظٹظˆظ… / ط³طھظˆط±ظٹ ط§ظ„ظٹظˆظ…
           </h1>
         </div>
         <Dialog open={isOpen} onOpenChange={(v) => { setIsOpen(v); if (!v) resetForm(); }}>
           <DialogTrigger asChild>
             <Button size="sm" className="gap-1" onClick={openAdd}>
               <Plus className="w-4 h-4" />
-              إضافة قالب
+              ط¥ط¶ط§ظپط© ظ‚ط§ظ„ط¨
             </Button>
           </DialogTrigger>
           <DialogContent className="rtl max-w-[400px] rounded-xl max-h-[90dvh] overflow-y-auto">
             <DialogHeader>
-              <DialogTitle>{isEdit ? "تعديل القالب" : "إضافة قالب جديد"}</DialogTitle>
+              <DialogTitle>{isEdit ? "طھط¹ط¯ظٹظ„ ط§ظ„ظ‚ط§ظ„ط¨" : "ط¥ط¶ط§ظپط© ظ‚ط§ظ„ط¨ ط¬ط¯ظٹط¯"}</DialogTitle>
             </DialogHeader>
             <div className="space-y-4 py-4">
               <div className="space-y-2">
-                <Label>اسم القالب *</Label>
-                <Input value={name} onChange={e => setName(e.target.value)} placeholder="مثال: القالب الرمضاني" />
+                <Label>ط§ط³ظ… ط§ظ„ظ‚ط§ظ„ط¨ *</Label>
+                <Input value={name} onChange={e => setName(e.target.value)} placeholder="ظ…ط«ط§ظ„: ط§ظ„ظ‚ط§ظ„ط¨ ط§ظ„ط±ظ…ط¶ط§ظ†ظٹ" />
               </div>
               <div className="space-y-2">
-                <Label>الوصف</Label>
-                <Input value={description} onChange={e => setDescription(e.target.value)} placeholder="وصف مختصر" />
+                <Label>ط§ظ„ظˆطµظپ</Label>
+                <Input value={description} onChange={e => setDescription(e.target.value)} placeholder="ظˆطµظپ ظ…ط®طھطµط±" />
               </div>
               <div className="space-y-2">
-                <Label>نص القالب</Label>
+                <Label>ظ†طµ ط§ظ„ظ‚ط§ظ„ط¨</Label>
                 <Textarea
                   value={templateText}
                   onChange={e => setTemplateText(e.target.value)}
-                  placeholder={"📅 {date}\n\n💬 {message}\n\n— مواعيدك"}
+                  placeholder={"ًں“… {date}\n\nًں’¬ {message}\n\nâ€” ظ…ظˆط§ط¹ظٹط¯ظƒ"}
                   rows={5}
                   className="text-sm font-mono"
                 />
                 <p className="text-[10px] text-muted-foreground">
-                  متغيرات متاحة: {"{date}"} {"{message}"} {"{next_prayer}"} {"{time_remaining}"} {"{financial_summary}"}
+                  ظ…طھط؛ظٹط±ط§طھ ظ…طھط§ط­ط©: {"{date}"} {"{message}"} {"{next_prayer}"} {"{time_remaining}"} {"{financial_summary}"}
                 </p>
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-2">
-                  <Label>لون الخلفية</Label>
+                  <Label>ظ„ظˆظ† ط§ظ„ط®ظ„ظپظٹط©</Label>
                   <div className="flex items-center gap-2">
                     <input
                       type="color"
@@ -195,7 +195,7 @@ export default function AdminStory() {
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <Label>لون النص</Label>
+                  <Label>ظ„ظˆظ† ط§ظ„ظ†طµ</Label>
                   <div className="flex items-center gap-2">
                     <input
                       type="color"
@@ -211,14 +211,14 @@ export default function AdminStory() {
                 className="rounded-xl p-4 text-sm whitespace-pre-wrap leading-relaxed border"
                 style={{ backgroundColor: bgColor, color: textColor, borderColor: bgColor }}
               >
-                {templateText || "معاينة القالب..."}
+                {templateText || "ظ…ط¹ط§ظٹظ†ط© ط§ظ„ظ‚ط§ظ„ط¨..."}
               </div>
               <div className="flex items-center justify-between border-t border-border pt-4">
-                <Label>مفعّل في التطبيق</Label>
+                <Label>ظ…ظپط¹ظ‘ظ„ ظپظٹ ط§ظ„طھط·ط¨ظٹظ‚</Label>
                 <Switch checked={isActive} onCheckedChange={setIsActive} />
               </div>
               <Button className="w-full" onClick={handleSave} disabled={!name.trim() || savePending}>
-                {savePending ? <Loader2 className="w-4 h-4 animate-spin" /> : isEdit ? "حفظ التعديلات" : "إضافة القالب"}
+                {savePending ? <Loader2 className="w-4 h-4 animate-spin" /> : isEdit ? "ط­ظپط¸ ط§ظ„طھط¹ط¯ظٹظ„ط§طھ" : "ط¥ط¶ط§ظپط© ط§ظ„ظ‚ط§ظ„ط¨"}
               </Button>
             </div>
           </DialogContent>
@@ -229,8 +229,8 @@ export default function AdminStory() {
       <ConfirmDialog
         open={isDeleteOpen}
         onOpenChange={setIsDeleteOpen}
-        title="حذف القالب"
-        description="هل تريد حذف هذا القالب؟ لا يمكن التراجع."
+        title="ط­ط°ظپ ط§ظ„ظ‚ط§ظ„ط¨"
+        description="ظ‡ظ„ طھط±ظٹط¯ ط­ط°ظپ ظ‡ط°ط§ ط§ظ„ظ‚ط§ظ„ط¨طں ظ„ط§ ظٹظ…ظƒظ† ط§ظ„طھط±ط§ط¬ط¹."
         onConfirm={handleDelete}
       />
 
@@ -258,7 +258,7 @@ export default function AdminStory() {
                           <h4 className="font-bold text-sm truncate">{tpl.name}</h4>
                           {!tpl.is_active && (
                             <span className="text-[10px] bg-destructive/10 text-destructive px-1.5 py-0.5 rounded shrink-0">
-                              معطل
+                              ظ…ط¹ط·ظ„
                             </span>
                           )}
                         </div>
@@ -298,9 +298,10 @@ export default function AdminStory() {
       ) : (
         <div className="text-center p-8 bg-card rounded-xl border border-dashed border-border text-muted-foreground">
           <Image className="w-8 h-8 mx-auto mb-2 opacity-40" />
-          <p>لا توجد قوالب — أضف قالباً جديداً</p>
+          <p>ظ„ط§ طھظˆط¬ط¯ ظ‚ظˆط§ظ„ط¨ â€” ط£ط¶ظپ ظ‚ط§ظ„ط¨ط§ظ‹ ط¬ط¯ظٹط¯ط§ظ‹</p>
         </div>
       )}
     </div>
   );
 }
+

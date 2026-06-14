@@ -1,4 +1,4 @@
-name: Phase 4 GitHub Actions Gate
+﻿name: Phase 4 GitHub Actions Gate
 
 on:
   push:
@@ -187,3 +187,4 @@ jobs:
             echo "- Static smoke: serve first built dist/index.html when present"
             echo "- Security hygiene: deterministic committed credential value scan"
           } >> "$GITHUB_STEP_SUMMARY"
+

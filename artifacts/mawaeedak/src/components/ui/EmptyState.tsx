@@ -1,7 +1,7 @@
-/**
- * EmptyState Component — مواعيدك
+﻿/**
+ * EmptyState Component â€” ظ…ظˆط§ط¹ظٹط¯ظƒ
  * 
- * يعرض حالة فارغة عند عدم وجود بيانات.
+ * ظٹط¹ط±ط¶ ط­ط§ظ„ط© ظپط§ط±ط؛ط© ط¹ظ†ط¯ ط¹ط¯ظ… ظˆط¬ظˆط¯ ط¨ظٹط§ظ†ط§طھ.
  */
 
 import { Calendar, CalendarDays, FileText, Inbox, MessageSquare, SearchX, Wallet } from "lucide-react";
@@ -101,7 +101,7 @@ export function EmptyState({
 /**
  * Loading State Component
  */
-export function LoadingState({ message = "جاري التحميل..." }: { message?: string }) {
+export function LoadingState({ message = "ط¬ط§ط±ظٹ ط§ظ„طھط­ظ…ظٹظ„..." }: { message?: string }) {
   return (
     <div
       className="flex min-h-[200px] flex-col items-center justify-center py-12"
@@ -125,7 +125,7 @@ export function LoadingState({ message = "جاري التحميل..." }: { messa
  * Error State Component
  */
 export function ErrorState({
-  message = "حدث خطأ غير متوقع",
+  message = "ط­ط¯ط« ط®ط·ط£ ط؛ظٹط± ظ…طھظˆظ‚ط¹",
   onRetry,
 }: {
   message?: string;
@@ -139,7 +139,7 @@ export function ErrorState({
       <div
         className="mb-4 flex h-16 w-16 items-center justify-center rounded-full border border-red-200 bg-red-50"
       >
-        <span className="text-3xl">⚠️</span>
+        <span className="text-3xl">âڑ ï¸ڈ</span>
       </div>
 
       <h3 className="mb-2 text-lg font-bold" style={{ color: "#B9483F" }}>
@@ -156,7 +156,7 @@ export function ErrorState({
             color: "#8A6B3D",
           }}
         >
-          إعادة المحاولة
+          ط¥ط¹ط§ط¯ط© ط§ظ„ظ…ط­ط§ظˆظ„ط©
         </Button>
       )}
     </div>

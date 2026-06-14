@@ -1,7 +1,7 @@
-/**
- * monitoring.ts — نظام المراقبة والتنبيهات
+﻿/**
+ * monitoring.ts â€” ظ†ط¸ط§ظ… ط§ظ„ظ…ط±ط§ظ‚ط¨ط© ظˆط§ظ„طھظ†ط¨ظٹظ‡ط§طھ
  * 
- * يتضمن:
+ * ظٹطھط¶ظ…ظ†:
  * - Health Monitoring
  * - Error Tracking
  * - Performance Monitoring
@@ -97,7 +97,7 @@ class HealthMonitor {
   }
   
   /**
-   * تسجيل فحص Supabase
+   * طھط³ط¬ظٹظ„ ظپط­طµ Supabase
    */
   registerSupabaseCheck(supabase: unknown, name: string = "supabase"): void {
     this.registerCheck(name, async () => {
@@ -120,7 +120,7 @@ class HealthMonitor {
   }
   
   /**
-   * تسجيل فحص الشبكة
+   * طھط³ط¬ظٹظ„ ظپط­طµ ط§ظ„ط´ط¨ظƒط©
    */
   registerNetworkCheck(): void {
     this.registerCheck("network", async () => {
@@ -132,7 +132,7 @@ class HealthMonitor {
   }
   
   /**
-   * تسجيل فحص API
+   * طھط³ط¬ظٹظ„ ظپط­طµ API
    */
   registerAPICheck(apiUrl: string | null): void {
     if (!apiUrl) return;
@@ -171,7 +171,7 @@ class PerformanceMonitor {
   private maxMetrics = 100;
   
   /**
-   * قياس أداء دالة
+   * ظ‚ظٹط§ط³ ط£ط¯ط§ط، ط¯ط§ظ„ط©
    */
   async measure<T>(
     name: string,
@@ -189,7 +189,7 @@ class PerformanceMonitor {
   }
   
   /**
-   * تسجيل مقياس
+   * طھط³ط¬ظٹظ„ ظ…ظ‚ظٹط§ط³
    */
   record(name: string, value: number, unit: string = "", isError?: boolean): void {
     this.metrics.push({
@@ -207,7 +207,7 @@ class PerformanceMonitor {
   }
   
   /**
-   * قياس Largest Contentful Paint
+   * ظ‚ظٹط§ط³ Largest Contentful Paint
    */
   measureLCP(): void {
     new PerformanceObserver((list) => {
@@ -218,7 +218,7 @@ class PerformanceMonitor {
   }
   
   /**
-   * قياس First Input Delay
+   * ظ‚ظٹط§ط³ First Input Delay
    */
   measureFID(): void {
     new PerformanceObserver((list) => {
@@ -230,7 +230,7 @@ class PerformanceMonitor {
   }
   
   /**
-   * قياس Cumulative Layout Shift
+   * ظ‚ظٹط§ط³ Cumulative Layout Shift
    */
   measureCLS(): void {
     new PerformanceObserver((list) => {
@@ -244,7 +244,7 @@ class PerformanceMonitor {
   }
   
   /**
-   * قياس Web Vitals
+   * ظ‚ظٹط§ط³ Web Vitals
    */
   measureWebVitals(): void {
     this.measureLCP();
@@ -253,21 +253,21 @@ class PerformanceMonitor {
   }
   
   /**
-   * الحصول على آخر مقياس
+   * ط§ظ„ط­طµظˆظ„ ط¹ظ„ظ‰ ط¢ط®ط± ظ…ظ‚ظٹط§ط³
    */
   getMetric(name: string): PerformanceMetric | undefined {
     return this.metrics.find((m) => m.name === name);
   }
   
   /**
-   * الحصول على جميع المقاييس
+   * ط§ظ„ط­طµظˆظ„ ط¹ظ„ظ‰ ط¬ظ…ظٹط¹ ط§ظ„ظ…ظ‚ط§ظٹظٹط³
    */
   getMetrics(): PerformanceMetric[] {
     return [...this.metrics];
   }
   
   /**
-   * مسح المقاييس
+   * ظ…ط³ط­ ط§ظ„ظ…ظ‚ط§ظٹظٹط³
    */
   clear(): void {
     this.metrics = [];
@@ -286,7 +286,7 @@ class ErrorTracker {
   private listeners: ((error: ErrorEvent) => void)[] = [];
   
   /**
-   * تسجيل خطأ
+   * طھط³ط¬ظٹظ„ ط®ط·ط£
    */
   track(error: Error | unknown, metadata?: Record<string, unknown>): void {
     const event: ErrorEvent = {
@@ -303,10 +303,10 @@ class ErrorTracker {
       this.errors.shift();
     }
     
-    // إشعار المستمعين
+    // ط¥ط´ط¹ط§ط± ط§ظ„ظ…ط³طھظ…ط¹ظٹظ†
     this.listeners.forEach((listener) => listener(event));
     
-    // تسجيل في Console
+    // طھط³ط¬ظٹظ„ ظپظٹ Console
     logger.error(`[ErrorTracker] ${event.type}: ${event.message}`, {
       stack: event.stack,
       metadata,
@@ -314,49 +314,49 @@ class ErrorTracker {
   }
   
   /**
-   * تسجيل خطأ React
+   * طھط³ط¬ظٹظ„ ط®ط·ط£ React
    */
   trackReactError(error: Error, info: { componentStack?: string | null }): void {
     this.track(error, { componentStack: info.componentStack ?? undefined });
   }
   
   /**
-   * إضافة مستمع
+   * ط¥ط¶ط§ظپط© ظ…ط³طھظ…ط¹
    */
   addListener(listener: (error: ErrorEvent) => void): void {
     this.listeners.push(listener);
   }
   
   /**
-   * إزالة مستمع
+   * ط¥ط²ط§ظ„ط© ظ…ط³طھظ…ط¹
    */
   removeListener(listener: (error: ErrorEvent) => void): void {
     this.listeners = this.listeners.filter((l) => l !== listener);
   }
   
   /**
-   * الحصول على آخر خطأ
+   * ط§ظ„ط­طµظˆظ„ ط¹ظ„ظ‰ ط¢ط®ط± ط®ط·ط£
    */
   getLastError(): ErrorEvent | undefined {
     return this.errors[this.errors.length - 1];
   }
   
   /**
-   * الحصول على جميع الأخطاء
+   * ط§ظ„ط­طµظˆظ„ ط¹ظ„ظ‰ ط¬ظ…ظٹط¹ ط§ظ„ط£ط®ط·ط§ط،
    */
   getErrors(): ErrorEvent[] {
     return [...this.errors];
   }
   
   /**
-   * مسح الأخطاء
+   * ظ…ط³ط­ ط§ظ„ط£ط®ط·ط§ط،
    */
   clear(): void {
     this.errors = [];
   }
   
   /**
-   * إعداد Global Error Handler
+   * ط¥ط¹ط¯ط§ط¯ Global Error Handler
    */
   setupGlobalHandlers(): void {
     window.addEventListener("error", (event) => {
@@ -393,7 +393,7 @@ class APIMonitor {
   private maxRequests = 100;
   
   /**
-   * تسجيل طلب API
+   * طھط³ط¬ظٹظ„ ط·ظ„ط¨ API
    */
   record(request: Omit<APIRequest, "timestamp">): void {
     this.requests.push({
@@ -407,7 +407,7 @@ class APIMonitor {
   }
   
   /**
-   * مراقبة fetch
+   * ظ…ط±ط§ظ‚ط¨ط© fetch
    */
   setupFetchInterceptor(): void {
     const originalFetch = window.fetch;
@@ -445,14 +445,14 @@ class APIMonitor {
   }
   
   /**
-   * الحصول على آخر 10 طلبات
+   * ط§ظ„ط­طµظˆظ„ ط¹ظ„ظ‰ ط¢ط®ط± 10 ط·ظ„ط¨ط§طھ
    */
   getRecentRequests(count: number = 10): APIRequest[] {
     return this.requests.slice(-count).reverse();
   }
   
   /**
-   * الحصول على إحصائيات
+   * ط§ظ„ط­طµظˆظ„ ط¹ظ„ظ‰ ط¥ط­طµط§ط¦ظٹط§طھ
    */
   getStats(): {
     total: number;
@@ -502,7 +502,7 @@ class SecurityLogger {
   private listeners: ((event: SecurityEvent) => void)[] = [];
   
   /**
-   * تسجيل حدث أمني
+   * طھط³ط¬ظٹظ„ ط­ط¯ط« ط£ظ…ظ†ظٹ
    */
   log(
     type: SecurityEventType,
@@ -526,21 +526,21 @@ class SecurityLogger {
   }
   
   /**
-   * إضافة مستمع
+   * ط¥ط¶ط§ظپط© ظ…ط³طھظ…ط¹
    */
   addListener(listener: (event: SecurityEvent) => void): void {
     this.listeners.push(listener);
   }
   
   /**
-   * الحصول على الأحداث
+   * ط§ظ„ط­طµظˆظ„ ط¹ظ„ظ‰ ط§ظ„ط£ط­ط¯ط§ط«
    */
   getEvents(): SecurityEvent[] {
     return [...this.events];
   }
   
   /**
-   * مسح الأحداث
+   * ظ…ط³ط­ ط§ظ„ط£ط­ط¯ط§ط«
    */
   clear(): void {
     this.events = [];

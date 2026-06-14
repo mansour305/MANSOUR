@@ -1,4 +1,4 @@
-import { pgTable, serial, text, boolean, timestamp } from "drizzle-orm/pg-core";
+﻿import { pgTable, serial, text, boolean, timestamp } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod/v4";
 
@@ -31,3 +31,4 @@ export const socialAutomationLogsTable = pgTable("social_automation_logs", {
 });
 
 export type SocialAutomationLog = typeof socialAutomationLogsTable.$inferSelect;
+

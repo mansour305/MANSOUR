@@ -1,14 +1,14 @@
-/**
- * AdminThemes — Phase 12M
+﻿/**
+ * AdminThemes â€” Phase 12M
  *
- * Read:   useGatewayThemes → API (mode=api/shadow) | Supabase (mode=supabase)
+ * Read:   useGatewayThemes â†’ API (mode=api/shadow) | Supabase (mode=supabase)
  * Write:  gwUpdateTheme (edit + toggle)
- *           mode=api/shadow → PATCH /api/themes/:id
- *           mode=supabase   → Supabase UPDATE
+ *           mode=api/shadow â†’ PATCH /api/themes/:id
+ *           mode=supabase   â†’ Supabase UPDATE
  *
  * Default theme:
- * - mode=supabase   → public.app_settings upsert (no api-server dependency)
- * - mode=api/shadow → legacy API endpoint when a deployed API exists
+ * - mode=supabase   â†’ public.app_settings upsert (no api-server dependency)
+ * - mode=api/shadow â†’ legacy API endpoint when a deployed API exists
  */
 
 import { useState } from "react";
@@ -30,10 +30,10 @@ import { useGatewayThemes, gwQueryKeys } from "@/hooks/useGatewayData";
 import { gwUpdateTheme } from "@/lib/dataGateway";
 
 const TIER_LABELS: Record<string, string> = {
-  free: "مجاني",
-  premium: "مميز داخلي",
-  unavailable: "غير متاح حالياً",
-  owner: "للمالك فقط",
+  free: "ظ…ط¬ط§ظ†ظٹ",
+  premium: "ظ…ظ…ظٹط² ط¯ط§ط®ظ„ظٹ",
+  unavailable: "ط؛ظٹط± ظ…طھط§ط­ ط­ط§ظ„ظٹط§ظ‹",
+  owner: "ظ„ظ„ظ…ط§ظ„ظƒ ظپظ‚ط·",
 };
 
 function getSwatchColors(colors: unknown): [string, string, string] {
@@ -80,11 +80,11 @@ export default function AdminThemes() {
     try {
       const result = await gwUpdateTheme(editId, { name, description: description || undefined, is_active: isActive, tier });
       if (result.success) {
-        toast({ title: "تم التعديل" });
+        toast({ title: "طھظ… ط§ظ„طھط¹ط¯ظٹظ„" });
         setIsOpen(false);
         invalidateThemes();
       } else {
-        toast({ title: "فشل التعديل", description: result.error ?? "خطأ غير معروف", variant: "destructive" });
+        toast({ title: "ظپط´ظ„ ط§ظ„طھط¹ط¯ظٹظ„", description: result.error ?? "ط®ط·ط£ ط؛ظٹط± ظ…ط¹ط±ظˆظپ", variant: "destructive" });
       }
     } finally {
       setSavePending(false);
@@ -96,7 +96,7 @@ export default function AdminThemes() {
     try {
       if (DATA_SOURCE_MODE === "supabase") {
         if (!supabase) {
-          toast({ title: "Supabase غير متصل", description: "تحقق من VITE_SUPABASE_URL و VITE_SUPABASE_ANON_KEY", variant: "destructive" });
+          toast({ title: "Supabase ط؛ظٹط± ظ…طھطµظ„", description: "طھط­ظ‚ظ‚ ظ…ظ† VITE_SUPABASE_URL ظˆ VITE_SUPABASE_ANON_KEY", variant: "destructive" });
           return;
         }
 
@@ -110,12 +110,12 @@ export default function AdminThemes() {
         );
 
         if (error) {
-          toast({ title: "فشل التعيين", description: error.message, variant: "destructive" });
+          toast({ title: "ظپط´ظ„ ط§ظ„طھط¹ظٹظٹظ†", description: error.message, variant: "destructive" });
           return;
         }
 
         setCachedGlobalDefault(theme.slug);
-        toast({ title: `تم تعيين "${theme.name}" كثيم افتراضي عام`, description: "تم الحفظ في Supabase بدون الاعتماد على api-server" });
+        toast({ title: `طھظ… طھط¹ظٹظٹظ† "${theme.name}" ظƒط«ظٹظ… ط§ظپطھط±ط§ط¶ظٹ ط¹ط§ظ…`, description: "طھظ… ط§ظ„ط­ظپط¸ ظپظٹ Supabase ط¨ط¯ظˆظ† ط§ظ„ط§ط¹طھظ…ط§ط¯ ط¹ظ„ظ‰ api-server" });
         return;
       }
 
@@ -126,15 +126,15 @@ export default function AdminThemes() {
       });
       if (resp.ok) {
         setCachedGlobalDefault(theme.slug);
-        toast({ title: `تم تعيين "${theme.name}" كثيم افتراضي عام`, description: "يُطبَّق على جميع المستخدمين الذين لم يختاروا ثيماً خاصاً" });
+        toast({ title: `طھظ… طھط¹ظٹظٹظ† "${theme.name}" ظƒط«ظٹظ… ط§ظپطھط±ط§ط¶ظٹ ط¹ط§ظ…`, description: "ظٹظڈط·ط¨ظژظ‘ظ‚ ط¹ظ„ظ‰ ط¬ظ…ظٹط¹ ط§ظ„ظ…ط³طھط®ط¯ظ…ظٹظ† ط§ظ„ط°ظٹظ† ظ„ظ… ظٹط®طھط§ط±ظˆط§ ط«ظٹظ…ط§ظ‹ ط®ط§طµط§ظ‹" });
       } else if (resp.status === 401 || resp.status === 403) {
-        toast({ title: "صلاحيات غير كافية", description: "تعيين الافتراضي العام متاح للمالك فقط", variant: "destructive" });
+        toast({ title: "طµظ„ط§ط­ظٹط§طھ ط؛ظٹط± ظƒط§ظپظٹط©", description: "طھط¹ظٹظٹظ† ط§ظ„ط§ظپطھط±ط§ط¶ظٹ ط§ظ„ط¹ط§ظ… ظ…طھط§ط­ ظ„ظ„ظ…ط§ظ„ظƒ ظپظ‚ط·", variant: "destructive" });
       } else {
         const err = await resp.json().catch(() => null);
-        toast({ title: "فشل التعيين", description: (err && (err.error?.message || err.error)) || "خطأ غير معروف", variant: "destructive" });
+        toast({ title: "ظپط´ظ„ ط§ظ„طھط¹ظٹظٹظ†", description: (err && (err.error?.message || err.error)) || "ط®ط·ط£ ط؛ظٹط± ظ…ط¹ط±ظˆظپ", variant: "destructive" });
       }
     } catch {
-      toast({ title: "فشل التعيين", description: DATA_SOURCE_MODE === "supabase" ? "تعذر الحفظ في Supabase" : "تعذر الاتصال بالخادم", variant: "destructive" });
+      toast({ title: "ظپط´ظ„ ط§ظ„طھط¹ظٹظٹظ†", description: DATA_SOURCE_MODE === "supabase" ? "طھط¹ط°ط± ط§ظ„ط­ظپط¸ ظپظٹ Supabase" : "طھط¹ط°ط± ط§ظ„ط§طھطµط§ظ„ ط¨ط§ظ„ط®ط§ط¯ظ…", variant: "destructive" });
     } finally {
       setDefaultPending(null);
     }
@@ -143,10 +143,10 @@ export default function AdminThemes() {
   const handleToggleActive = async (theme: { id: number; name: string; is_active: boolean }) => {
     const result = await gwUpdateTheme(theme.id, { is_active: !theme.is_active });
     if (result.success) {
-      toast({ title: theme.is_active ? "تم تعطيل الثيم" : "تم تفعيل الثيم" });
+      toast({ title: theme.is_active ? "طھظ… طھط¹ط·ظٹظ„ ط§ظ„ط«ظٹظ…" : "طھظ… طھظپط¹ظٹظ„ ط§ظ„ط«ظٹظ…" });
       invalidateThemes();
     } else {
-      toast({ title: "فشل التحديث", description: result.error ?? "خطأ غير معروف", variant: "destructive" });
+      toast({ title: "ظپط´ظ„ ط§ظ„طھط­ط¯ظٹط«", description: result.error ?? "ط®ط·ط£ ط؛ظٹط± ظ…ط¹ط±ظˆظپ", variant: "destructive" });
     }
   };
 
@@ -158,26 +158,26 @@ export default function AdminThemes() {
           style={{ background: "linear-gradient(180deg, hsl(38 62% 52%), hsl(32 55% 42%))" }}
         />
         <h1 className="text-2xl font-extrabold" style={{ color: "hsl(22 62% 18%)" }}>
-          إدارة الثيمات
+          ط¥ط¯ط§ط±ط© ط§ظ„ط«ظٹظ…ط§طھ
         </h1>
       </div>
 
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogContent className="rtl max-w-[400px] rounded-xl">
           <DialogHeader>
-            <DialogTitle>تعديل الثيم</DialogTitle>
+            <DialogTitle>طھط¹ط¯ظٹظ„ ط§ظ„ط«ظٹظ…</DialogTitle>
           </DialogHeader>
           <div className="space-y-4 py-4">
             <div className="space-y-2">
-              <Label>اسم الثيم</Label>
+              <Label>ط§ط³ظ… ط§ظ„ط«ظٹظ…</Label>
               <Input value={name} onChange={e => setName(e.target.value)} />
             </div>
             <div className="space-y-2">
-              <Label>الوصف</Label>
+              <Label>ط§ظ„ظˆطµظپ</Label>
               <Input value={description} onChange={e => setDescription(e.target.value)} />
             </div>
             <div className="space-y-2">
-              <Label>الفئة</Label>
+              <Label>ط§ظ„ظپط¦ط©</Label>
               <select
                 value={tier}
                 onChange={e => setTier(e.target.value)}
@@ -189,11 +189,11 @@ export default function AdminThemes() {
               </select>
             </div>
             <div className="flex items-center justify-between border-t border-border pt-4">
-              <Label>مفعّل ومتاح للمستخدمين</Label>
+              <Label>ظ…ظپط¹ظ‘ظ„ ظˆظ…طھط§ط­ ظ„ظ„ظ…ط³طھط®ط¯ظ…ظٹظ†</Label>
               <Switch checked={isActive} onCheckedChange={setIsActive} />
             </div>
             <Button className="w-full" onClick={handleSave} disabled={savePending}>
-              {savePending ? <Loader2 className="w-4 h-4 animate-spin" /> : "حفظ التعديلات"}
+              {savePending ? <Loader2 className="w-4 h-4 animate-spin" /> : "ط­ظپط¸ ط§ظ„طھط¹ط¯ظٹظ„ط§طھ"}
             </Button>
           </div>
         </DialogContent>
@@ -223,14 +223,14 @@ export default function AdminThemes() {
                         {isCurrentDefault && (
                           <span className="text-[10px] bg-primary/10 text-primary px-1.5 py-0.5 rounded flex items-center gap-0.5">
                             <Check className="w-2.5 h-2.5" />
-                            الحالي
+                            ط§ظ„ط­ط§ظ„ظٹ
                           </span>
                         )}
                         {!theme.is_active && (
-                          <span className="text-[10px] bg-destructive/10 text-destructive px-1.5 py-0.5 rounded">معطل</span>
+                          <span className="text-[10px] bg-destructive/10 text-destructive px-1.5 py-0.5 rounded">ظ…ط¹ط·ظ„</span>
                         )}
                         <span className="text-[10px] bg-muted text-muted-foreground px-1.5 py-0.5 rounded">
-                          {TIER_LABELS[theme.tier ?? "free"] ?? "مجاني"}
+                          {TIER_LABELS[theme.tier ?? "free"] ?? "ظ…ط¬ط§ظ†ظٹ"}
                         </span>
                       </div>
                       {theme.description && (
@@ -247,7 +247,7 @@ export default function AdminThemes() {
                         variant="ghost"
                         size="icon"
                         className={`w-8 h-8 ${isCurrentDefault ? "text-primary" : "text-muted-foreground hover:text-primary"}`}
-                        title="تعيين كافتراضي عام"
+                        title="طھط¹ظٹظٹظ† ظƒط§ظپطھط±ط§ط¶ظٹ ط¹ط§ظ…"
                         disabled={defaultPending === theme.slug || !theme.is_active}
                         onClick={() => void handleSetDefault(theme)}
                       >
@@ -265,13 +265,14 @@ export default function AdminThemes() {
         </div>
       ) : (
         <div className="text-center p-8 bg-card rounded-xl border border-dashed border-border text-muted-foreground">
-          لا توجد ثيمات
+          ظ„ط§ طھظˆط¬ط¯ ط«ظٹظ…ط§طھ
         </div>
       )}
 
       <p className="text-xs text-muted-foreground px-1">
-        ملاحظة: تعيين الافتراضي العام يُحفَظ مركزياً في Supabase عند وضع الإنتاج الحالي، ولا يعتمد على api-server غير المنشور.
+        ظ…ظ„ط§ط­ط¸ط©: طھط¹ظٹظٹظ† ط§ظ„ط§ظپطھط±ط§ط¶ظٹ ط§ظ„ط¹ط§ظ… ظٹظڈط­ظپظژط¸ ظ…ط±ظƒط²ظٹط§ظ‹ ظپظٹ Supabase ط¹ظ†ط¯ ظˆط¶ط¹ ط§ظ„ط¥ظ†طھط§ط¬ ط§ظ„ط­ط§ظ„ظٹطŒ ظˆظ„ط§ ظٹط¹طھظ…ط¯ ط¹ظ„ظ‰ api-server ط؛ظٹط± ط§ظ„ظ…ظ†ط´ظˆط±.
       </p>
     </div>
   );
 }
+
