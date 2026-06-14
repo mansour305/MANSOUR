@@ -1,4 +1,5 @@
 import { Bell, CalendarDays, Grid2X2, Home, Menu, Wallet } from "lucide-react";
+import MawaeedakLogoSvg from "@/assets/brand/mawaeedak-logo.svg";
 import { Link } from "wouter";
 import { useGatewayUnreadCount } from "@/hooks/useGatewayData";
 
@@ -21,10 +22,11 @@ const links = [
 function Mark({ compact = false }: MawaeedakLogoProps) {
   return (
     <div className="flex items-center gap-2">
-      <div className={compact ? "grid h-16 w-16 place-items-center rounded-[24px] bg-gradient-to-br from-[#087f8c] to-[#16b8a6] text-white shadow-[0_12px_28px_rgba(8,127,140,0.24)]" : "grid h-11 w-11 place-items-center rounded-2xl bg-gradient-to-br from-[#087f8c] to-[#16b8a6] text-white shadow-[0_12px_28px_rgba(8,127,140,0.24)]"}>
-        <span className={compact ? "text-[34px] font-black leading-none" : "text-[23px] font-black leading-none"}>م</span>
-      </div>
-      {!compact ? <span className="maw-text-gradient text-[24px] font-black leading-none">مواعيدك</span> : null}
+      <img 
+        src={MawaeedakLogoSvg} 
+        alt="مواعيدك" 
+        className={compact ? "h-16 w-auto" : "h-11 w-auto"}
+      />
     </div>
   );
 }
