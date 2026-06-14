@@ -45,7 +45,7 @@ function ComingSoonBadge() {
 
 export default function CentersPage() {
   return (
-    <AppShell title="الخدمات">
+    <AppShell title="خدماتك">
       <div className="space-y-6">
         <p className="text-center text-[16px] font-semibold" style={{ color: "#6F6557" }}>
           خدمات منظمة تساعدك في يومك

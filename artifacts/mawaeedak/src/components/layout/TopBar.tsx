@@ -40,18 +40,18 @@ export function TopBar({ title }: TopBarProps) {
   const count = unreadCount ?? 0;
 
   return (
-    <header dir="rtl" className="sticky top-0 z-40 w-full border-b border-slate-200 bg-white/95 backdrop-blur-xl">
+    <header dir="rtl" className="sticky top-0 z-40 w-full border-b border-[rgba(201,160,99,0.22)] bg-[rgba(255,250,241,0.96)] backdrop-blur-xl">
       <div className="flex min-h-[88px] items-center justify-between gap-3 px-5">
-        <div className="grid h-11 w-11 place-items-center rounded-2xl border border-slate-200 bg-white text-slate-700">
+        <div className="grid h-11 w-11 place-items-center rounded-2xl border border-[rgba(201,160,99,0.22)] bg-white text-[#8A6B3D]">
           <Menu className="h-6 w-6" />
         </div>
         <div className="flex flex-1 flex-col items-center justify-center text-center">
           <Mark />
-          {title && title !== "الرئيسية" ? <h1 className="mt-1 text-[18px] font-extrabold text-slate-900">{title}</h1> : null}
+          {title && title !== "الرئيسية" ? <h1 className="mt-1 text-[18px] font-extrabold text-[#2F2B25]">{title}</h1> : null}
         </div>
-        <Link href="/notifications" className="relative grid h-11 w-11 place-items-center rounded-2xl border border-slate-200 bg-white text-slate-700">
+        <Link href="/notifications" className="relative grid h-11 w-11 place-items-center rounded-2xl border border-[rgba(201,160,99,0.22)] bg-white text-[#8A6B3D]">
           <Bell className="h-6 w-6" />
-          {count > 0 ? <span className="absolute right-1 top-1 grid h-5 min-w-5 place-items-center rounded-full bg-[#f59e0b] px-1 text-[10px] font-bold text-white">{count > 9 ? "9+" : count}</span> : null}
+          {count > 0 ? <span className="absolute left-1 top-1 grid h-5 min-w-5 place-items-center rounded-full bg-[#C9A063] px-1 text-[10px] font-bold text-white">{count > 9 ? "9+" : count}</span> : null}
         </Link>
       </div>
       <div className="grid grid-cols-4 gap-2 px-5 pb-3">

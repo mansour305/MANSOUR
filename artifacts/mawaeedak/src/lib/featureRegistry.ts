@@ -53,7 +53,7 @@ export const FEATURE_REGISTRY: Feature[] = [
   {
     feature_key: "financial_dates",
     title: "المواعيد المالية",
-    description: "الرواتب والمساعدات ومواعيد الدفع",
+    description: "الرواتب والمخصصات ومواعيد الدفع",
     plan_required: "free",
     status: "active",
     is_visible_in_paywall: false,

@@ -93,7 +93,7 @@ export default function FinancePage() {
         </div>
 
         <p className="text-center text-[16px] font-bold" style={{ color: "#6F6557" }}>
-          {tab === "upcoming" ? "جميع الرواتب والمساعدات القادمة" : "المواعيد المالية السابقة محفوظة للرجوع إليها"}
+          {tab === "upcoming" ? "جميع الرواتب والمخصصات القادمة" : "المواعيد المالية السابقة محفوظة للرجوع إليها"}
         </p>
 
         {isLoading ? (
@@ -132,35 +132,36 @@ export default function FinancePage() {
               return (
                 <article
                   key={item.id}
-                  className="grid grid-cols-[92px_1fr_70px] items-center gap-3 rounded-[24px] border bg-white/86 p-4"
+                  className="grid items-center gap-3 rounded-[24px] border bg-white/86 p-4"
                   style={{
+                    gridTemplateColumns: "70px 1fr 70px",
                     borderColor: "rgba(201,160,99,0.22)",
                     boxShadow: "0 14px 34px rgba(138,107,61,0.12)",
                   }}
                 >
-                  <div className="flex flex-col items-center justify-center">
-                    <div className="relative grid h-20 w-20 place-items-center rounded-full">
-                      <span className="absolute inset-0 rounded-full border-4 border-[#F3E8D6]" />
-                      <span className="absolute inset-0 rounded-full border-4 border-transparent border-t-[#C9A063] border-r-[#C9A063]" />
-                      <span className="text-[34px] font-extrabold leading-none" style={{ color: INK }}>{days}</span>
+                  <div className="flex flex-col items-center gap-2">
+                    <div className="grid h-16 w-16 place-items-center rounded-[20px] border bg-[#FFFCF7]" style={{ borderColor: "rgba(201,160,99,0.20)" }}>
+                      <Icon className="h-8 w-8" strokeWidth={1.6} style={{ color: GOLD }} />
                     </div>
-                    <span className="mt-1 text-sm font-bold" style={{ color: INK }}>يوماً متبقياً</span>
+                    <ChevronLeft className="h-4 w-4" style={{ color: BROWN }} />
                   </div>
 
                   <div className="min-w-0 text-right">
-                    <h2 className="text-[25px] font-extrabold leading-tight" style={{ color: INK }}>{itemName}</h2>
-                    <p className="mt-2 text-[17px] font-semibold" style={{ color: "#6F6557" }}>{dateLabel(String(item.next_date))}</p>
-                    <div className="mt-4 h-1.5 overflow-hidden rounded-full bg-[#F3E8D6]">
+                    <h2 className="text-[22px] font-extrabold leading-tight" style={{ color: INK }}>{itemName}</h2>
+                    <p className="mt-1.5 text-[15px] font-semibold" style={{ color: "#6F6557" }}>{dateLabel(String(item.next_date))}</p>
+                    <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-[#F3E8D6]">
                       <span className="block h-full rounded-full" style={{ width: progress, background: "linear-gradient(90deg, #C9A063, #E3C383)" }} />
                     </div>
-                    <p className="mt-2 text-sm font-bold" style={{ color: BROWN }}>{item.statusLabel}</p>
+                    <p className="mt-2 text-xs font-bold" style={{ color: BROWN }}>{item.statusLabel}</p>
                   </div>
 
-                  <div className="flex flex-col items-center gap-5">
-                    <div className="grid h-16 w-16 place-items-center rounded-[20px] border bg-[#FFFCF7]" style={{ borderColor: "rgba(201,160,99,0.20)" }}>
-                      <Icon className="h-9 w-9" strokeWidth={1.6} style={{ color: GOLD }} />
+                  <div className="flex flex-col items-center justify-center">
+                    <div className="relative grid h-20 w-20 place-items-center rounded-full">
+                      <span className="absolute inset-0 rounded-full border-4 border-[#F3E8D6]" />
+                      <span className="absolute inset-0 rounded-full border-4 border-transparent border-t-[#C9A063] border-b-[#C9A063]" />
+                      <span className="text-[32px] font-extrabold leading-none" style={{ color: INK }}>{days}</span>
                     </div>
-                    <ChevronLeft className="h-5 w-5" style={{ color: INK }} />
+                    <span className="text-xs font-bold" style={{ color: INK }}>يوماً</span>
                   </div>
                 </article>
               );
