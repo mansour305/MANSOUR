@@ -71,7 +71,11 @@ jobs:
       - name: Smoke gate
         run: pnpm run smoke
 
+      - name: Functional MVP gate
+        run: node scripts/mvp-functional-gate.cjs
+
       - name: Final gate result
         run: |
           echo "MVP Launch Gate passed."
+          echo "Functional MVP Gate passed."
           echo "READY evidence is valid for commit ${GITHUB_SHA}."
