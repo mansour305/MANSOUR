@@ -157,6 +157,54 @@
 }
 
 @layer utilities {
+  .maw-device-stage {
+    min-height: 100dvh;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: stretch;
+    background:
+      radial-gradient(circle at top right, rgba(8, 127, 140, 0.08), transparent 28%),
+      linear-gradient(180deg, #f8fafc 0%, #eef9fb 100%);
+    overflow-x: hidden;
+  }
+
+  .maw-app-shell {
+    position: relative;
+    display: flex;
+    min-height: 100dvh;
+    width: 100%;
+    max-width: 480px;
+    flex-direction: column;
+    overflow: hidden;
+    background: #ffffff;
+    box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.06);
+  }
+
+  .maw-bottom-nav {
+    position: absolute;
+    left: 12px;
+    right: 12px;
+    bottom: 12px;
+    z-index: 50;
+    height: 78px;
+  }
+
+  @media (min-width: 768px) {
+    .maw-device-stage {
+      align-items: center;
+      padding: 24px;
+    }
+
+    .maw-app-shell {
+      min-height: min(920px, calc(100dvh - 48px));
+      max-height: calc(100dvh - 48px);
+      border-radius: 34px;
+      border: 1px solid rgba(15, 23, 42, 0.08);
+      box-shadow: 0 24px 80px rgba(15, 23, 42, 0.14);
+    }
+  }
+
   .maw-app-bg {
     background:
       radial-gradient(circle at top right, rgba(8, 127, 140, 0.14), transparent 32%),
