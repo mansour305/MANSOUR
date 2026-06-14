@@ -50,7 +50,7 @@ export function MawaeedakLogo({ compact = false }: { compact?: boolean }) {
             fontSize: compact ? 31 : 43,
             lineHeight: 1,
             fontWeight: 700,
-            fontFamily: "'Noto Kufi Arabic', Cairo, sans-serif",
+            fontFamily: "'Cairo', 'Noto Kufi Arabic', sans-serif",
           }}
         >
           ظ…
@@ -64,7 +64,7 @@ export function MawaeedakLogo({ compact = false }: { compact?: boolean }) {
         style={{
           color: "#A78042",
           fontSize: compact ? 24 : 31,
-          fontFamily: "'Noto Kufi Arabic', Cairo, sans-serif",
+          fontFamily: "'Cairo', 'Noto Kufi Arabic', sans-serif",
         }}
       >
         ظ…ظˆط§ط¹ظٹط¯ظƒ

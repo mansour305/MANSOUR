@@ -1,1 +1,102 @@
-﻿
+﻿/* Design System - Luxury Saudi Theme with Cairo Font */
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&display=swap');
+
+:root {
+  /* Colors - Luxury Saudi Theme */
+  --gold: #C9A063;
+  --gold-dark: #8A6B3D;
+  --ink: #2F2B25;
+  --paper: #FAF7F2;
+  --sand: #F5EFE4;
+  --cream: #F3E8D6;
+  
+  /* Legacy colors for compatibility */
+  --background: var(--paper);
+  --foreground: var(--ink);
+  --primary: var(--gold);
+  --primary-foreground: #ffffff;
+  --secondary: var(--cream);
+  --secondary-foreground: var(--ink);
+  --muted: var(--sand);
+  --muted-foreground: #7a6a5a;
+  --accent: var(--gold);
+  --accent-foreground: #ffffff;
+  --destructive: #dc2626;
+  --destructive-foreground: #ffffff;
+  --border: rgba(201, 160, 99, 0.2);
+  --input: rgba(201, 160, 99, 0.15);
+  --ring: var(--gold);
+  
+  /* Shadows */
+  --shadow-soft: 0 8px 22px rgba(138,107,61,0.08);
+  --shadow-medium: 0 12px 30px rgba(138,107,61,0.10);
+  --shadow-gold: 0 18px 45px rgba(138,107,61,0.18);
+  --shadow-heavy: 0 24px 70px rgba(47,43,37,0.12);
+  
+  /* Border Radius */
+  --radius-sm: 14px;
+  --radius-md: 18px;
+  --radius-lg: 22px;
+  --radius-xl: 28px;
+  
+  /* Border */
+  --border-gold: rgba(201,160,99,0.24);
+  --border-gold-light: rgba(201,160,99,0.18);
+}
+
+@layer base {
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    font-family: 'Cairo', 'Noto Kufi Arabic', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  
+  html {
+    font-family: 'Cairo', 'Noto Kufi Arabic', sans-serif;
+    direction: rtl;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Cairo', 'Noto Kufi Arabic', sans-serif;
+    font-weight: 700;
+  }
+}
+
+/* Utility classes for design system */
+.font-cairo {
+  font-family: 'Cairo', 'Noto Kufi Arabic', sans-serif;
+}
+
+.bg-paper {
+  background-color: var(--paper);
+}
+
+.bg-sand {
+  background-color: var(--sand);
+}
+
+.bg-cream {
+  background-color: var(--cream);
+}
+
+.text-gold {
+  color: var(--gold);
+}
+
+.text-ink {
+  color: var(--ink);
+}
+
+.border-gold {
+  border-color: var(--border-gold);
+}
+
+.shadow-gold {
+  box-shadow: var(--shadow-gold);
+}
+
+.rounded-xl {
+  border-radius: var(--radius-xl);
+}

@@ -1,12 +1,12 @@
-﻿/**
- * Notification Scheduler Service â€” Phase 13C
+/**
+ * Notification Scheduler Service — Phase 13C
  *
- * ظٹظˆظ„ط¯ ط¥ط´ط¹ط§ط±ط§طھ ط¯ط§ط®ظ„ظٹط© طھظ„ظ‚ط§ط¦ظٹط© ظ…ط¬ط¯ظˆظ„ط©:
- * - طھط°ظƒظٹط±ط§طھ ط§ظ„ظ…ظˆط§ط¹ظٹط¯ (ظ„ظ„ظ…ظˆط§ط¹ظٹط¯ ط§ظ„طھظٹ طھط­طھط§ط¬ طھط°ظƒظٹط±)
- * - طھط°ظƒظٹط±ط§طھ ط§ظ„ط£ط­ط¯ط§ط« ط§ظ„ظ…ط§ظ„ظٹط©
- * - ط¥ط´ط¹ط§ط± ظ…ط­طھظˆظ‰ ط§ظ„ظٹظˆظ… (ظٹظˆظ…ظٹ)
+ * يولد إشعارات داخلية تلقائية مجدولة:
+ * - تذكيرات المواعيد (للمواعيد التي تحتاج تذكير)
+ * - تذكيرات الأحداث المالية
+ * - إشعار محتوى اليوم (يومي)
  *
- * Idempotent: ظٹط³طھط®ط¯ظ… source_key ظ„ظ…ظ†ط¹ ط§ظ„طھظƒط±ط§ط±.
+ * Idempotent: يستخدم source_key لمنع التكرار.
  * Timezone: Asia/Riyadh
  */
 
@@ -63,13 +63,13 @@ async function logAutomation(
       run_at: getRiyadhDateString(),
     });
   } catch (e) {
-    logger.warn({ err: e }, "[AutoLog] ظپط´ظ„ ط­ظپط¸ ط³ط¬ظ„ ط§ظ„ط£طھظ…طھط©");
+    logger.warn({ err: e }, "[AutoLog] فشل حفظ سجل الأتمتة");
   }
 }
 
 /**
  * scheduleAppointmentReminders
- * ظٹظڈظ†ط´ط¦ ط¥ط´ط¹ط§ط±ط§طھ طھط°ظƒظٹط± ظ„ظ„ظ…ظˆط§ط¹ظٹط¯ ظ„ظ„ظٹظˆظ… ط§ظ„ط­ط§ظ„ظٹ ظˆط؛ط¯.
+ * يُنشئ إشعارات تذكير للمواعيد لليوم الحالي وغد.
  */
 export async function scheduleAppointmentReminders(): Promise<number> {
   const today = getRiyadhDateString();
@@ -92,21 +92,21 @@ export async function scheduleAppointmentReminders(): Promise<number> {
 
     for (const appt of appointments) {
       const isToday = appt.date === today;
-      const label = isToday ? "ط§ظ„ظٹظˆظ…" : "ط؛ط¯ط§ظ‹";
+      const label = isToday ? "اليوم" : "غداً";
       const sourceKey = `appointment_reminder_${appt.id}_${appt.date}`;
       const ok = await createNotification({
-        title: `طھط°ظƒظٹط± ظ…ظˆط¹ط¯ ${label}`,
-        body: `ظ…ظˆط¹ط¯ "${appt.title}"${appt.time ? ` ط§ظ„ط³ط§ط¹ط© ${appt.time}` : ""} â€” ${label}`,
+        title: `تذكير موعد ${label}`,
+        body: `موعد "${appt.title}"${appt.time ? ` الساعة ${appt.time}` : ""} — ${label}`,
         type: "appointment",
         source_key: sourceKey,
       });
       if (ok) created++;
     }
 
-    logger.info({ today, created }, "[NotifScheduler] طھط°ظƒظٹط±ط§طھ ط§ظ„ظ…ظˆط§ط¹ظٹط¯");
-    await logAutomation("appointment_reminders", "success", `${today}: ${created} طھط°ظƒظٹط±`, created);
+    logger.info({ today, created }, "[NotifScheduler] تذكيرات المواعيد");
+    await logAutomation("appointment_reminders", "success", `${today}: ${created} تذكير`, created);
   } catch (err) {
-    logger.error({ err }, "[NotifScheduler] ظپط´ظ„ طھط°ظƒظٹط±ط§طھ ط§ظ„ظ…ظˆط§ط¹ظٹط¯");
+    logger.error({ err }, "[NotifScheduler] فشل تذكيرات المواعيد");
     await logAutomation("appointment_reminders", "failure", String(err), 0);
   }
 
@@ -115,7 +115,7 @@ export async function scheduleAppointmentReminders(): Promise<number> {
 
 /**
  * scheduleFinancialReminders
- * ظٹظڈظ†ط´ط¦ ط¥ط´ط¹ط§ط±ط§طھ طھط°ظƒظٹط± ظ„ظ„ط£ط­ط¯ط§ط« ط§ظ„ظ…ط§ظ„ظٹط© ط§ظ„ظ‚ط§ط¯ظ…ط©.
+ * يُنشئ إشعارات تذكير للأحداث المالية القادمة.
  */
 export async function scheduleFinancialReminders(): Promise<number> {
   const today = getRiyadhDateString();
@@ -143,30 +143,30 @@ export async function scheduleFinancialReminders(): Promise<number> {
       if (daysUntil > (event.reminder_days_before ?? 3)) continue;
 
       const label =
-        daysUntil === 0 ? "ط§ظ„ظٹظˆظ…" : daysUntil === 1 ? "ط؛ط¯ط§ظ‹" : `ط®ظ„ط§ظ„ ${daysUntil} ط£ظٹط§ظ…`;
+        daysUntil === 0 ? "اليوم" : daysUntil === 1 ? "غداً" : `خلال ${daysUntil} أيام`;
       const sourceKey = `financial_reminder_${event.id}_${event.next_date}`;
 
       const typeMap: Record<string, string> = {
-        ط±ط§طھط¨: "salary",
-        ط¯ط¹ظ…: "support",
-        ظپط§طھظˆط±ط©: "bill",
-        ظ‚ط±ط¶: "bill",
+        راتب: "salary",
+        دعم: "support",
+        فاتورة: "bill",
+        قرض: "bill",
       };
       const notifType = typeMap[event.type] ?? "financial";
 
       const ok = await createNotification({
-        title: `طھط°ظƒظٹط± ظ…ط§ظ„ظٹ â€” ${event.type}`,
-        body: `"${event.name}" ظ…ظˆط¹ط¯ظ‡ ${label}${event.amount ? ` â€” ${Number(event.amount).toLocaleString("ar-SA")} ط±ظٹط§ظ„` : ""}`,
+        title: `تذكير مالي — ${event.type}`,
+        body: `"${event.name}" موعده ${label}${event.amount ? ` — ${Number(event.amount).toLocaleString("ar-SA")} ريال` : ""}`,
         type: notifType,
         source_key: sourceKey,
       });
       if (ok) created++;
     }
 
-    logger.info({ today, created }, "[NotifScheduler] طھط°ظƒظٹط±ط§طھ ظ…ط§ظ„ظٹط©");
-    await logAutomation("financial_reminders", "success", `${today}: ${created} طھط°ظƒظٹط±`, created);
+    logger.info({ today, created }, "[NotifScheduler] تذكيرات مالية");
+    await logAutomation("financial_reminders", "success", `${today}: ${created} تذكير`, created);
   } catch (err) {
-    logger.error({ err }, "[NotifScheduler] ظپط´ظ„ ط§ظ„طھط°ظƒظٹط±ط§طھ ط§ظ„ظ…ط§ظ„ظٹط©");
+    logger.error({ err }, "[NotifScheduler] فشل التذكيرات المالية");
     await logAutomation("financial_reminders", "failure", String(err), 0);
   }
 
@@ -175,7 +175,7 @@ export async function scheduleFinancialReminders(): Promise<number> {
 
 /**
  * scheduleDailyContentNotification
- * ظٹظڈظ†ط´ط¦ ط¥ط´ط¹ط§ط± ظ…ط­طھظˆظ‰ ط§ظ„ظٹظˆظ… ط¥ط°ط§ ظ„ظ… ظٹظڈظ†ط´ط£ ظپط¹ظ„ط§ظ‹.
+ * يُنشئ إشعار محتوى اليوم إذا لم يُنشأ فعلاً.
  */
 export async function scheduleDailyContentNotification(
   messageText?: string,
@@ -184,20 +184,20 @@ export async function scheduleDailyContentNotification(
   const sourceKey = `daily_content_${today}`;
   try {
     const ok = await createNotification({
-      title: "ط±ط³ط§ظ„ط© ط§ظ„ظٹظˆظ…",
-      body: messageText ?? "ط±ط³ط§ظ„طھظƒ ط§ظ„ظٹظˆظ…ظٹط© ط¬ط§ظ‡ط²ط© â€” طھظپط¶ظ‘ظ„ ط¨ط§ظ„ط§ط·ظ„ط§ط¹ ط¹ظ„ظٹظ‡ط§.",
+      title: "رسالة اليوم",
+      body: messageText ?? "رسالتك اليومية جاهزة — تفضّل بالاطلاع عليها.",
       type: "daily_content",
       source_key: sourceKey,
     });
     if (ok) {
-      logger.info({ today }, "[NotifScheduler] ط¥ط´ط¹ط§ط± ظ…ط­طھظˆظ‰ ط§ظ„ظٹظˆظ…");
-      await logAutomation("daily_content_notification", "success", `ط¥ط´ط¹ط§ط± ${today}`, 1);
+      logger.info({ today }, "[NotifScheduler] إشعار محتوى اليوم");
+      await logAutomation("daily_content_notification", "success", `إشعار ${today}`, 1);
       return 1;
     }
-    await logAutomation("daily_content_notification", "skipped", `ظ…ظˆط¬ظˆط¯ ${today}`, 0);
+    await logAutomation("daily_content_notification", "skipped", `موجود ${today}`, 0);
     return 0;
   } catch (err) {
-    logger.error({ err }, "[NotifScheduler] ظپط´ظ„ ط¥ط´ط¹ط§ط± ظ…ط­طھظˆظ‰ ط§ظ„ظٹظˆظ…");
+    logger.error({ err }, "[NotifScheduler] فشل إشعار محتوى اليوم");
     await logAutomation("daily_content_notification", "failure", String(err), 0);
     return 0;
   }
@@ -205,7 +205,7 @@ export async function scheduleDailyContentNotification(
 
 /**
  * runAllScheduledJobs
- * طھط´ط؛ظٹظ„ ط¬ظ…ظٹط¹ ط§ظ„ظ…ظ‡ط§ظ… ط§ظ„ظ…ط¬ط¯ظˆظ„ط© ط¯ظپط¹ط© ظˆط§ط­ط¯ط©.
+ * تشغيل جميع المهام المجدولة دفعة واحدة.
  */
 export async function runAllScheduledJobs(): Promise<{
   appointmentReminders: number;
@@ -220,4 +220,3 @@ export async function runAllScheduledJobs(): Promise<{
     ]);
   return { appointmentReminders, financialReminders, dailyContentNotification };
 }
-

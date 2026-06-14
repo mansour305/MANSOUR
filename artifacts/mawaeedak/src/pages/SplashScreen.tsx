@@ -138,7 +138,7 @@ export default function SplashScreen({ onComplete }: SplashScreenProps = {}) {
             className="text-6xl font-bold"
             style={{ 
               color: "#A78042",
-              fontFamily: "'Noto Kufi Arabic', Cairo, sans-serif",
+              fontFamily: "'Cairo', 'Noto Kufi Arabic', sans-serif",
               textShadow: "0 2px 4px rgba(167,128,66,0.2)",
             }}
           >
@@ -158,7 +158,7 @@ export default function SplashScreen({ onComplete }: SplashScreenProps = {}) {
           className="text-[52px] font-extrabold tracking-tight mb-2 drop-shadow-sm"
           style={{ 
             color: "#2F2B25",
-            fontFamily: "'Noto Kufi Arabic', Cairo, sans-serif",
+            fontFamily: "'Cairo', 'Noto Kufi Arabic', sans-serif",
             letterSpacing: "-0.02em",
           }}
         >
@@ -177,7 +177,7 @@ export default function SplashScreen({ onComplete }: SplashScreenProps = {}) {
           className="text-xl font-semibold tracking-wide mb-2"
           style={{ 
             color: "#A78042", 
-            fontFamily: "'Noto Kufi Arabic', Cairo, sans-serif" 
+            fontFamily: "'Cairo', 'Noto Kufi Arabic', sans-serif" 
           }}
         >
           ط±ظپظٹظ‚ ظٹظˆظ…ظƒ ظپظٹ ظƒظ„ ظ…ظˆط¹ط¯
@@ -188,7 +188,7 @@ export default function SplashScreen({ onComplete }: SplashScreenProps = {}) {
           className="text-base font-medium tracking-wide"
           style={{ 
             color: "#6F6557", 
-            fontFamily: "'Noto Kufi Arabic', Cairo, sans-serif" 
+            fontFamily: "'Cairo', 'Noto Kufi Arabic', sans-serif" 
           }}
         >
           ط±ط§طھط¨ظƒطŒ طھظ‚ظˆظٹظ…ظƒطŒ ظˆظ…ظˆط§ط¹ظٹط¯ظƒ
@@ -223,7 +223,7 @@ export default function SplashScreen({ onComplete }: SplashScreenProps = {}) {
       <div className="absolute bottom-6 left-1/2 -translate-x-1/2">
         <p 
           className="text-xs font-medium"
-          style={{ color: "#8A8175", fontFamily: "'Noto Kufi Arabic', Cairo, sans-serif" }}
+          style={{ color: "#8A8175", fontFamily: "'Cairo', 'Noto Kufi Arabic', sans-serif" }}
         >
           Mawaeedak آ© 2026
         </p>

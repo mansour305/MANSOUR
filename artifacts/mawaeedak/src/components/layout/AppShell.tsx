@@ -31,7 +31,7 @@ export function AppShell({ children, title, hideNav = false, showBack = false }:
         background:
           "radial-gradient(circle at 12% 8%, rgba(201,160,99,0.13), transparent 28%), linear-gradient(180deg, #FAF7F2 0%, #FFFFFF 42%, #F3E8D6 100%)",
         color: "#2F2B25",
-        fontFamily: "'Noto Kufi Arabic', Cairo, sans-serif",
+        fontFamily: "'Cairo', 'Noto Kufi Arabic', sans-serif",
         boxShadow: "0 0 0 1px rgba(201,160,99,0.18), 0 24px 70px rgba(47,43,37,0.12)",
       }}
     >

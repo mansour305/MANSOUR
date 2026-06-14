@@ -5,6 +5,7 @@ import { useGetPrayerTimes } from "@api-client";
 import { useGatewayFinancialCountdown } from "@/hooks/useGatewayData";
 import { formatHijriDate, formatGregorianDate, getDayName } from "@/lib/utils";
 import { useTimeFormat } from "@/hooks/useTimeFormat";
+import dailyCardBg from "@assets/daily-card.png";
 import { getRiyadhDateParts, getRiyadhTodayKey } from "@/lib/riyadhTime";
 import { getCityName, normalizeCityKey } from "@/lib/prayerTimesService";
 
