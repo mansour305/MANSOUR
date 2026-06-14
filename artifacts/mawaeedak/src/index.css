@@ -1,102 +1,109 @@
-/* Design System - Luxury Saudi Theme with Cairo Font */
-@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&display=swap');
-
-:root {
-  /* Colors - Luxury Saudi Theme */
-  --gold: #C9A063;
-  --gold-dark: #8A6B3D;
-  --ink: #2F2B25;
-  --paper: #FAF7F2;
-  --sand: #F5EFE4;
-  --cream: #F3E8D6;
-  
-  /* Legacy colors for compatibility */
-  --background: var(--paper);
-  --foreground: var(--ink);
-  --primary: var(--gold);
+:root,
+.dark,
+[data-theme] {
+  color-scheme: light;
+  --background: #ffffff;
+  --foreground: #111111;
+  --card: #ffffff;
+  --card-foreground: #111111;
+  --card-border: #e5e7eb;
+  --primary: #111111;
   --primary-foreground: #ffffff;
-  --secondary: var(--cream);
-  --secondary-foreground: var(--ink);
-  --muted: var(--sand);
-  --muted-foreground: #7a6a5a;
-  --accent: var(--gold);
-  --accent-foreground: #ffffff;
-  --destructive: #dc2626;
+  --secondary: #f5f5f5;
+  --secondary-foreground: #111111;
+  --muted: #f5f5f5;
+  --muted-foreground: #555555;
+  --accent: #eeeeee;
+  --accent-foreground: #111111;
+  --destructive: #b91c1c;
   --destructive-foreground: #ffffff;
-  --border: rgba(201, 160, 99, 0.2);
-  --input: rgba(201, 160, 99, 0.15);
-  --ring: var(--gold);
-  
-  /* Shadows */
-  --shadow-soft: 0 8px 22px rgba(138,107,61,0.08);
-  --shadow-medium: 0 12px 30px rgba(138,107,61,0.10);
-  --shadow-gold: 0 18px 45px rgba(138,107,61,0.18);
-  --shadow-heavy: 0 24px 70px rgba(47,43,37,0.12);
-  
-  /* Border Radius */
-  --radius-sm: 14px;
-  --radius-md: 18px;
-  --radius-lg: 22px;
-  --radius-xl: 28px;
-  
-  /* Border */
-  --border-gold: rgba(201,160,99,0.24);
-  --border-gold-light: rgba(201,160,99,0.18);
+  --border: #e5e7eb;
+  --input: #e5e7eb;
+  --ring: #111111;
+  --popover: #ffffff;
+  --popover-foreground: #111111;
+  --popover-border: #e5e7eb;
+  --font-primary: Arial, sans-serif;
+  --radius-sm: 8px;
+  --radius-md: 10px;
+  --radius-lg: 12px;
+  --radius-xl: 14px;
 }
 
-@layer base {
-  body {
-    background-color: var(--background);
-    color: var(--foreground);
-    font-family: 'Cairo', 'Noto Kufi Arabic', sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-  }
-  
-  html {
-    font-family: 'Cairo', 'Noto Kufi Arabic', sans-serif;
-    direction: rtl;
-  }
-  
-  h1, h2, h3, h4, h5, h6 {
-    font-family: 'Cairo', 'Noto Kufi Arabic', sans-serif;
-    font-weight: 700;
-  }
+* {
+  box-sizing: border-box;
+  text-shadow: none !important;
+  box-shadow: none !important;
+  background-image: none !important;
 }
 
-/* Utility classes for design system */
-.font-cairo {
-  font-family: 'Cairo', 'Noto Kufi Arabic', sans-serif;
+html,
+body,
+#root {
+  min-height: 100%;
+  background: #ffffff !important;
+  color: #111111 !important;
+  font-family: Arial, sans-serif !important;
+  direction: rtl;
 }
 
-.bg-paper {
-  background-color: var(--paper);
+body {
+  margin: 0;
+  overflow-x: hidden;
 }
 
-.bg-sand {
-  background-color: var(--sand);
+img,
+picture,
+source {
+  display: none !important;
 }
 
-.bg-cream {
-  background-color: var(--cream);
+svg {
+  color: #4b5563 !important;
+  stroke: #4b5563 !important;
 }
 
-.text-gold {
-  color: var(--gold);
+[style*="linear-gradient"],
+[style*="radial-gradient"],
+[style*="url("],
+[style*="#C9A063"],
+[style*="#A78042"],
+[style*="#8A6B3D"],
+[style*="#2F2B25"],
+[style*="#FAF7F2"],
+[style*="#F3E8D6"],
+[style*="201,160,99"],
+[style*="138,107,61"],
+[style*="167,128,66"] {
+  background: #ffffff !important;
+  background-image: none !important;
+  color: #111111 !important;
+  border-color: #e5e7eb !important;
+  box-shadow: none !important;
 }
 
-.text-ink {
-  color: var(--ink);
+header,
+nav,
+aside,
+main,
+section,
+article,
+footer,
+[role="dialog"] {
+  background: #ffffff !important;
+  background-image: none !important;
+  border-color: #e5e7eb !important;
+  box-shadow: none !important;
 }
 
-.border-gold {
-  border-color: var(--border-gold);
+button,
+a,
+input,
+textarea,
+select {
+  font-family: Arial, sans-serif !important;
 }
 
-.shadow-gold {
-  box-shadow: var(--shadow-gold);
-}
-
-.rounded-xl {
-  border-radius: var(--radius-xl);
+.neutral-pending-identity-note::before {
+  content: "الهوية الجديدة غير معتمدة بعد. جميع الهويات والتصاميم والمراجع السابقة ملغاة.";
 }
