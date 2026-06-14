@@ -16,7 +16,7 @@ const links = [
   { href: "/", label: "الرئيسية", icon: Home },
   { href: "/calendar", label: "التقويم", icon: CalendarDays },
   { href: "/salaries", label: "الرواتب", icon: Wallet },
-  { href: "/services", label: "الخدمات", icon: Grid2X2 },
+  { href: "/services", label: "خدماتك", icon: Grid2X2 },
 ];
 
 function Mark({ compact = false }: MawaeedakLogoProps) {
