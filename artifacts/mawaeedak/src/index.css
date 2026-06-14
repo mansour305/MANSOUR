@@ -62,24 +62,44 @@
   --popover-foreground: 31 34% 13%;
   --popover-border: 35 42% 86%;
 
-  --app-font-sans: Arial, Tahoma, sans-serif;
+  --app-font-sans: 'IBM Plex Sans Arabic', 'Tajawal', Arial, sans-serif;
   --app-font-serif: Georgia, serif;
   --app-font-mono: Menlo, Consolas, monospace;
-  --radius: 22px;
+  --radius: 24px;
 
-  --maw-bg: #fbf5e9;
-  --maw-surface: #fffaf1;
-  --maw-surface-strong: #ffffff;
-  --maw-text: #2f2418;
-  --maw-muted: #7b6a57;
-  --maw-line: #ead8bd;
-  --maw-gold: #c99136;
-  --maw-gold-deep: #a46f1d;
-  --maw-gold-soft: #fff1d6;
-  --maw-green: #187a3b;
-  --maw-blue: #1b57b8;
-  --maw-orange: #e24c2a;
-  --maw-shadow: 0 18px 55px rgba(112, 78, 36, 0.14);
+  /* 🎨 هوية مواعيدك الذهبية */
+  --maw-bg: #FDF8F0;
+  --maw-surface: #FFFDF8;
+  --maw-surface-strong: #FFFFFF;
+  --maw-text: #1A1614;
+  --maw-text-secondary: #5C4D3C;
+  --maw-muted: #9A8A7A;
+  --maw-line: #E8DDD0;
+  
+  /* تدرجات ذهبية فاخرة */
+  --maw-gold-100: #FEF7E6;
+  --maw-gold-200: #FCE8C3;
+  --maw-gold-300: #F5D69C;
+  --maw-gold-400: #E8BE6A;
+  --maw-gold-500: #D4A84B;
+  --maw-gold-600: #C9953A;
+  --maw-gold-700: #A67C2E;
+  --maw-gold-800: #8B6425;
+  --maw-gold-900: #5C4320;
+  
+  --maw-shadow-soft: 0 8px 32px rgba(90, 60, 20, 0.08);
+  --maw-shadow-medium: 0 16px 48px rgba(90, 60, 20, 0.12);
+  --maw-shadow-heavy: 0 24px 64px rgba(90, 60, 20, 0.16);
+  --maw-shadow-glow: 0 8px 32px rgba(201, 149, 58, 0.25);
+  
+  --maw-green: #1D7A3F;
+  --maw-green-light: #E8F5ED;
+  --maw-blue: #1B57B8;
+  --maw-blue-light: #E8F0FC;
+  --maw-orange: #D64C2A;
+  --maw-orange-light: #FDEEE9;
+  --maw-red: #C92A2A;
+  --maw-red-light: #FDEDED;
 }
 
 @layer base {
@@ -277,4 +297,320 @@
     border-color: #c9a063 !important;
     box-shadow: 0 0 0 3px rgba(201, 145, 54, 0.20) !important;
   }
+
+  /* ═══════════════════════════════════════════════════════════════ */
+  /* 🎨 هوية مواعيدك الشاملة - Comprehensive Design System        */
+  /* ═══════════════════════════════════════════════════════════════ */
+
+  /* 🌟 خلفية التطبيق الرئيسية - Premium Background */
+  .maw-device-stage {
+    min-height: 100dvh;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: stretch;
+    background:
+      radial-gradient(ellipse at 90% -10%, rgba(212, 168, 75, 0.18) 0%, transparent 50%),
+      radial-gradient(ellipse at 10% 110%, rgba(201, 149, 58, 0.10) 0%, transparent 40%),
+      linear-gradient(180deg, #FFFDF8 0%, #FDF6EC 50%, #F8EFE1 100%);
+    overflow-x: hidden;
+  }
+
+  /* 📱 قشرة التطبيق - App Shell */
+  .maw-app-shell {
+    position: relative;
+    display: flex;
+    min-height: 100dvh;
+    width: 100%;
+    max-width: 480px;
+    flex-direction: column;
+    overflow: hidden;
+    background: var(--maw-surface);
+  }
+
+  .maw-app-shell > main {
+    padding-bottom: 160px !important;
+    flex: 1;
+  }
+
+  /* 🎯 الشريط السفلي الفاخر - Premium Bottom Nav */
+  .maw-bottom-nav {
+    position: absolute;
+    left: 16px;
+    right: 16px;
+    bottom: 16px;
+    z-index: 50;
+    height: 76px;
+    border-radius: 24px !important;
+    background: linear-gradient(180deg, rgba(255, 253, 248, 0.98) 0%, rgba(255, 250, 240, 0.95) 100%) !important;
+    border: 1.5px solid rgba(201, 149, 58, 0.25) !important;
+    box-shadow: 
+      0 20px 60px rgba(90, 60, 20, 0.14),
+      0 8px 24px rgba(90, 60, 20, 0.08),
+      inset 0 1px 0 rgba(255, 255, 255, 0.9) !important;
+    backdrop-filter: blur(20px);
+  }
+
+  .maw-bottom-nav a {
+    border-radius: 18px !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  @media (min-width: 768px) {
+    .maw-device-stage {
+      align-items: center;
+      padding: 32px;
+    }
+
+    .maw-app-shell {
+      min-height: min(920px, calc(100dvh - 64px));
+      max-height: calc(100dvh - 64px);
+      border-radius: 40px;
+      border: 1.5px solid rgba(201, 149, 58, 0.30);
+      box-shadow: 
+        0 32px 100px rgba(90, 60, 20, 0.18),
+        0 16px 48px rgba(90, 60, 20, 0.10),
+        inset 0 1px 0 rgba(255, 255, 255, 0.7);
+    }
+
+    .maw-bottom-nav {
+      left: 24px;
+      right: 24px;
+      bottom: 24px;
+      border-radius: 28px !important;
+    }
+  }
+
+  /* 🎨 خلفيات البطاقات - Card Backgrounds */
+  .maw-app-bg {
+    background:
+      radial-gradient(ellipse at 90% -5%, rgba(212, 168, 75, 0.15) 0%, transparent 40%),
+      linear-gradient(180deg, #FFFDF8 0%, #FFF8F0 50%, #FDF6EC 100%);
+  }
+
+  /* 🃏 تصميم البطاقات الفاخرة - Premium Cards */
+  .maw-card,
+  article,
+  [class*="rounded-"][class*="border"] {
+    background: linear-gradient(180deg, rgba(255, 253, 248, 0.98) 0%, rgba(255, 250, 240, 0.95) 100%) !important;
+    border: 1.5px solid rgba(201, 149, 58, 0.18) !important;
+    border-radius: 24px !important;
+    box-shadow: 
+      0 12px 40px rgba(90, 60, 20, 0.10),
+      0 4px 16px rgba(90, 60, 20, 0.05),
+      inset 0 1px 0 rgba(255, 255, 255, 0.9) !important;
+  }
+
+  /* 💎 البطاقات المميزة - Premium Highlighted Cards */
+  .maw-card-premium {
+    background: linear-gradient(145deg, #FFFDF8 0%, #FFF8F0 100%) !important;
+    border: 1.5px solid rgba(201, 149, 58, 0.30) !important;
+    box-shadow: 
+      0 16px 48px rgba(90, 60, 20, 0.14),
+      0 8px 24px rgba(90, 60, 20, 0.08),
+      inset 0 1px 0 rgba(255, 255, 255, 0.95) !important;
+  }
+
+  /* 🏷️ الشارات والنبذات - Badges & Pills */
+  .maw-pill {
+    background: linear-gradient(135deg, #FEF7E6 0%, #FDF4E3 100%);
+    color: #8B6425;
+    border: 1px solid rgba(201, 149, 58, 0.30);
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(201, 149, 58, 0.18);
+    font-weight: 600;
+  }
+
+  /* 🌟 الأزرار الذهبية - Golden Buttons */
+  .maw-gradient {
+    background: linear-gradient(145deg, #D4A84B 0%, #C9953A 50%, #A67C2E 100%) !important;
+    color: #FFFFFF !important;
+    box-shadow: 
+      0 12px 32px rgba(180, 120, 40, 0.40),
+      inset 0 1px 0 rgba(255, 255, 255, 0.30) !important;
+    border: none !important;
+  }
+
+  /* ✨ النص الذهبي - Golden Text */
+  .maw-text-gradient {
+    background: linear-gradient(135deg, #A67C2E, #C9953A, #D4A84B, #E8C77A);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* 📐 أمان الشريط السفلي */
+  .maw-bottom-safe {
+    padding-bottom: max(1.5rem, env(safe-area-inset-bottom));
+  }
+
+  /* 🎨 نظام الظلال الفاخر - Premium Shadows */
+  .shadow-sm { 
+    box-shadow: 0 4px 16px rgba(90, 60, 20, 0.08) !important; 
+  }
+  .shadow-md { 
+    box-shadow: 0 8px 32px rgba(90, 60, 20, 0.10), 0 2px 8px rgba(90, 60, 20, 0.05) !important; 
+  }
+  .shadow-lg { 
+    box-shadow: 0 16px 48px rgba(90, 60, 20, 0.14), 0 8px 24px rgba(90, 60, 20, 0.08) !important; 
+  }
+  .shadow-xl { 
+    box-shadow: 0 24px 64px rgba(90, 60, 20, 0.18), 0 12px 32px rgba(90, 60, 20, 0.10) !important; 
+  }
+  .shadow-gold { 
+    box-shadow: 0 8px 32px rgba(201, 149, 58, 0.30), 0 4px 12px rgba(201, 149, 58, 0.20) !important; 
+  }
+  .shadow-glow { 
+    box-shadow: 0 0 30px rgba(201, 149, 58, 0.40) !important; 
+  }
+
+  /* 🔘 الأزرار - Buttons */
+  .btn-primary {
+    background: linear-gradient(145deg, #D4A84B 0%, #C9953A 50%, #A67C2E 100%);
+    color: white;
+    border: none;
+    border-radius: 20px;
+    box-shadow: 0 12px 32px rgba(180, 120, 40, 0.40);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    font-weight: 700;
+  }
+  .btn-primary:hover {
+    box-shadow: 0 16px 40px rgba(180, 120, 40, 0.45);
+    transform: translateY(-2px);
+  }
+  .btn-primary:active {
+    transform: translateY(0) scale(0.98);
+    box-shadow: 0 8px 24px rgba(180, 120, 40, 0.35);
+  }
+
+  .btn-secondary {
+    background: linear-gradient(180deg, #FFFDF8 0%, #FFF8F0 100%);
+    color: #8B6425;
+    border: 1.5px solid rgba(201, 149, 58, 0.30);
+    border-radius: 20px;
+    box-shadow: 0 4px 16px rgba(90, 60, 20, 0.10);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    font-weight: 600;
+  }
+  .btn-secondary:hover {
+    border-color: rgba(201, 149, 58, 0.45);
+    box-shadow: 0 8px 24px rgba(90, 60, 20, 0.14);
+    transform: translateY(-1px);
+  }
+
+  /* 📝 حقول الإدخال - Input Fields */
+  input, textarea, select {
+    background: linear-gradient(180deg, #FFFDF8 0%, #FFF8F0 100%) !important;
+    border: 1.5px solid rgba(201, 149, 58, 0.25) !important;
+    border-radius: 16px !important;
+    color: var(--maw-text) !important;
+    transition: all 0.3s ease;
+  }
+  input:focus, textarea:focus, select:focus {
+    border-color: #C9953A !important;
+    box-shadow: 0 0 0 4px rgba(201, 149, 58, 0.18), 0 4px 16px rgba(90, 60, 20, 0.10) !important;
+    outline: none;
+  }
+  input::placeholder, textarea::placeholder {
+    color: var(--maw-muted) !important;
+  }
+
+  /* 🎯 أيقونات الأزرار في Header - Icon Buttons */
+  .maw-icon-btn {
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 16px;
+    background: linear-gradient(180deg, #FFFFFF 0%, #FFF8F0 100%);
+    border: 1.5px solid rgba(201, 149, 58, 0.25);
+    color: #8B6425;
+    box-shadow: 0 4px 16px rgba(90, 60, 20, 0.10);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+  }
+  .maw-icon-btn:hover {
+    border-color: rgba(201, 149, 58, 0.40);
+    box-shadow: 0 8px 24px rgba(90, 60, 20, 0.14);
+    transform: translateY(-2px);
+  }
+  .maw-icon-btn:active {
+    transform: scale(0.95);
+  }
+
+  /* 💫 تأثيرات الحركة - Animations */
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes pulse-soft {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.75; }
+  }
+  @keyframes glow-pulse {
+    0%, 100% { box-shadow: 0 0 24px rgba(201, 149, 58, 0.35); }
+    50% { box-shadow: 0 0 36px rgba(201, 149, 58, 0.55); }
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
+  }
+
+  .animate-fade-in {
+    animation: fadeIn 0.4s ease-out forwards;
+  }
+  .animate-slide-up {
+    animation: slideUp 0.5s ease-out forwards;
+  }
+  .animate-pulse-soft {
+    animation: pulse-soft 2s ease-in-out infinite;
+  }
+  .animate-glow-pulse {
+    animation: glow-pulse 2s ease-in-out infinite;
+  }
+  .animate-float {
+    animation: float 3s ease-in-out infinite;
+  }
+
+  /* 📊 مؤشرات الحالة - Status Indicators */
+  .maw-success {
+    color: #1D7A3F;
+    background: #E8F5ED;
+  }
+  .maw-warning {
+    color: #92650A;
+    background: #FEF3C7;
+  }
+  .maw-danger {
+    color: #C92A2A;
+    background: #FDEDED;
+  }
+  .maw-info {
+    color: #1B57B8;
+    background: #E8F0FC;
+  }
+
+  /* 🎴 تصميم البطاقات السريع - Compact Cards */
+  .maw-card-compact {
+    background: linear-gradient(180deg, rgba(255, 253, 248, 0.98) 0%, rgba(255, 250, 240, 0.95) 100%) !important;
+    border: 1px solid rgba(201, 149, 58, 0.15) !important;
+    border-radius: 20px !important;
+    box-shadow: 0 8px 24px rgba(90, 60, 20, 0.08) !important;
+  }
+
+  /* 🎯 border-radius متناسق - Consistent Border Radius */
+  .rounded-2xl { border-radius: 20px; }
+  .rounded-3xl { border-radius: 28px; }
+  .rounded-4xl { border-radius: 36px; }
+
+  /* 🌈 تدرجات لونية مساعدة */
+  .bg-gold-100 { background-color: #FEF7E6; }
+  .bg-gold-200 { background-color: #FCE8C3; }
+  .text-gold-600 { color: #C9953A; }
+  .text-gold-700 { color: #A67C2E; }
+  .border-gold-300 { border-color: rgba(201, 149, 58, 0.30); }
 }

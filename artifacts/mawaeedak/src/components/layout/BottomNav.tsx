@@ -14,7 +14,7 @@ export function BottomNav() {
   const [location] = useLocation();
 
   return (
-    <nav dir="rtl" className="maw-bottom-nav grid grid-cols-5 border border-[rgba(201,160,99,0.25)] bg-[rgba(255,250,241,0.98)] px-2 py-2 backdrop-blur-xl maw-bottom-safe">
+    <nav dir="rtl" className="maw-bottom-nav grid grid-cols-5 px-2 py-2 backdrop-blur-xl maw-bottom-safe">
       {tabs.map((tab) => {
         const Icon = tab.icon;
         const active = tab.match(location);
@@ -23,9 +23,9 @@ export function BottomNav() {
             key={tab.href} 
             href={tab.href} 
             aria-label={tab.label} 
-            className={`flex min-w-0 flex-col items-center justify-center gap-1 rounded-2xl px-1 transition-all duration-200 ${active ? "maw-gradient" : "text-[#7b6a57] hover:text-[#8A6B3D] hover:bg-[rgba(201,145,54,0.08)]"}`}
+            className={`flex min-w-0 flex-col items-center justify-center gap-1 rounded-2xl px-1 transition-all duration-300 ${active ? "maw-gradient shadow-gold scale-105" : "text-[#9A8A7A] hover:text-[#8B6425] hover:bg-[rgba(201,149,58,0.08)]"}`}
           >
-            <Icon className="h-6 w-6" strokeWidth={active ? 2.35 : 1.9} />
+            <Icon className="h-6 w-6" strokeWidth={active ? 2.5 : 2} />
             <span className="truncate text-[10px] font-bold">{tab.label}</span>
           </Link>
         );
