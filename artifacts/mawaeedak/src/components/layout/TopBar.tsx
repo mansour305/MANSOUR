@@ -7,6 +7,10 @@ interface TopBarProps {
   showBack?: boolean;
 }
 
+interface MawaeedakLogoProps {
+  compact?: boolean;
+}
+
 const links = [
   { href: "/", label: "الرئيسية", icon: Home },
   { href: "/calendar", label: "التقويم", icon: CalendarDays },
@@ -14,19 +18,19 @@ const links = [
   { href: "/services", label: "الخدمات", icon: Grid2X2 },
 ];
 
-function Mark() {
+function Mark({ compact = false }: MawaeedakLogoProps) {
   return (
     <div className="flex items-center gap-2">
-      <div className="grid h-11 w-11 place-items-center rounded-2xl bg-gradient-to-br from-[#087f8c] to-[#16b8a6] text-white shadow-[0_12px_28px_rgba(8,127,140,0.24)]">
-        <span className="text-[23px] font-black leading-none">م</span>
+      <div className={compact ? "grid h-16 w-16 place-items-center rounded-[24px] bg-gradient-to-br from-[#087f8c] to-[#16b8a6] text-white shadow-[0_12px_28px_rgba(8,127,140,0.24)]" : "grid h-11 w-11 place-items-center rounded-2xl bg-gradient-to-br from-[#087f8c] to-[#16b8a6] text-white shadow-[0_12px_28px_rgba(8,127,140,0.24)]"}>
+        <span className={compact ? "text-[34px] font-black leading-none" : "text-[23px] font-black leading-none"}>م</span>
       </div>
-      <span className="maw-text-gradient text-[24px] font-black leading-none">مواعيدك</span>
+      {!compact ? <span className="maw-text-gradient text-[24px] font-black leading-none">مواعيدك</span> : null}
     </div>
   );
 }
 
-export function MawaeedakLogo() {
-  return <Mark />;
+export function MawaeedakLogo({ compact = false }: MawaeedakLogoProps) {
+  return <Mark compact={compact} />;
 }
 
 export function TopBar({ title }: TopBarProps) {
