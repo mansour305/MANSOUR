@@ -1,0 +1,72 @@
+name: MVP Launch Gate
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  launch-gate:
+    name: Verify Mawaeedak MVP readiness
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Print project proof
+        run: |
+          echo "Repository: DANGERMANS/mawaeedak"
+          echo "Branch: ${GITHUB_REF_NAME}"
+          echo "Commit: ${GITHUB_SHA}"
+          git status --short
+          pnpm --version
+          node --version
+
+      - name: Verify required MVP files exist
+        run: |
+          test -f artifacts/mawaeedak/src/features/services/GoalsPage.tsx
+          test -f artifacts/mawaeedak/src/features/services/CostsPage.tsx
+          test -f artifacts/mawaeedak/src/features/services/RemindersPage.tsx
+          test -f artifacts/mawaeedak/src/lib/aladhanService.ts
+          test -f artifacts/mawaeedak/src/hooks/usePrayerEngine.ts
+
+      - name: Verify required routes and service links
+        run: |
+          grep -n "/services/goals" artifacts/mawaeedak/src/App.tsx
+          grep -n "/services/costs" artifacts/mawaeedak/src/App.tsx
+          grep -n "/services/reminders" artifacts/mawaeedak/src/App.tsx
+          grep -n "/services/goals" artifacts/mawaeedak/src/features/centers/CentersPage.tsx
+          grep -n "/services/costs" artifacts/mawaeedak/src/features/centers/CentersPage.tsx
+          grep -n "/services/reminders" artifacts/mawaeedak/src/features/centers/CentersPage.tsx
+          ! grep -n "احسب هدفك.*\/centers\/work\|حساب التكاليف.*\/centers\/work\|ذكرني.*\/centers\/work" artifacts/mawaeedak/src/features/centers/CentersPage.tsx
+
+      - name: Typecheck workspace
+        run: pnpm run typecheck
+
+      - name: Build workspace
+        run: pnpm run build
+
+      - name: Smoke gate
+        run: pnpm run smoke
+
+      - name: Final gate result
+        run: echo "MVP Launch Gate passed. READY evidence is valid for this commit: ${GITHUB_SHA}"
