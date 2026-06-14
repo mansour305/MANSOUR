@@ -1,13 +1,6 @@
 /**
  * CentersPage — Saudi Premium Minimal Services
- *
- * Features:
- * - Title: الخدمات
- * - Subtitle: خدمات منظمة تساعدك في يومك
- * - Section title: الخدمات المتاحة
- * - 8 premium service cards with icons
- * - Bottom blessing card with Salawat
- * - No user-facing technical text
+ * Design: Matches reference image with gradient background and premium cards
  */
 
 import { Link } from "wouter";
@@ -16,7 +9,7 @@ import {
   Calculator, Bell, Briefcase, Gift, GraduationCap, MessageSquare, Plane, Target,
 } from "lucide-react";
 
-// Services in required order - only 8 visible services
+// Services in required order
 const visibleServices = [
   { title: "احسب هدفك", subtitle: "حدد هدفك وخطة التوفير", icon: Target, path: "/services/goals", status: "ready" },
   { title: "حساب التكاليف", subtitle: "قائمة البنود والمصروفات", icon: Calculator, path: "/services/costs", status: "ready" },
@@ -28,95 +21,138 @@ const visibleServices = [
   { title: "صوتك مسموع", subtitle: "شكاوى واقتراحات", icon: MessageSquare, path: "/centers/complaints", status: "ready" },
 ];
 
-// Coming Soon badge
-function ComingSoonBadge() {
+// Service card component
+function ServiceCard({ service }: { service: typeof visibleServices[0] }) {
+  const Icon = service.icon;
+  const isReady = service.status === "ready";
+
   return (
-    <span 
-      className="absolute -top-1 -left-1 text-[8px] font-bold px-1.5 py-0.5 rounded-full"
-      style={{ 
-        background: "linear-gradient(135deg, hsl(38 72% 52%), hsl(28 68% 38%))",
-        color: "white",
-      }}
-    >
-      قريباً
-    </span>
+    <Link href={isReady ? service.path : "#"}>
+      <article
+        className={`relative flex flex-col items-center justify-center rounded-3xl p-5 text-center transition-all duration-200 ${
+          isReady 
+            ? "bg-white/95 cursor-pointer active:scale-[0.97]" 
+            : "bg-white/60 opacity-70 cursor-not-allowed"
+        }`}
+        style={{
+          boxShadow: isReady 
+            ? "0 8px 32px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.8)" 
+            : "0 4px 16px rgba(0,0,0,0.04)",
+          minHeight: "160px",
+        }}
+      >
+        {/* Icon container */}
+        <div 
+          className="flex h-14 w-14 items-center justify-center rounded-2xl"
+          style={{
+            background: "linear-gradient(145deg, #C9A063 0%, #A67C3D 100%)",
+            boxShadow: "0 4px 12px rgba(201,160,99,0.35)",
+          }}
+        >
+          <Icon className="h-7 w-7 text-white" strokeWidth={1.8} />
+        </div>
+
+        {/* Title */}
+        <h3 
+          className="mt-3 text-lg font-bold leading-tight"
+          style={{ color: "#2F2B25" }}
+        >
+          {service.title}
+        </h3>
+
+        {/* Subtitle */}
+        <p 
+          className="mt-1.5 text-xs font-medium leading-relaxed"
+          style={{ color: "#6F6557", maxWidth: "140px" }}
+        >
+          {service.subtitle}
+        </p>
+
+        {/* Bottom accent line */}
+        <div 
+          className="absolute bottom-0 left-1/2 h-0.5 -translate-x-1/2 rounded-full transition-all duration-300"
+          style={{ 
+            width: "40px",
+            background: isReady 
+              ? "linear-gradient(90deg, transparent, #C9A063, transparent)" 
+              : "transparent"
+          }}
+        />
+      </article>
+    </Link>
+  );
+}
+
+// Decorative divider
+function GoldDivider() {
+  return (
+    <div className="flex items-center justify-center gap-3 py-2">
+      <div 
+        className="h-px flex-1 rounded-full" 
+        style={{ background: "linear-gradient(90deg, transparent, #C9A063)" }} 
+      />
+      <span style={{ color: "#C9A063", fontSize: "10px" }}>◆</span>
+      <div 
+        className="h-px flex-1 rounded-full" 
+        style={{ background: "linear-gradient(90deg, #C9A063, transparent)" }} 
+      />
+    </div>
   );
 }
 
 export default function CentersPage() {
   return (
     <AppShell title="خدماتك">
-      <div className="space-y-6">
-        <p className="text-center text-[16px] font-semibold" style={{ color: "#6F6557" }}>
-          خدمات منظمة تساعدك في يومك
-        </p>
-
-        {/* Section title */}
-        <div className="flex items-center gap-3">
-          <div className="h-px flex-1" style={{ background: "linear-gradient(90deg, transparent, rgba(201,160,99,0.4))" }} />
-          <h2 className="text-[18px] font-bold" style={{ color: "#A78042" }}>
-            الخدمات المتاحة
-          </h2>
-          <div className="h-px flex-1" style={{ background: "linear-gradient(90deg, rgba(201,160,99,0.4), transparent)" }} />
+      <div className="space-y-5">
+        {/* Header section */}
+        <div className="text-center">
+          <h1 
+            className="text-2xl font-black"
+            style={{ color: "#2F2B25" }}
+          >
+            الخدمات
+          </h1>
+          <p 
+            className="mt-1.5 text-sm font-medium"
+            style={{ color: "#6F6557" }}
+          >
+            خدمات متميزة
+          </p>
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
-          {visibleServices.map((service) => {
-            const Icon = service.icon;
-            const isReady = service.status === "ready";
-            
-            return (
-              <Link key={service.title} href={isReady ? service.path : "#"}>
-                <article
-                  className={`relative flex min-h-[174px] flex-col items-center justify-center rounded-[24px] border bg-white/82 p-5 text-center transition ${isReady ? "active:scale-[0.98] cursor-pointer" : "opacity-60 cursor-not-allowed"}`}
-                  style={{
-                    borderColor: "rgba(201,160,99,0.22)",
-                    boxShadow: "0 14px 34px rgba(138,107,61,0.10)",
-                  }}
-                >
-                  {!isReady && <ComingSoonBadge />}
-                  <div 
-                    className="grid h-16 w-16 place-items-center rounded-[20px]" 
-                    style={{ 
-                      background: "linear-gradient(135deg, rgba(201,160,99,0.15), rgba(201,160,99,0.05))",
-                      color: "#C9A063",
-                    }}
-                  >
-                    <Icon className="h-10 w-10" strokeWidth={1.5} />
-                  </div>
-                  <h3 className="mt-3 text-[20px] font-extrabold leading-tight" style={{ color: "#2F2B25" }}>
-                    {service.title}
-                  </h3>
-                  <p className="mt-2 max-w-[180px] text-[14px] font-bold leading-6" style={{ color: "#6F6557" }}>
-                    {service.subtitle}
-                  </p>
-                </article>
-              </Link>
-            );
-          })}
+        <GoldDivider />
+
+        {/* Services grid */}
+        <div className="grid grid-cols-2 gap-3">
+          {visibleServices.map((service) => (
+            <ServiceCard key={service.title} service={service} />
+          ))}
         </div>
+
+        <GoldDivider />
 
         {/* Blessing card */}
         <div 
-          className="relative overflow-hidden rounded-[24px] border p-6 text-center"
-          style={{ 
-            borderColor: "rgba(201,160,99,0.25)",
-            background: "linear-gradient(180deg, #FAF7F2 0%, #FFFDF8 100%)",
-            boxShadow: "0 8px 24px rgba(138,107,61,0.08)",
+          className="relative overflow-hidden rounded-3xl p-6 text-center"
+          style={{
+            background: "linear-gradient(145deg, #FAF7F2 0%, #FFFDF8 50%, #FAF7F2 100%)",
+            boxShadow: "0 8px 32px rgba(201,160,99,0.12), inset 0 1px 0 rgba(255,255,255,0.9)",
+            border: "1px solid rgba(201,160,99,0.2)",
           }}
         >
-          {/* Ornamental gold divider */}
-          <div className="flex items-center justify-center gap-3 mb-4">
-            <div className="h-px w-10 flex-1" style={{ background: "linear-gradient(90deg, transparent, #C9A063)" }} />
-            <span className="text-lg" style={{ color: "#C9A063" }}>✦</span>
-            <div className="h-px w-10 flex-1" style={{ background: "linear-gradient(90deg, #C9A063, transparent)" }} />
-          </div>
+          {/* Inner decorative frame */}
+          <div 
+            className="absolute inset-2 rounded-2xl pointer-events-none"
+            style={{ 
+              border: "1px solid rgba(201,160,99,0.15)",
+            }}
+          />
 
           <p 
-            className="text-xl font-bold leading-relaxed"
+            className="relative text-lg font-bold leading-relaxed"
             style={{ 
               color: "#8A6B3D",
-              fontFamily: "'Noto Kufi Arabic', Cairo, sans-serif",
+              fontFamily: "'Noto Kufi Arabic', 'Cairo', sans-serif",
             }}
           >
             اللَّهُمَّ صَلِّ وَسَلِّمْ عَلَى نَبِيِّنَا مُحَمَّد ﷺ
