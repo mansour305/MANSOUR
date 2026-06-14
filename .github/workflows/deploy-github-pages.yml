@@ -40,11 +40,15 @@ jobs:
       - name: Typecheck
         run: pnpm run typecheck
 
-      - name: Build Mawaeedak web app
-        run: pnpm --filter "./artifacts/mawaeedak" run build
+      - name: Build Mawaeedak web app for GitHub Pages
+        working-directory: artifacts/mawaeedak
+        run: pnpm exec vite build --configLoader runner --base=/mawaeedak/
 
       - name: Add SPA fallback
         run: cp artifacts/mawaeedak/dist/index.html artifacts/mawaeedak/dist/404.html
+
+      - name: Disable Jekyll processing
+        run: touch artifacts/mawaeedak/dist/.nojekyll
 
       - name: Configure Pages
         uses: actions/configure-pages@v5
