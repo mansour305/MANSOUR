@@ -613,4 +613,190 @@
   .text-gold-600 { color: #C9953A; }
   .text-gold-700 { color: #A67C2E; }
   .border-gold-300 { border-color: rgba(201, 149, 58, 0.30); }
+
+  /* ═══════════════════════════════════════════
+     🎨 الزخارف الإسلامية - Islamic Decorations
+     ═══════════════════════════════════════════ */
+
+  /* نمط هندسي إسلامي كخلفية */
+  .maw-pattern-geometric {
+    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23C9A063' fill-opacity='0.06'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  }
+
+  /* نمط الأقواس الإسلامية */
+  .maw-pattern-arch {
+    background-image: url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%23C9A063' stroke-opacity='0.08' stroke-width='1'%3E%3Cpath d='M0 80 L40 0 L80 80'/%3E%3Cpath d='M10 80 L40 20 L70 80'/%3E%3Cpath d='M20 80 L40 40 L60 80'/%3E%3C/g%3E%3C/svg%3E");
+  }
+
+  /* نمط النجوم الإسلامية */
+  .maw-pattern-star {
+    background-image: url("data:image/svg+xml,%3Csvg width='52' height='26' viewBox='0 0 52 26' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23C9A063' fill-opacity='0.05'%3E%3Cpath d='M10 10 .155 0 0 10.67 0 26h10.67z'/%3E%3Cpath d='M24 6.2 18.155 0 0 13.4 0 26h16.26z'/%3E%3Cpath d='M52 6.2 46.155 0 28 13.4 28 26h16.26z'/%3E%3Cpath d='M38 6.2 32.155 0 14 13.4 14 26h16.26z'/%3E%3Cpath d='M52 0L36 0l-9 10.4 9 15.6h16z'/%3E%3Cpath d='M36 0L20 0l-9 10.4 9 15.6h16z'/%3E%3Cpath d='M20 0L4 0l-9 10.4 9 15.6h16z'/%3E%3Cpath d='M4 0L0 0l9 10.4-9 15.6h8z'/%3E%3Cpath d='M20 0l-4 0 9 10.4-9 15.6h8z'/%3E%3Cpath d='M36 0l-4 0 9 10.4-9 15.6h8z'/%3E%3Cpath d='M52 0l-4 0 9 10.4-9 15.6h8z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  }
+
+  /* حدود ذهبية متدرجة */
+  .maw-border-gold {
+    border: 1.5px solid rgba(201, 149, 58, 0.22);
+  }
+  .maw-border-gold-strong {
+    border: 1.5px solid rgba(201, 149, 58, 0.35);
+  }
+  .maw-border-gold-subtle {
+    border: 1px solid rgba(201, 149, 58, 0.12);
+  }
+
+  /* ظل ذهبي متوهج */
+  .maw-glow-gold {
+    box-shadow: 
+      0 0 20px rgba(201, 149, 58, 0.20),
+      0 8px 32px rgba(90, 60, 20, 0.12);
+  }
+
+  /* بطاقة مع إطار ذهبي متوهج */
+  .maw-card-glow {
+    background: linear-gradient(180deg, rgba(255, 253, 248, 0.99) 0%, rgba(255, 250, 240, 0.96) 100%);
+    border: 1.5px solid rgba(201, 149, 58, 0.25);
+    border-radius: 28px;
+    box-shadow: 
+      0 16px 48px rgba(90, 60, 20, 0.12),
+      0 8px 24px rgba(90, 60, 20, 0.08),
+      0 0 0 1px rgba(201, 149, 58, 0.08),
+      inset 0 1px 0 rgba(255, 255, 255, 0.95);
+  }
+
+  /* خلفية متدرجة إسلامية */
+  .maw-bg-islamic {
+    background: 
+      radial-gradient(ellipse at 95% -10%, rgba(212, 168, 75, 0.18) 0%, transparent 45%),
+      radial-gradient(ellipse at 5% 110%, rgba(212, 168, 75, 0.12) 0%, transparent 40%),
+      linear-gradient(180deg, #FFFDF8 0%, #FFF8F0 40%, #FDF6EC 100%);
+  }
+
+  /* شريط فاصل ذهبي */
+  .maw-divider-gold {
+    height: 1px;
+    background: linear-gradient(90deg, transparent 0%, rgba(201, 149, 58, 0.25) 20%, rgba(201, 149, 58, 0.35) 50%, rgba(201, 149, 58, 0.25) 80%, transparent 100%);
+  }
+
+  /* شارة ذهبية أنيقة */
+  .maw-badge-gold {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 12px;
+    background: linear-gradient(135deg, #FEF7E6 0%, #FDF4E3 100%);
+    color: #8B6425;
+    border: 1px solid rgba(201, 149, 58, 0.28);
+    border-radius: 14px;
+    font-size: 12px;
+    font-weight: 600;
+    box-shadow: 0 2px 8px rgba(201, 149, 58, 0.15);
+  }
+
+  /* أيقونة ذهبية */
+  .maw-icon-gold {
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #FEF7E6 0%, #FDF4E3 100%);
+    border: 1px solid rgba(201, 149, 58, 0.22);
+    color: #C9953A;
+    box-shadow: 0 4px 12px rgba(201, 149, 58, 0.15);
+  }
+
+  /* زر أساسي ذهبي */
+  .maw-btn-gold {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 24px;
+    background: linear-gradient(145deg, #D4A84B 0%, #C9953A 50%, #A67C2E 100%);
+    color: white;
+    border: none;
+    border-radius: 18px;
+    font-size: 15px;
+    font-weight: 700;
+    box-shadow: 0 8px 24px rgba(180, 120, 40, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+    cursor: pointer;
+    transition: all 0.25s ease;
+  }
+  .maw-btn-gold:hover {
+    box-shadow: 0 12px 32px rgba(180, 120, 40, 0.40), inset 0 1px 0 rgba(255, 255, 255, 0.30);
+    transform: translateY(-1px);
+  }
+  .maw-btn-gold:active {
+    transform: translateY(0) scale(0.98);
+    box-shadow: 0 6px 20px rgba(180, 120, 40, 0.30);
+  }
+
+  /* زر ثانوي ذهبي */
+  .maw-btn-outline {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 24px;
+    background: linear-gradient(180deg, #FFFFFF 0%, #FFF8F0 100%);
+    color: #8B6425;
+    border: 1.5px solid rgba(201, 149, 58, 0.30);
+    border-radius: 18px;
+    font-size: 15px;
+    font-weight: 600;
+    box-shadow: 0 4px 16px rgba(90, 60, 20, 0.08);
+    cursor: pointer;
+    transition: all 0.25s ease;
+  }
+  .maw-btn-outline:hover {
+    border-color: rgba(201, 149, 58, 0.45);
+    box-shadow: 0 8px 24px rgba(90, 60, 20, 0.12);
+    transform: translateY(-1px);
+  }
+  .maw-btn-outline:active {
+    transform: translateY(0) scale(0.98);
+  }
+
+  /* بطاقة سريعة مع الأنماط الإسلامية */
+  .maw-section-card {
+    position: relative;
+    background: linear-gradient(180deg, rgba(255, 253, 248, 0.98) 0%, rgba(255, 250, 240, 0.95) 100%);
+    border: 1.5px solid rgba(201, 149, 58, 0.18);
+    border-radius: 26px;
+    padding: 16px;
+    box-shadow: 
+      0 12px 36px rgba(90, 60, 20, 0.10),
+      0 4px 16px rgba(90, 60, 20, 0.05),
+      inset 0 1px 0 rgba(255, 255, 255, 0.9);
+    overflow: hidden;
+  }
+
+  /* عنوان القسم مع زخرفة */
+  .maw-section-title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 12px;
+    font-size: 18px;
+    font-weight: 800;
+    color: #8A6B3D;
+  }
+  .maw-section-title::before,
+  .maw-section-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(201, 149, 58, 0.30), transparent);
+  }
+
+  /* تأثير hover ذهبي */
+  .maw-hover-gold:hover {
+    border-color: rgba(201, 149, 58, 0.40) !important;
+    box-shadow: 
+      0 16px 48px rgba(90, 60, 20, 0.14),
+      0 8px 24px rgba(90, 60, 20, 0.08),
+      0 0 0 1px rgba(201, 149, 58, 0.12) !important;
+    transform: translateY(-2px);
+  }
 }
