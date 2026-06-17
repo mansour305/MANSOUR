@@ -1,0 +1,65 @@
+name: Admin Dashboard CI/CD
+
+on:
+  push:
+    branches: [main]
+    paths: ['mawaeedak_admin/**']
+  pull_request:
+    branches: [main]
+    paths: ['mawaeedak_admin/**']
+
+jobs:
+  build:
+    name: Build Admin Dashboard
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.24.0'
+          channel: 'stable'
+          cache: true
+          cache-dependency-path: mawaeedak_admin/pubspec.lock
+      
+      - name: Install dependencies
+        run: cd mawaeedak_admin && flutter pub get
+      
+      - name: Analyze
+        run: cd mawaeedak_admin && flutter analyze
+      
+      - name: Build Web
+        run: cd mawaeedak_admin && flutter build web --release
+      
+      - name: Upload Web Build
+        uses: actions/upload-artifact@v4
+        with:
+          name: admin-web-build
+          path: mawaeedak_admin/build/web
+          retention-days: 30
+
+  deploy:
+    name: Deploy Admin Dashboard
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Download Web Build
+        uses: actions/download-artifact@v4
+        with:
+          name: admin-web-build
+          path: mawaeedak_admin/build/web
+      
+      - name: Deploy to Vercel
+        uses: nwtgck/actions-vercel@v1
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_ADMIN_PROJECT_ID }}
+          vercel-args: '--prod'
+          working-directory: mawaeedak_admin/build/web

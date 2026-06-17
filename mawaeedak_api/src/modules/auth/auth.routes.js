@@ -6,11 +6,12 @@ const { v4: uuidv4 } = require('uuid');
 const { body } = require('express-validator');
 const { validate } = require('../../middleware/errorHandler');
 const { authMiddleware } = require('../../middleware/auth');
+const { authRateLimiter } = require('../../middleware/rateLimiter');
 const config = require('../../config');
 const { getDb } = require('../../database/models');
 
-// Login - User
-router.post('/login',
+// Rate-limited Login - User
+router.post('/login', authRateLimiter(),
   [
     body('phone').isMobilePhone('ar-SA').withMessage('Invalid phone number'),
     body('password').isLength({ min: 4 }).withMessage('Password must be at least 4 characters')
@@ -66,8 +67,8 @@ router.post('/login',
   }
 );
 
-// Login - Admin
-router.post('/admin/login',
+// Rate-limited Login - Admin
+router.post('/admin/login', authRateLimiter(),
   [
     body('email').isEmail().withMessage('Invalid email'),
     body('password').isLength({ min: 4 }).withMessage('Password required')
@@ -112,12 +113,12 @@ router.post('/admin/login',
   }
 );
 
-// Register - User
-router.post('/register',
+// Rate-limited Register - User
+router.post('/register', authRateLimiter(),
   [
     body('name').trim().isLength({ min: 2 }).withMessage('Name is required'),
     body('phone').isMobilePhone('ar-SA').withMessage('Invalid Saudi phone number'),
-    body('password').isLength({ min: 4 }).withMessage('Password must be at least 4 characters'),
+    body('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters'),
     body('email').optional().isEmail().withMessage('Invalid email')
   ],
   validate,
@@ -210,8 +211,6 @@ router.post('/refresh',
 router.post('/logout', authMiddleware, async (req, res, next) => {
   try {
     const db = getDb();
-    const authHeader = req.headers.authorization;
-    const token = authHeader.split(' ')[1];
     
     // Remove refresh tokens for this user
     if (req.user.type === 'user') {
@@ -226,8 +225,8 @@ router.post('/logout', authMiddleware, async (req, res, next) => {
   }
 });
 
-// Forgot Password
-router.post('/forgot-password',
+// Forgot Password - Rate limited, no token-based reset in this version
+router.post('/forgot-password', authRateLimiter(),
   [
     body('phone').isMobilePhone('ar-SA').withMessage('Invalid phone number')
   ],
@@ -239,43 +238,32 @@ router.post('/forgot-password',
       
       const user = db.prepare('SELECT id FROM users WHERE phone = ?').get(phone);
       
-      // Always return success to prevent phone enumeration
-      res.json({ success: true, message: 'If the phone number exists, a reset link has been sent' });
+      // Always return same message to prevent phone enumeration
+      res.json({ 
+        success: true, 
+        message: 'If the phone number exists, you will receive a verification code via SMS.',
+        note: 'This feature requires SMS integration. Contact support for password recovery.'
+      });
     } catch (error) {
       next(error);
     }
   }
 );
 
-// Reset Password
-router.post('/reset-password',
+// Reset Password - DISABLED: Requires OTP verification (placeholder for future)
+router.post('/reset-password', authRateLimiter(),
   [
     body('phone').isMobilePhone('ar-SA').withMessage('Invalid phone number'),
-    body('newPassword').isLength({ min: 4 }).withMessage('Password must be at least 4 characters')
+    body('otp').isLength({ min: 6, max: 6 }).withMessage('OTP must be 6 digits'),
+    body('newPassword').isLength({ min: 6 }).withMessage('Password must be at least 6 characters')
   ],
   validate,
   async (req, res, next) => {
-    try {
-      const { phone, newPassword } = req.body;
-      const db = getDb();
-      
-      const user = db.prepare('SELECT id FROM users WHERE phone = ?').get(phone);
-      
-      if (!user) {
-        return res.status(404).json({ error: 'User not found' });
-      }
-      
-      const hashedPassword = bcrypt.hashSync(newPassword, 10);
-      db.prepare('UPDATE users SET password = ?, updated_at = ? WHERE id = ?')
-        .run(hashedPassword, new Date().toISOString(), user.id);
-      
-      // Invalidate all refresh tokens
-      db.prepare('DELETE FROM refresh_tokens WHERE user_id = ?').run(user.id);
-      
-      res.json({ success: true, message: 'Password reset successfully' });
-    } catch (error) {
-      next(error);
-    }
+    // Feature disabled - requires SMS OTP integration
+    res.status(501).json({ 
+      error: 'Password reset via OTP is not yet available',
+      message: 'Please contact support for password recovery.'
+    });
   }
 );
 

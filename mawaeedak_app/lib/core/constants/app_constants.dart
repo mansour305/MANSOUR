@@ -2,8 +2,12 @@ class AppConstants {
   static const String appName = 'مواعيدك';
   static const String appVersion = '1.0.0';
   
-  // API Base URL - Update this for production
+  // API Base URL - Environment-based
   static const String baseUrl = 'http://10.0.2.2:3000/api';
+  
+  // Production/Staging URLs
+  static const String productionApiUrl = 'https://api.mawaeedak.com/api';
+  static const String stagingApiUrl = 'http://localhost:3000/api';
   
   // Storage Keys
   static const String tokenKey = 'auth_token';
@@ -28,4 +32,16 @@ class AppConstants {
   static const String jobs = '/jobs';
   static const String settings = '/settings';
   static const String users = '/users';
+  
+  // Prayer Times (Saudi Arabia - Riyadh)
+  static const double latitude = 24.7136;
+  static const double longitude = 46.6753;
+  static const String calculationMethod = 'UmmAlQura';
+  
+  // Timeouts (ms)
+  static const int connectionTimeout = 30000;
+  static const int receiveTimeout = 30000;
+  
+  // Pagination
+  static const int defaultPageSize = 20;
 }

@@ -1,0 +1,77 @@
+name: Flutter User App CI/CD
+
+on:
+  push:
+    branches: [main]
+    paths: ['mawaeedak_app/**']
+  pull_request:
+    branches: [main]
+    paths: ['mawaeedak_app/**']
+
+jobs:
+  build:
+    name: Build User App
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.24.0'
+          channel: 'stable'
+          cache: true
+          cache-dependency-path: mawaeedak_app/pubspec.lock
+      
+      - name: Install dependencies
+        run: cd mawaeedak_app && flutter pub get
+      
+      - name: Analyze
+        run: cd mawaeedak_app && flutter analyze
+      
+      - name: Build Web
+        run: cd mawaeedak_app && flutter build web --release
+      
+      - name: Upload Web Build
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-web-build
+          path: mawaeedak_app/build/web
+          retention-days: 30
+      
+      - name: Build APK
+        run: cd mawaeedak_app && flutter build apk --release
+        if: false  # Requires signing config
+      
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-apk
+          path: mawaeedak_app/build/app/outputs/flutter-apk/app-release.apk
+          retention-days: 30
+        if: false
+
+  deploy:
+    name: Deploy User App
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Download Web Build
+        uses: actions/download-artifact@v4
+        with:
+          name: app-web-build
+          path: mawaeedak_app/build/web
+      
+      - name: Deploy to Vercel
+        uses: nwtgck/actions-vercel@v1
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          vercel-args: '--prod'
+          working-directory: mawaeedak_app/build/web
