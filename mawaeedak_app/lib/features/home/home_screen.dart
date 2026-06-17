@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../../core/theme/app_theme.dart';
+import '../../core/services/prayer_service.dart';
 import '../../data/models/salary_model.dart';
 import '../../data/repositories/salary_repository.dart';
 import '../salaries/salaries_screen.dart';
@@ -14,8 +15,12 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final SalaryRepository _salaryRepository = SalaryRepository();
+  final PrayerTimesService _prayerService = PrayerTimesService();
   Salary? _nearestPayment;
+  PrayerTimes? _prayerTimes;
   bool _isLoading = true;
+  String _selectedCity = 'riyadh';
+  bool _prayerError = false;
 
   @override
   void initState() {
@@ -25,7 +30,19 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> _loadData() async {
     setState(() => _isLoading = true);
+    
+    // Load salary data
     _nearestPayment = await _salaryRepository.getNearestPayment();
+    
+    // Load prayer times from API
+    try {
+      _prayerTimes = await _prayerService.getPrayerTimes(city: _selectedCity);
+      _prayerError = _prayerTimes == null;
+    } catch (e) {
+      _prayerError = true;
+      _prayerTimes = null;
+    }
+    
     setState(() => _isLoading = false);
   }
 
@@ -137,7 +154,57 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _buildPrayerTimesCard() {
     final now = DateTime.now();
-    final prayerTimes = _getPrayerTimes(now);
+    
+    // Use API prayer times or show error state
+    if (_prayerError || _prayerTimes == null) {
+      return Container(
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          gradient: AppColors.goldGradient,
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Column(
+          children: [
+            const Text(
+              'مواقيت الصلاة',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 12),
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.2),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Column(
+                children: [
+                  const Icon(Icons.wifi_off, color: Colors.white, size: 32),
+                  const SizedBox(height: 8),
+                  Text(
+                    'مواقيت الصلاة غير متاحة حاليًا',
+                    style: TextStyle(color: Colors.white.withOpacity(0.9)),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    'سيتم التحديث تلقائيًا عند توفر الاتصال',
+                    style: TextStyle(
+                      color: Colors.white.withOpacity(0.7),
+                      fontSize: 12,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      );
+    }
     
     return Container(
       padding: const EdgeInsets.all(20),
@@ -158,13 +225,37 @@ class _HomeScreenState extends State<HomeScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text(
-                'مواقيت الصلاة',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
+              Row(
+                children: [
+                  const Text(
+                    'مواقيت الصلاة',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  GestureDetector(
+                    onTap: () => _showCitySelector(),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.2),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Row(
+                        children: [
+                          Text(
+                            _prayerService.getCityNames()[_selectedCity] ?? 'الرياض',
+                            style: const TextStyle(color: Colors.white, fontSize: 12),
+                          ),
+                          const Icon(Icons.arrow_drop_down, color: Colors.white, size: 16),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
               ),
               Text(
                 DateFormat('dd/MM/yyyy').format(now),
@@ -179,14 +270,45 @@ class _HomeScreenState extends State<HomeScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              _buildPrayerTime('الفجر', prayerTimes['fajr']!, 0),
-              _buildPrayerTime('الظهر', prayerTimes['dhuhr']!, 1),
-              _buildPrayerTime('العصر', prayerTimes['asr']!, 2),
-              _buildPrayerTime('المغرب', prayerTimes['maghrib']!, 3),
-              _buildPrayerTime('العشاء', prayerTimes['isha']!, 4),
+              _buildPrayerTime('الفجر', _prayerTimes!.fajr, 0),
+              _buildPrayerTime('الظهر', _prayerTimes!.dhuhr, 1),
+              _buildPrayerTime('العصر', _prayerTimes!.asr, 2),
+              _buildPrayerTime('المغرب', _prayerTimes!.maghrib, 3),
+              _buildPrayerTime('العشاء', _prayerTimes!.isha, 4),
             ],
           ),
         ],
+      ),
+    );
+  }
+  
+  void _showCitySelector() {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) => Container(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'اختر المدينة',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 16),
+            ..._prayerService.getCityNames().entries.map((entry) => ListTile(
+              title: Text(entry.value),
+              trailing: _selectedCity == entry.key 
+                  ? const Icon(Icons.check, color: AppColors.primary) 
+                  : null,
+              onTap: () {
+                setState(() => _selectedCity = entry.key);
+                Navigator.pop(context);
+                _loadData();
+              },
+            )),
+          ],
+        ),
       ),
     );
   }
@@ -429,18 +551,27 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
         const SizedBox(height: 8),
-        _buildSalaryItem(
-          'راتب شهر يونيو',
-          '25/06/2024',
-          '8,500 ر.س',
-          Icons.account_balance_wallet_rounded,
-          AppColors.primary,
-        ),
+        if (_nearestPayment != null)
+          _buildSalaryItem(
+            _nearestPayment!.title,
+            _nearestPayment!.formattedDate,
+            '${_nearestPayment!.amount.toStringAsFixed(0)} ر.س',
+            Icons.account_balance_wallet_rounded,
+            AppColors.primary,
+          )
+        else
+          _buildSalaryItem(
+            'الرواتب',
+            'غير محدد',
+            '--',
+            Icons.account_balance_wallet_rounded,
+            AppColors.primary,
+          ),
         const SizedBox(height: 8),
         _buildSalaryItem(
-          'دعم سكني',
-          '15/06/2024',
-          '15,000 ر.س',
+          'الدعوم',
+          'حسب الجدول',
+          'يحدد تلقائيًا',
           Icons.home_rounded,
           AppColors.success,
         ),
@@ -520,20 +651,6 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
       ),
     );
-  }
-
-  Map<String, String> _getPrayerTimes(DateTime date) {
-    // Simplified prayer times calculation (Egyptian timing)
-    final dayOfYear = date.difference(DateTime(date.year, 1, 1)).inDays;
-    // Approximate Fajr time based on day of year (for Saudi Arabia)
-    final fajr = 4 + (30 * (1 + (dayOfYear / 180).abs()) % 4).round();
-    return {
-      'fajr': '${fajr.toString().padLeft(2, '0')}:30',
-      'dhuhr': '11:45',
-      'asr': '15:15',
-      'maghrib': '18:30',
-      'isha': '20:00',
-    };
   }
 
   bool _isNextPrayer(int index, int currentHour) {

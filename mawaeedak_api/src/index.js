@@ -17,6 +17,8 @@ const newsRoutes = require('./modules/news/news.routes');
 const jobsRoutes = require('./modules/jobs/jobs.routes');
 const settingsRoutes = require('./modules/settings/settings.routes');
 const dashboardRoutes = require('./modules/dashboard/dashboard.routes');
+const prayerRoutes = require('./modules/prayer/prayer.routes');
+const schedulerRoutes = require('./modules/salary_scheduler/scheduler.routes');
 
 const { errorHandler } = require('./middleware/errorHandler');
 const { authMiddleware } = require('./middleware/auth');
@@ -62,6 +64,8 @@ app.use('/api/news', newsRoutes);
 app.use('/api/jobs', jobsRoutes);
 app.use('/api/settings', settingsRoutes);
 app.use('/api/dashboard', dashboardRoutes);
+app.use('/api/prayer', prayerRoutes);
+app.use('/api/scheduler', schedulerRoutes);
 
 // Health Check
 app.get('/api/health', (req, res) => {
