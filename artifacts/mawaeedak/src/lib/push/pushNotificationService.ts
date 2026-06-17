@@ -96,7 +96,7 @@ export async function subscribeToPush(): Promise<PushSubscription | null> {
       applicationServerKey: urlBase64ToUint8Array(vapidKey) as BufferSource,
     });
 
-    console.info("[Push] Successfully subscribed to push notifications");
+    // Successfully subscribed - no logging in production
     return subscription;
   } catch (error) {
     console.error("[Push] Failed to subscribe to push:", error);
@@ -131,7 +131,7 @@ export async function savePushSubscription(
       }
     );
 
-    console.info("[Push] Push subscription saved to Supabase");
+    // Subscription saved successfully - no logging in production
     return true;
   } catch (error) {
     console.error("[Push] Error saving subscription:", error);
@@ -151,7 +151,7 @@ export async function unsubscribeFromPush(): Promise<boolean> {
     
     if (subscription) {
       await subscription.unsubscribe();
-      console.info("[Push] Unsubscribed from push notifications");
+      // Successfully unsubscribed - no logging in production
     }
     
     return true;

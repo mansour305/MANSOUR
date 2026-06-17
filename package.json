@@ -12,14 +12,19 @@
     "web:typecheck": "pnpm --filter \"./artifacts/mawaeedak\" run typecheck",
     "web:build": "pnpm --filter \"./artifacts/mawaeedak\" run build",
     "web:smoke": "pnpm --filter \"./artifacts/mawaeedak\" run smoke",
-    "web:check": "pnpm run web:typecheck && pnpm run web:build && pnpm run web:smoke"
+    "web:check": "pnpm run web:typecheck && pnpm run web:build && pnpm run web:smoke",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage"
   },
   "private": true,
   "devDependencies": {
     "@types/pg": "^8.20.0",
+    "@vitest/coverage-v8": "^3.1.4",
     "pg": "^8.20.0",
     "prettier": "^3.8.3",
-    "typescript": "~5.9.3"
+    "typescript": "~5.9.3",
+    "vitest": "^3.1.4"
   }
 }
 

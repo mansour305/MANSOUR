@@ -4,6 +4,7 @@ import { complaintsTable, auditLogsTable } from "@workspace/db";
 import { desc, eq, sql } from "drizzle-orm";
 import { CreateComplaintBody, UpdateComplaintBody } from "@workspace/api-zod";
 import { requireAdmin } from "../middlewares/requireAdmin";
+import { writeRateLimiter } from "../middlewares/rateLimiter";
 
 const router = Router();
 
@@ -26,7 +27,8 @@ router.get("/complaints", requireAdmin, async (req, res) => {
 });
 
 // Submit complaint — public (guests and users can send).
-router.post("/complaints", async (req, res) => {
+// Strict rate limiting applied to prevent spam
+router.post("/complaints", writeRateLimiter, async (req, res) => {
   const parsed = CreateComplaintBody.safeParse(req.body);
   if (!parsed.success) return res.status(400).json({ error: parsed.error });
   const [row] = await db.insert(complaintsTable).values({ ...parsed.data, status: "pending" }).returning();

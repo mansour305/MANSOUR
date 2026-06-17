@@ -3,6 +3,7 @@ import cors from "cors";
 import pinoHttp from "pino-http";
 import router from "./routes";
 import { logger } from "./lib/logger";
+import { apiRateLimiter, authRateLimiter, adminRateLimiter } from "./middlewares/rateLimiter";
 
 const app: Express = express();
 
@@ -67,6 +68,9 @@ app.use(
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Apply rate limiting to API routes
+app.use("/api", apiRateLimiter);
 
 app.use("/api", router);
 
